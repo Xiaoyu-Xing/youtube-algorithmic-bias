@@ -83,22 +83,33 @@ class Build_Profiles:
             self.base_videos_summary[key] = len(v)
 
     # Generate files based on the base output
-    # Only output file will be shuffled is shuffle is True, the class attributes will not be shuffled.
-    def output_profile_base(self, output=None, shuffle=False):
+    # Only output file will be shuffled is shuffle is True, the class attributes will not be shuffled,
+    # to prevent uneven shuffle after sampled with extended videos
+    def output_profiles_base(self, output=None, shuffle=False):
         out_path = output or self.output_path
         for file, videos in self.base_videos.items():
             name_base = 'base_videos_' + file + '.json'
             if shuffle:
-                random.shuffle(videos)
+                data = videos.copy()
+                random.shuffle(data)
             with open(join(out_path, name_base), 'w') as f:
-                json.dump(videos, f, indent=4)
+                # Indent will help json viewer properly display the format, same below
+                json.dump(data, f, indent=4)
         for file, videos in self.base_videos_details.items():
             name_base_details = 'base_videos_details_' + file + '.json'
             videos = videos.items()
+            # Unable to shuffle a dictionary
             if shuffle:
-                random.shuffle(videos)
+                data = list(videos)
+                random.shuffle(data)
             with open(join(out_path, name_base_details), 'w') as f:
                 # May because dictionary 'videos' is large, so the videos is type 'dict_values', json complains
-                json.dump(dict(videos), f, indent=4)
+                json.dump(dict(data), f, indent=4)
         with open(join(out_path, 'base_summary.json'), 'w') as f:
             json.dump(self.base_videos_summary, f, indent=4)
+
+    def _build_profiles_extended(self):
+        pass
+
+    def output_profiles_extended(self):
+        pass
