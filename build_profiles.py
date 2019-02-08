@@ -22,7 +22,9 @@ class Build_Profiles:
             os.makedirs(self.output_path)
         # Average profile details, keyed with last word of each json profile filename
         self.profiles = {}
+        # Fully normalized profiles based on all the subreddits they have
         self.profiles_norm_ratio = {}
+        # Partially normalized profiles based on top N*diversity subreddits
         self.profiles_norm_ratio_N_diversity = {}
         # *_dirs are the root directories path for files of profiles, base/related videos
         self.profiles_dir, self.videos_base_dir, self.videos_related_dir = '', '', ''
@@ -220,6 +222,7 @@ class Build_Profiles:
         self._normalize_profile_ratios_N_diversity(diversity_ratio)
         out_path = self.output_path
         summary = {}
+        summary['diversity_ratio'] = diversity_ratio
         for profile_name, details in self.profiles_norm_ratio_N_diversity.items():
             short = self.base_videos[profile_name][:]
             for subreddit, count in details:
