@@ -261,10 +261,13 @@ class Build_Profiles:
             for subreddit_name, detail in details.items():
                 this_chance = random.choice(range(pow(10, DIGIT)))
                 # Get ratio of this subreddit and times 1000 and convert to int.
-                # If this one get chosen
                 if int(float(detail['ratio']) * pow(10, DIGIT)) >= this_chance:
+                    # If this one get chosen
                     try:
-                        short.extend(self.related_videos[subreddit_name][:])
+                        top_10_percent = round(
+                            0.1 * len(self.related_videos[subreddit_name]))
+                        short.extend(
+                            self.related_videos[subreddit_name][:top_10_percent])
                         subreddits_count += 1
                     except Exception as e:
                         print(e)
