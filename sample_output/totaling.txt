@@ -1,0 +1,25 @@
+# 1. The number of all subreddits videos plus 50 base videos in each profile
+# 2. The total subreddits number in each profile
+# 3. The total number of subreddits can be taken without mismatch error
+
+    "enoughtrumpspam": 41438,
+    "enoughtrumpspam_subreddits_total": 5580,
+    "enoughtrumpspam_subreddits_chosen": 5100,
+    "feminism": 56447,
+    "feminism_subreddits_total": 7955,
+    "feminism_subreddits_chosen": 7318,
+    "incel": 101786,
+    "incel_subreddits_total": 22016,
+    "incel_subreddits_chosen": 19222,
+    "inceltears": 38802,
+    "inceltears_subreddits_total": 5394,
+    "inceltears_subreddits_chosen": 4913,
+    "mensrights": 44639,
+    "mensrights_subreddits_total": 6138,
+    "mensrights_subreddits_chosen": 5620,
+    "metoo": 137347,
+    "metoo_subreddits_total": 57744,
+    "metoo_subreddits_chosen": 39869,
+    "the_donald": 26136,
+    "the_donald_subreddits_total": 3291,
+    "the_donald_subreddits_chosen": 2977
