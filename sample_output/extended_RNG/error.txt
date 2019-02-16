@@ -1,4 +1,4 @@
-# Below is the error when generating extended files:
+# Below is the complete list of mismatch error of
 # subreddit name in each base profile didn't match subreddit file names in related video files.
 # Below in quote is the subreddit names in profile, check video folders to match them.
 
