@@ -211,19 +211,22 @@ class Build_Profiles:
     # 2) N*# of extended videos from subreddits by <1> normalize ratios for each subreddits for top LIMIT videos
     # <2> total # of extended videos (roughly) equals to # of base profile, choose top N videos calculated by ratio，
     # rounded up/down to whole number
-    def output_profiles_related(self, shuffle=False, diversity_ratio=1):
+    def output_profiles_related_diversity_method(self, shuffle=False, diversity_ratio=1):
         '''
         diversity_ratio: control the ratio of extended videos / base videos numbers
         '''
-        print(
-            "*****This step will take long time and large memory, please hold tight!*****\n")
-        sys.stdout.flush()
-        self._build_profiles_related()
+        # Process the related/extended videos if not yet.
+        if len(self.related_videos_summary) == 0:
+            print(
+                "*****This step might take long time and large memory, please hold tight!*****\n")
+            sys.stdout.flush()
+            self._build_profiles_related()
         self._normalize_profile_ratios_N_diversity(diversity_ratio)
         out_path = self.output_path
         summary = {}
         summary['diversity_ratio'] = diversity_ratio
         for profile_name, details in self.profiles_norm_ratio_N_diversity.items():
+            # Make a local copy of base videos, don't mess up with base files
             short = self.base_videos[profile_name][:]
             for subreddit, count in details:
                 try:
@@ -235,7 +238,44 @@ class Build_Profiles:
             if shuffle:
                 random.shuffle(short)
             summary[profile_name] = len(short)
-            name_related = 'related_videos_' + profile_name + '.json'
+            name_related = 'related_videos_diversity_' + profile_name + '.json'
             self._write_json(short, os.path.join(out_path, name_related))
         self._write_json(summary,
                          os.path.join(out_path, 'related_summary.json'))
+
+    def output_profiles_related_RNG_method(self, shuffle=False):
+        # Process the related/extended videos if not yet.
+        if len(self.related_videos_summary) == 0:
+            print(
+                "*****This step might take long time and large memory, please hold tight!*****\n")
+            sys.stdout.flush()
+            self._build_profiles_related()
+        # Hyperparameter: significant digits after decimal of overlapping ratios with subreddits in base profiles
+        DIGIT = 3
+        out_path = self.output_path
+        summary = {}
+        for profile_name, details in self.profiles.items():
+            # Make a local copy of base videos, don't mess up with base files
+            short = self.base_videos[profile_name][:]
+            subreddits_count = 0
+            for subreddit_name, detail in details.items():
+                this_chance = random.choice(range(pow(10, DIGIT)))
+                # Get ratio of this subreddit and times 1000 and convert to int.
+                # If this one get chosen
+                if int(float(detail['ratio']) * pow(10, DIGIT)) >= this_chance:
+                    try:
+                        short.extend(self.related_videos[subreddit_name][:])
+                        subreddits_count += 1
+                    except Exception as e:
+                        print(e)
+                        print(
+                            "Check related video folder or above subreddit name to match each other.")
+            if shuffle:
+                random.shuffle(short)
+            summary[profile_name] = len(short)
+            summary[profile_name + '_subreddits_total'] = len(details)
+            summary[profile_name + '_subreddits_chosen'] = subreddits_count
+            name_related = 'related_videos_RNG_' + profile_name + '.json'
+            self._write_json(short, os.path.join(out_path, name_related))
+        self._write_json(summary, os.path.join(
+            out_path, 'related_summary_RNG.json'))
