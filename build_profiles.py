@@ -4,11 +4,15 @@ import json
 from pprint import pprint
 import math
 import sys
+import Settings
 
 
 class Build_Profiles:
-    # Specify data location, and output location.
-    def __init__(self, input_path='data', output_path='output'):
+        # Specify data location, and output location.
+    def __init__(self,
+                 input_path=Settings.input_path,
+                 output_path=Settings.output_path,
+                 limit=Settings.base_video_number):
         '''
         Input:
             input_path: data dir, default '/data'
@@ -41,7 +45,7 @@ class Build_Profiles:
         # Run to generate profile details
         self._generate_profiles()
         # Profile video upper bound
-        self.limit = 50
+        self.limit = limit
 
     # Parse data folder
     def _parse_folders(self):
@@ -64,7 +68,7 @@ class Build_Profiles:
     # Read json file
     def _read_json(self, path):
         '''
-        Input: 
+        Input:
             path: file path
         Return:
             json file, lenght, type
@@ -125,14 +129,14 @@ class Build_Profiles:
     # Only output file will be shuffled is shuffle is True, the class attributes will not be shuffled,
     # to prevent uneven shuffle after sampled with related videos
     # Turn details False will stop write detailed version of videos
-    def output_profiles_base(self, shuffle=False, details=True, limit=50):
+    def output_profiles_base(self,
+                             shuffle=Settings.base_shuffle,
+                             details=Settings.base_detailed):
         '''
         Input:
             shuffle: boolean, whether to shuffle the ourput
             details: boolean, whether to output detailed version
-            limit: int, how many to output
         '''
-        self.limit = limit
         # Run to generate base profile videos
         self._build_profiles_base()
         out_path = self.output_path
@@ -197,9 +201,10 @@ class Build_Profiles:
     # Normalize profile ratios only for top N subreditts.
     # N is the "diversity" determined by base video numbers, read from base_summary
     # Must run output_profile_base first!
-    def _normalize_profile_ratios_N_diversity(self, diversity_ratio):
+    def _normalize_profile_ratios_N_diversity(self,
+                                              diversity_index):
         for profile_name, details in self.profiles.items():
-            N = round(self.base_videos_summary[profile_name] * diversity_ratio)
+            N = round(self.base_videos_summary[profile_name] * diversity_index)
             temp = sorted([(k, float(v['ratio'])) for k, v in details.items()], key=lambda x: x[1], reverse=True
                           )[:N]
             total = sum([each[1] for each in temp])
@@ -211,9 +216,11 @@ class Build_Profiles:
     # 2) N*# of extended videos from subreddits by <1> normalize ratios for each subreddits for top LIMIT videos
     # <2> total # of extended videos (roughly) equals to # of base profile, choose top N videos calculated by ratio，
     # rounded up/down to whole number
-    def output_profiles_related_diversity_method(self, shuffle=False, diversity_ratio=1):
+    def output_profiles_related_diversity_method(self,
+                                                 shuffle=Settings.extended_shuffle_by_diversity,
+                                                 diversity_index=Settings.diversity_index):
         '''
-        diversity_ratio: control the ratio of extended videos / base videos numbers
+        diversity_index: control the ratio of extended videos / base videos numbers
         '''
         # Process the related/extended videos if not yet.
         if len(self.related_videos_summary) == 0:
@@ -221,10 +228,10 @@ class Build_Profiles:
                 "*****This step might take long time and large memory, please hold tight!*****\n")
             sys.stdout.flush()
             self._build_profiles_related()
-        self._normalize_profile_ratios_N_diversity(diversity_ratio)
+        self._normalize_profile_ratios_N_diversity(diversity_index)
         out_path = self.output_path
         summary = {}
-        summary['diversity_ratio'] = diversity_ratio
+        summary['diversity_index'] = diversity_index
         for profile_name, details in self.profiles_norm_ratio_N_diversity.items():
             # Make a local copy of base videos, don't mess up with base files
             short = self.base_videos[profile_name][:]
@@ -243,7 +250,9 @@ class Build_Profiles:
         self._write_json(summary,
                          os.path.join(out_path, 'related_summary.json'))
 
-    def output_profiles_related_RNG_method(self, shuffle=False):
+    def output_profiles_related_RNG_method(self,
+                                           shuffle=Settings.extended_shuffle_by_random_number,
+                                           sampling_index=Settings.sampling_percent_index):
         # Process the related/extended videos if not yet.
         if len(self.related_videos_summary) == 0:
             print(
@@ -251,7 +260,7 @@ class Build_Profiles:
             sys.stdout.flush()
             self._build_profiles_related()
         # Hyperparameter: significant digits after decimal of overlapping ratios with subreddits in base profiles
-        DIGIT = 3
+        DIGIT = Settings.subreddit_ratio_decimal
         out_path = self.output_path
         summary = {}
         for profile_name, details in self.profiles.items():
@@ -264,10 +273,10 @@ class Build_Profiles:
                 if int(float(detail['ratio']) * pow(10, DIGIT)) >= this_chance:
                     # If this one get chosen
                     try:
-                        top_10_percent = round(
-                            0.1 * len(self.related_videos[subreddit_name]))
+                        top_N_percent = round(
+                            sampling_index * len(self.related_videos[subreddit_name]))
                         short.extend(
-                            self.related_videos[subreddit_name][:top_10_percent])
+                            self.related_videos[subreddit_name][:top_N_percent])
                         subreddits_count += 1
                     except Exception as e:
                         print(e)
@@ -282,3 +291,19 @@ class Build_Profiles:
             self._write_json(short, os.path.join(out_path, name_related))
         self._write_json(summary, os.path.join(
             out_path, 'related_summary_RNG.json'))
+
+        def one_click(self,
+                      base=Settings.base,
+                      diversity=Settings.by_diversity,
+                      random=Settings.by_random_number_generator):
+            if base:
+                self.output_profiles_base(shuffle=Settings.base_shuffle,
+                                          details=Settings.base_detailed,
+                                          limit=Settings.base_video_number)
+            if diversity:
+                self.output_profiles_related_diversity_method(shuffle=Settings.extended_shuffle_by_diversity,
+                                                              diversity_index=Settings.diversity_index)
+
+            if random:
+                self.output_profiles_related_RNG_method(shuffle=Settings.extended_shuffle_by_random_number,
+                                                        sampling_index=Settings.sampling_percent_index)
