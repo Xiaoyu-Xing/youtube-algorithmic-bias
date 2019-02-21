@@ -292,18 +292,23 @@ class Build_Profiles:
         self._write_json(summary, os.path.join(
             out_path, 'related_summary_RNG.json'))
 
-        def one_click(self,
-                      base=Settings.base,
-                      diversity=Settings.by_diversity,
-                      random=Settings.by_random_number_generator):
-            if base:
-                self.output_profiles_base(shuffle=Settings.base_shuffle,
-                                          details=Settings.base_detailed,
-                                          limit=Settings.base_video_number)
-            if diversity:
-                self.output_profiles_related_diversity_method(shuffle=Settings.extended_shuffle_by_diversity,
-                                                              diversity_index=Settings.diversity_index)
+    def one_click(self,
+                  base=Settings.base,
+                  diversity=Settings.by_diversity,
+                  random=Settings.by_random_number_generator):
+        if base:
+            self.output_profiles_base(shuffle=Settings.base_shuffle,
+                                      details=Settings.base_detailed,
+                                      limit=Settings.base_video_number)
+        if diversity:
+            self.output_profiles_related_diversity_method(shuffle=Settings.extended_shuffle_by_diversity,
+                                                          diversity_index=Settings.diversity_index)
 
-            if random:
-                self.output_profiles_related_RNG_method(shuffle=Settings.extended_shuffle_by_random_number,
-                                                        sampling_index=Settings.sampling_percent_index)
+        if random:
+            self.output_profiles_related_RNG_method(shuffle=Settings.extended_shuffle_by_random_number,
+                                                    sampling_index=Settings.sampling_percent_index)
+
+
+if __name__ == '__main__':
+    BP = Build_Profiles()
+    BP.one_click()
