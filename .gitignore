@@ -3,3 +3,4 @@ output/
 *.zip
 from_Huyen/
 __*__/
+.ipynb_checkpoints/
