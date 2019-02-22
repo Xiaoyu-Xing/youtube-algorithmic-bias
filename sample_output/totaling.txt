@@ -1,6 +1,7 @@
 # 1. The number of all subreddits videos plus 50 base videos in each profile
 # 2. The total subreddits number in each profile
 # 3. The total number of subreddits can be taken without mismatch error
+# 4. Mismatch match between 'total' and 'chosen' due to some subreddits didn't have any videos
 
     "enoughtrumpspam": 41438,
     "enoughtrumpspam_subreddits_total": 5580,
