@@ -4,3 +4,4 @@ output/
 from_Huyen/
 __*__/
 .ipynb_checkpoints/
+*.log
