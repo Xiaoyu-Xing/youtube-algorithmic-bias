@@ -216,9 +216,11 @@ class Build_Profiles:
     # 2) N*# of extended videos from subreddits by <1> normalize ratios for each subreddits for top LIMIT videos
     # <2> total # of extended videos (roughly) equals to # of base profile, choose top N videos calculated by ratio，
     # rounded up/down to whole number
-    def output_profiles_related_diversity_method(self,
-                                                 shuffle=Settings.extended_shuffle_by_diversity,
-                                                 diversity_index=Settings.diversity_index):
+    def output_profiles_related_diversity_method(
+        self,
+        shuffle=Settings.extended_shuffle_by_diversity,
+        diversity_index=Settings.diversity_index
+    ):
         '''
         diversity_index: control the ratio of extended videos / base videos numbers
         '''
@@ -238,10 +240,12 @@ class Build_Profiles:
             for subreddit, count in details:
                 try:
                     short.extend(self.related_videos[subreddit][:count])
+                # Exception happens due to some subreddits didn't have videos
                 except Exception as e:
-                    print(e)
-                    print(
-                        "Check related video folder or above subreddit name to match each other.")
+                    # Uncomment below code to review subreddits without videos
+                    # print(e)
+                    # print("Check related video folder or above subreddit name to match each other.")
+                    pass
             if shuffle:
                 random.shuffle(short)
             summary[profile_name] = len(short)
@@ -250,9 +254,11 @@ class Build_Profiles:
         self._write_json(summary,
                          os.path.join(out_path, 'related_summary.json'))
 
-    def output_profiles_related_RNG_method(self,
-                                           shuffle=Settings.extended_shuffle_by_random_number,
-                                           sampling_index=Settings.sampling_percent_index):
+    def output_profiles_related_RNG_method(
+        self,
+        shuffle=Settings.extended_shuffle_by_random_number,
+        sampling_index=Settings.sampling_percent_index
+    ):
         # Process the related/extended videos if not yet.
         if len(self.related_videos_summary) == 0:
             print(
@@ -278,10 +284,12 @@ class Build_Profiles:
                         short.extend(
                             self.related_videos[subreddit_name][:top_N_percent])
                         subreddits_count += 1
+                    # Exception happens due to some subreddits didn't have videos
                     except Exception as e:
-                        print(e)
-                        print(
-                            "Check related video folder or above subreddit name to match each other.")
+                        # Uncomment below code to review subreddits without videos
+                        # print(e)
+                        # print(
+                        #     "Check related video folder or above subreddit name to match each other.")
             if shuffle:
                 random.shuffle(short)
             summary[profile_name] = len(short)
@@ -301,12 +309,16 @@ class Build_Profiles:
                                       details=Settings.base_detailed,
                                       limit=Settings.base_video_number)
         if diversity:
-            self.output_profiles_related_diversity_method(shuffle=Settings.extended_shuffle_by_diversity,
-                                                          diversity_index=Settings.diversity_index)
+            self.output_profiles_related_diversity_method(
+                shuffle=Settings.extended_shuffle_by_diversity,
+                diversity_index=Settings.diversity_index
+            )
 
         if random:
-            self.output_profiles_related_RNG_method(shuffle=Settings.extended_shuffle_by_random_number,
-                                                    sampling_index=Settings.sampling_percent_index)
+            self.output_profiles_related_RNG_method(
+                shuffle=Settings.extended_shuffle_by_random_number,
+                sampling_index=Settings.sampling_percent_index
+            )
 
 
 if __name__ == '__main__':
