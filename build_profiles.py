@@ -8,7 +8,12 @@ import Settings
 
 
 class Build_Profiles:
-        # Specify data location, and output location.
+    '''
+    To build base and extended profile,
+    set parameters in Settings.py,
+    use one_click() to quickly get all the base and extended profile
+    '''
+
     def __init__(self,
                  input_path=Settings.input_path,
                  output_path=Settings.output_path,
@@ -244,7 +249,8 @@ class Build_Profiles:
                 except Exception as e:
                     # Uncomment below code to review subreddits without videos
                     # print(e)
-                    # print("Check related video folder or above subreddit name to match each other.")
+                    # print(
+                    #     "Check related video folder or above subreddit name to match each other.")
                     pass
             if shuffle:
                 random.shuffle(short)
@@ -290,6 +296,7 @@ class Build_Profiles:
                         # print(e)
                         # print(
                         #     "Check related video folder or above subreddit name to match each other.")
+                        pass
             if shuffle:
                 random.shuffle(short)
             summary[profile_name] = len(short)
@@ -306,8 +313,8 @@ class Build_Profiles:
                   random=Settings.by_random_number_generator):
         if base:
             self.output_profiles_base(shuffle=Settings.base_shuffle,
-                                      details=Settings.base_detailed,
-                                      limit=Settings.base_video_number)
+                                      details=Settings.base_detailed
+                                      )
         if diversity:
             self.output_profiles_related_diversity_method(
                 shuffle=Settings.extended_shuffle_by_diversity,
@@ -319,6 +326,7 @@ class Build_Profiles:
                 shuffle=Settings.extended_shuffle_by_random_number,
                 sampling_index=Settings.sampling_percent_index
             )
+        print('Profile generation finished.')
 
 
 if __name__ == '__main__':
