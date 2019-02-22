@@ -2,3 +2,4 @@ data/
 output/
 *.zip
 from_Huyen/
+__*__/
