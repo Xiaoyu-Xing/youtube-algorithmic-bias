@@ -48,7 +48,7 @@ one_path = 'test.json'
 firefox_profile_path = ''
 # Path to the cookies
 seed_cookie_path = 'cookiebro-cookies.json' # DO NOT OVERRIDE
-training_coockie_path = 'training_coockie_path.json'
+training_coockie_path = 'after_training_cookie.json'
 # How many seconds to watch for each video:
 watch_time = 60
 # Initial web to visit before train, don't change
