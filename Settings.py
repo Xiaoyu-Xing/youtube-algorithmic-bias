@@ -1,6 +1,6 @@
 # Set your parameters here
 
-
+# >>>>>>>>>>>>First section: for creating profiles<<<<<<<<<<<<
 # Hyperparameters:
 input_path = 'data'  # Input data folder
 output_path = 'output'  # Output data folder
@@ -10,7 +10,7 @@ output_path = 'output'  # Output data folder
 base = True  # Generate base files?
 base_video_number = 50  # Each profile contains # of videos
 base_shuffle = True  # Shuffle the output list?
-base_detailed = True  # Generate a detailed version?
+base_detailed = False  # Generate a detailed version?
 
 
 # For generating extended files (two methods)
@@ -35,3 +35,32 @@ subreddit_ratio_decimal = 3
 sampling_percent_index = 0.1
 # Shuffle the method for this method?
 extended_shuffle_by_random_number = True
+
+
+# >>>>>>>>>>>>Second section: for training profiles<<<<<<<<<<<<
+# If you need to parse all json files
+# Give the dir to the lowest common folder below
+training_directory = 'sample_output'
+# If you only need to parse and train one list
+# Give the dir to json below
+one_path = 'test.json'
+# Path to a firefox profile
+firefox_profile_path = ''
+# Path to the cookies
+seed_cookie_path = 'cookiebro-cookies.json' # DO NOT OVERRIDE
+training_coockie_path = 'training_coockie_path.json'
+# How many seconds to watch for each video:
+watch_time = 60
+# Initial web to visit before train, don't change
+inital_website = 'https://www.youtube.com/'
+# Current account: yout317317, pass: al...b... 19800101, no gender
+# Training batch size to prevent memory overload:
+training_batch_size = 1
+# full training process:
+# full traning profile name, use the reddit name, check the keys summary.json file 
+full_training_name = 'enoughtrumpspam' # If not None, make sure training_directory is valid
+# choose among 'base', 'diversity', 'RNG'
+full_training_category = 'diversity' 
+# Or use the path to the full list you need to train
+full_list_path = '' # Secondary choice, set full_training_name to None to use this
+
