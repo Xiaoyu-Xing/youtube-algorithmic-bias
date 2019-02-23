@@ -66,3 +66,5 @@ full_list_path = '' # Secondary choice, set full_training_name to None to use th
 # path to ad block extension for firefox
 # adblock pro is the only one found so far not pop up new page after installation!
 ad_block_path = 'adblock_for_firefox-3.25.0-an+fx.xpi'
+# Whether to play at the fastest playback speed
+fast = True

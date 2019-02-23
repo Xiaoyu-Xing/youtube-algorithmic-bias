@@ -108,15 +108,16 @@ class Trainer:
                 print(f'Now visiting: {video}')
                 browser.get(video)
                 # YouTube API reference: https://developers.google.com/youtube/iframe_api_reference
-                playback_rates = browser.execute_script(
-                    'return document.getElementById("movie_player").getAvailablePlaybackRates()'
-                )
-                # Check availabel playback speed
-                # print(f'playback rate: {playback_rates}')
-                # Set to play at the fastest rate
-                browser.execute_script(
-                    f'document.getElementById("movie_player").setPlaybackRate({list(playback_rates)[-1]})'
-                )
+                if Settings.fast:
+                    playback_rates = browser.execute_script(
+                        'return document.getElementById("movie_player").getAvailablePlaybackRates()'
+                    )
+                    # Check availabel playback speed
+                    # print(f'playback rate: {playback_rates}')
+                    # Set to play at the fastest rate
+                    browser.execute_script(
+                        f'document.getElementById("movie_player").setPlaybackRate({list(playback_rates)[-1]})'
+                    )
                 # getPlayerState code: -1: unstarted,
                 # 0: ended, 1: playing, 2: paused, 3: buffering, 5: video cued
                 player_status = browser.execute_script(
