@@ -1,12 +1,8 @@
 from selenium import webdriver
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.common.keys import Keys 
 import json
 import os
 import time
-import httplib2
 import Settings
-
 
 
 class Trainer:
@@ -31,19 +27,22 @@ class Trainer:
             if 'base' in cur_dir and 'detailed' not in cur_dir:
                 for file in cur_files:
                     if 'json' in file:
-                        v_list, _, _ = self._read_json(os.path.join(cur_dir, file))
+                        v_list, _, _ = self._read_json(
+                            os.path.join(cur_dir, file))
                         name = os.path.splitext(file)[0].split('_', 2)[-1]
                         self.base_lists[name] = v_list
             if 'extended' in cur_dir and 'diversity' in cur_dir:
                 for file in cur_files:
                     if 'json' in file:
-                        v_list, _, _ = self._read_json(os.path.join(cur_dir, file))
+                        v_list, _, _ = self._read_json(
+                            os.path.join(cur_dir, file))
                         name = os.path.splitext(file)[0].split('_', 3)[-1]
                         self.extended_diversity_lists[name] = v_list
             if 'extended' in cur_dir and 'RNG' in cur_dir:
                 for file in cur_files:
                     if 'json' in file:
-                        v_list, _, _ = self._read_json(os.path.join(cur_dir, file))
+                        v_list, _, _ = self._read_json(
+                            os.path.join(cur_dir, file))
                         name = os.path.splitext(file)[0].split('_', 3)[-1]
                         self.extended_RNG_lists[name] = v_list
 
@@ -54,7 +53,7 @@ class Trainer:
         self.one_list = v_list
 
     def _exe_js(browser, scripts):
-        return 
+        return
 
     # Some notice:
     # 1. when the video is finished, selenium won't see the 10s "play next"
@@ -62,7 +61,8 @@ class Trainer:
     # 2. No idea what is video cued???
     def train_one_batch(self, name, video_list, cookies_path=Settings.seed_cookie_path):
         if len(video_list) == 0:
-            raise Exception('Nothing to train, did already you parse the list?')
+            raise Exception(
+                'Nothing to train, did already you parse the list?')
         print(f'Train for {name} in progress, total length {len(video_list)}')
         fp = webdriver.FirefoxProfile()
         fp.add_extension(Settings.ad_block_path)
@@ -82,7 +82,7 @@ class Trainer:
             browser.close()
             browser.switch_to_window(new_handle)
         # browser.get(Settings.inital_website)
-        cookies_list  = self._read_json(cookies_path)[0]
+        cookies_list = self._read_json(cookies_path)[0]
         good_counter, bad_counter = 0, 0
         for cookie in cookies_list:
             try:
@@ -110,22 +110,22 @@ class Trainer:
                 # YouTube API reference: https://developers.google.com/youtube/iframe_api_reference
                 playback_rates = browser.execute_script(
                     'return document.getElementById("movie_player").getAvailablePlaybackRates()'
-                    )
+                )
                 # Check availabel playback speed
                 # print(f'playback rate: {playback_rates}')
                 # Set to play at the fastest rate
                 browser.execute_script(
                     f'document.getElementById("movie_player").setPlaybackRate({list(playback_rates)[-1]})'
-                    )
-                # getPlayerState code: -1: unstarted, 
+                )
+                # getPlayerState code: -1: unstarted,
                 # 0: ended, 1: playing, 2: paused, 3: buffering, 5: video cued
                 player_status = browser.execute_script(
                     'return document.getElementById("movie_player").getPlayerState()'
-                    )
+                )
                 # get elapsed_time since playing
                 elapsed_time = browser.execute_script(
                     'return document.getElementById("movie_player").getCurrentTime()'
-                    )
+                )
                 while player_status != 0 and elapsed_time < Settings.watch_time:
                     if 0 <= round(elapsed_time) % 60 <= 3:
                         print(f'status: {player_status}, time: {elapsed_time}')
@@ -133,10 +133,10 @@ class Trainer:
                     time.sleep(2)
                     player_status = browser.execute_script(
                         'return document.getElementById("movie_player").getPlayerState()'
-                        )
+                    )
                     elapsed_time = browser.execute_script(
                         'return document.getElementById("movie_player").getCurrentTime()'
-                        )
+                    )
                 good_counter += 1
             except Exception as e:
                 print(f'Exception: {e}, skip to next video')
@@ -149,7 +149,7 @@ class Trainer:
         browser.quit()
         return good_counter, bad_counter
 
-    def train_all(self, name=Settings.full_training_name, 
+    def train_all(self, name=Settings.full_training_name,
                   category=Settings.full_training_category,
                   path=Settings.full_list_path):
         batch_size = Settings.training_batch_size
@@ -162,7 +162,8 @@ class Trainer:
             elif category == 'RNG':
                 full_list = self.extended_RNG_lists
             else:
-                raise Exception('Not a valid category among base, diversity, RNG.')
+                raise Exception(
+                    'Not a valid category among base, diversity, RNG.')
             full_list = full_list.get(name, None)
             if not full_list:
                 raise Exception('Not a valid reddit name.')
@@ -174,9 +175,11 @@ class Trainer:
         for i in range(0, len(full_list), batch_size):
             print(f'Current traning range: from [{i} to {i+batch_size}).')
             if i == 0:
-                good, bad = self.train_one_batch(name, full_list[i:i+batch_size], Settings.seed_cookie_path)
+                good, bad = self.train_one_batch(
+                    name, full_list[i:i + batch_size], Settings.seed_cookie_path)
             else:
-                self.train_one_batch(name, full_list[i:i+batch_size], Settings.training_coockie_path)
+                self.train_one_batch(
+                    name, full_list[i:i + batch_size], Settings.training_coockie_path)
             full_good_counter += good
             full_bad_counter += bad
         print(f'Total training metrics: \
@@ -195,6 +198,7 @@ def short_test():
 def full_test():
     trainer = Trainer()
     trainer.train_all()
+
 
 if __name__ == '__main__':
     full_test()
