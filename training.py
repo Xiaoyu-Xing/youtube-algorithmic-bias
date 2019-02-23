@@ -1,4 +1,6 @@
 from selenium import webdriver
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.keys import Keys 
 import json
 import os
 import time
@@ -62,12 +64,24 @@ class Trainer:
         if len(video_list) == 0:
             raise Exception('Nothing to train, did already you parse the list?')
         print(f'Train for {name} in progress, total length {len(video_list)}')
-        # fp = webdriver.FirefoxProfile()
-        browser = webdriver.Firefox()
+        fp = webdriver.FirefoxProfile()
+        fp.add_extension(Settings.ad_block_path)
+        browser = webdriver.Firefox(firefox_profile=fp)
         # Delete initial coockies, if any
         browser.delete_all_cookies()
         # Load page before load cookies !!!
-        browser.get(Settings.inital_website)
+        handles = set(browser.window_handles)
+        # '4294967297' is the window handle for "AdBlock is installed!"
+        if '4294967297' in handles:
+            if len(handles) == 1:
+                browser.get(Settings.inital_website)
+                handles = set(browser.window_handles)
+            handles.remove('4294967297')
+            new_handle = handles.pop()
+            browser.switch_to_window('4294967297')
+            browser.close()
+            browser.switch_to_window(new_handle)
+        # browser.get(Settings.inital_website)
         cookies_list  = self._read_json(cookies_path)[0]
         good_counter, bad_counter = 0, 0
         for cookie in cookies_list:
@@ -113,7 +127,9 @@ class Trainer:
                     'return document.getElementById("movie_player").getCurrentTime()'
                     )
                 while player_status != 0 and elapsed_time < Settings.watch_time:
-                    print(f'status: {player_status}, time: {elapsed_time}')
+                    if 0 <= round(elapsed_time) % 60 <= 3:
+                        print(f'status: {player_status}, time: {elapsed_time}')
+                    # Slow down the checking process to prevent overload
                     time.sleep(2)
                     player_status = browser.execute_script(
                         'return document.getElementById("movie_player").getPlayerState()'
@@ -129,7 +145,8 @@ class Trainer:
         # Write new cookies for next training session.
         with open(Settings.training_coockie_path, 'w') as f:
             json.dump(browser.get_cookies(), f)
-        browser.close()
+        # Need to close all tabs
+        browser.quit()
         return good_counter, bad_counter
 
     def train_all(self, name=Settings.full_training_name, 

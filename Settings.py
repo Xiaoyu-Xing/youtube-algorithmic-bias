@@ -43,19 +43,19 @@ extended_shuffle_by_random_number = True
 training_directory = 'sample_output'
 # If you only need to parse and train one list
 # Give the dir to json below
-one_path = 'test.json'
+one_path = 'training/test.json'
 # Path to a firefox profile
 firefox_profile_path = ''
 # Path to the cookies
-seed_cookie_path = 'cookiebro-cookies.json' # DO NOT OVERRIDE
-training_coockie_path = 'after_training_cookie.json'
+seed_cookie_path = 'training/cookiebro-cookies.json' # DO NOT OVERRIDE
+training_coockie_path = 'training/after_training_cookie.json'
 # How many seconds to watch for each video:
-watch_time = 60
+watch_time = 300
 # Initial web to visit before train, don't change
 inital_website = 'https://www.youtube.com/'
 # Current account: yout317317, pass: al...b... 19800101, no gender
 # Training batch size to prevent memory overload:
-training_batch_size = 1
+training_batch_size = 50
 # full training process:
 # full traning profile name, use the reddit name, check the keys summary.json file 
 full_training_name = 'enoughtrumpspam' # If not None, make sure training_directory is valid
@@ -63,4 +63,6 @@ full_training_name = 'enoughtrumpspam' # If not None, make sure training_directo
 full_training_category = 'diversity' 
 # Or use the path to the full list you need to train
 full_list_path = '' # Secondary choice, set full_training_name to None to use this
-
+# path to ad block extension for firefox
+# adblock pro is the only one found so far not pop up new page after installation!
+ad_block_path = 'adblock_for_firefox-3.25.0-an+fx.xpi'
