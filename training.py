@@ -174,7 +174,7 @@ class Trainer:
         print(f'Full training begins, total: {len(full_list)}')
         full_good_counter, full_bad_counter = 0, 0
         for i in range(0, len(full_list), batch_size):
-            print(f'Current traning range: from [{i} to {i+batch_size}).')
+            print(f'Current training range: from [{i} to {i+batch_size}).')
             if i == 0:
                 good, bad = self.train_one_batch(
                     name, full_list[i:i + batch_size], Settings.seed_cookie_path)
