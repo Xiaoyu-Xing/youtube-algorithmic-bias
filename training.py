@@ -101,7 +101,8 @@ class Trainer:
                 # print('Load cookies finished. May not successful.')
         # Refresh page
         browser.get(Settings.inital_website)
-        status_check_list = {0: 'ended', 1: 'playing', 2: 'paused', 3: 'buffering', 5: 'video cued'}
+        status_check_list = {0: 'ended', 1: 'playing',
+                             2: 'paused', 3: 'buffering', 5: 'video cued'}
         for video in video_list:
             # Cannot use status == 200 to determin video availability
             # http = httplib2.Http()
@@ -111,8 +112,8 @@ class Trainer:
             #     continue
             # print(int(response[0]['status']))
             try:
-                counter += 1
-                print(f'\n***Now visiting #{counter} video: {video}')
+                local_counter += 1
+                print(f'\n***Now visiting #{local_counter} video: {video}')
                 browser.get(video)
                 # YouTube API reference: https://developers.google.com/youtube/iframe_api_reference
                 if Settings.fast:
