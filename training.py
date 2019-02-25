@@ -101,7 +101,7 @@ class Trainer:
                 # print('Load cookies finished. May not successful.')
         # Refresh page
         browser.get(Settings.inital_website)
-        status_check_list = {0: ended, 1: playing, 2: paused, 3: buffering, 5: video cued}
+        status_check_list = {0: 'ended', 1: 'playing', 2: 'paused', 3: 'buffering', 5: 'video cued'}
         for video in video_list:
             # Cannot use status == 200 to determin video availability
             # http = httplib2.Http()
