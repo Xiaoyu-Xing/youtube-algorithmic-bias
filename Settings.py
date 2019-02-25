@@ -38,7 +38,7 @@ extended_shuffle_by_random_number = True
 
 
 # >>>>>>>>>>>>Second section: for training profiles<<<<<<<<<<<<
-headless = True # running in linux server need to run without GUI, then set to True
+headless = True  # running in linux server need to run without GUI, then set to True
 # If you need to parse all json files
 # Give the dir to the lowest common folder below
 training_directory = 'sample_output'
@@ -48,7 +48,7 @@ one_path = 'training/test.json'
 # Path to a firefox profile
 firefox_profile_path = ''
 # Path to the cookies
-seed_cookie_path = 'training/cookiebro-cookies.json' # DO NOT OVERRIDE
+seed_cookie_path = 'training/cookiebro-cookies.json'  # DO NOT OVERRIDE
 training_coockie_path = 'training/after_training_cookie.json'
 # How many seconds to watch for each video:
 watch_time = 300
@@ -58,12 +58,13 @@ inital_website = 'https://www.youtube.com/'
 # Training batch size to prevent memory overload:
 training_batch_size = 50
 # full training process:
-# full traning profile name, use the reddit name, check the keys summary.json file 
-full_training_name = 'enoughtrumpspam' # If not None, make sure training_directory is valid
+# full traning profile name, use the reddit name, check the keys summary.json file
+# If not None, make sure training_directory is valid
+full_training_name = 'enoughtrumpspam'
 # choose among 'base', 'diversity', 'RNG'
-full_training_category = 'diversity' 
+full_training_category = 'diversity'
 # Or use the path to the full list you need to train
-full_list_path = '' # Secondary choice, set full_training_name to None to use this
+full_list_path = ''  # Secondary choice, set full_training_name to None to use this
 # path to ad block extension for firefox
 # adblock pro is the only one found so far not pop up new page after installation!
 ad_block_path = 'adblock_for_firefox-3.25.0-an+fx.xpi'
