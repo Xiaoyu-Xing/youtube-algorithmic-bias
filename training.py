@@ -65,6 +65,7 @@ class Trainer:
                 'Nothing to train, did already you parse the list?')
         print(
             f'---Train for {name} in progress, current batch size {len(video_list)}---')
+        local_counter = 0
         fp = webdriver.FirefoxProfile()
         option = webdriver.FirefoxOptions()
         if Settings.headless:
@@ -109,7 +110,8 @@ class Trainer:
             #     continue
             # print(int(response[0]['status']))
             try:
-                print(f'\n***Now visiting: {video}')
+                counter += 1
+                print(f'\n***Now visiting #{counter} video: {video}')
                 browser.get(video)
                 # YouTube API reference: https://developers.google.com/youtube/iframe_api_reference
                 if Settings.fast:
