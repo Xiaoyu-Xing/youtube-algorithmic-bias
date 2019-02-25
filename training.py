@@ -63,7 +63,7 @@ class Trainer:
         if len(video_list) == 0:
             raise Exception(
                 'Nothing to train, did already you parse the list?')
-        print(f'Train for {name} in progress, total length {len(video_list)}')
+        print(f'---Train for {name} in progress, current batch size {len(video_list)}---')
         fp = webdriver.FirefoxProfile()
         option = webdriver.FirefoxOptions()
         if Settings.headless:
@@ -108,7 +108,7 @@ class Trainer:
             #     continue
             # print(int(response[0]['status']))
             try:
-                print(f'Now visiting: {video}')
+                print(f'***Now visiting: {video}')
                 browser.get(video)
                 # YouTube API reference: https://developers.google.com/youtube/iframe_api_reference
                 if Settings.fast:
@@ -174,10 +174,10 @@ class Trainer:
         elif path:
             full_list, _, _ = self._read_json(path)
             name = os.path.splitext(path)[0]
-        print(f'Full training begins, total: {len(full_list)}')
+        print(f'>>>>>Full training begins, total: {len(full_list)}<<<<<')
         full_good_counter, full_bad_counter = 0, 0
         for i in range(0, len(full_list), batch_size):
-            print(f'Current training range: from [{i} to {i+batch_size}).')
+            print(f'---Current training range: from [{i} to {i+batch_size}).---')
             if i == 0:
                 good, bad = self.train_one_batch(
                     name, full_list[i:i + batch_size], Settings.seed_cookie_path)
@@ -186,9 +186,9 @@ class Trainer:
                     name, full_list[i:i + batch_size], Settings.training_coockie_path)
             full_good_counter += good
             full_bad_counter += bad
-        print(f'Total training metrics: \
-            successful: {full_good_counter}, failed: {full_bad_counter}')
-        print(f'Training finished.')
+        print(f'---Total training metrics: ---\
+            ---successful: {full_good_counter}, failed: {full_bad_counter}---')
+        print(f'>>>>>Training finished.<<<<<')
 
 
 def short_test():
