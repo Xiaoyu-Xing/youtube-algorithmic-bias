@@ -137,7 +137,7 @@ class Trainer:
                 while player_status != 0 and elapsed_time < Settings.watch_time:
                     if 0 <= round(elapsed_time) % 60 <= 3:
                         print(
-                            f'status: {status_check_list[player_status]}, video time: {elapsed_time}s.')
+                            f'status: {status_check_list[player_status]}, elapsed time: {elapsed_time:7.2f}s.')
                     # Slow down the checking process to prevent overload
                     time.sleep(2)
                     player_status = browser.execute_script(
