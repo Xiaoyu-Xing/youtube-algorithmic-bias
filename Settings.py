@@ -51,8 +51,8 @@ firefox_profile_path = ''
 seed_cookie_path = 'training/cookiebro-cookies.json'  # DO NOT OVERRIDE
 training_coockie_path = 'training/after_training_cookie.json'
 # How many seconds to watch for each video:
-watch_time = 300
-# Initial web to visit before train, don't change
+watch_time = 60
+# Initial web to visit before train, DO NOT CHANGE
 inital_website = 'https://www.youtube.com/'
 # Current account: yout317317, pass: al...b... 19800101, no gender
 # Training batch size to prevent memory overload:
@@ -60,9 +60,9 @@ training_batch_size = 50
 # full training process:
 # full traning profile name, use the reddit name, check the keys summary.json file
 # If not None, make sure training_directory is valid
-full_training_name = 'enoughtrumpspam'
+full_training_name = 'the_donald'
 # choose among 'base', 'diversity', 'RNG'
-full_training_category = 'diversity'
+full_training_category = 'RNG'
 # Or use the path to the full list you need to train
 full_list_path = ''  # Secondary choice, set full_training_name to None to use this
 # path to ad block extension for firefox
@@ -70,3 +70,5 @@ full_list_path = ''  # Secondary choice, set full_training_name to None to use t
 ad_block_path = 'adblock_for_firefox-3.25.0-an+fx.xpi'
 # Whether to play at the fastest playback speed
 fast = True
+# Report time interval, how long between report current status, unit: seconds
+report_interval = 20

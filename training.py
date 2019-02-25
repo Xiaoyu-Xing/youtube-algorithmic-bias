@@ -135,7 +135,7 @@ class Trainer:
                     'return document.getElementById("movie_player").getCurrentTime()'
                 )
                 while player_status != 0 and elapsed_time < Settings.watch_time:
-                    if 0 <= round(elapsed_time) % 60 <= 3:
+                    if 0 <= round(elapsed_time) % Settings.report_interval <= 3:
                         print(
                             f'status: {status_check_list[player_status]}, elapsed time: {elapsed_time:7.2f}s.')
                     # Slow down the checking process to prevent overload
