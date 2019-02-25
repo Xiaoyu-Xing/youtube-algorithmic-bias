@@ -101,6 +101,7 @@ class Trainer:
                 # print('Load cookies finished. May not successful.')
         # Refresh page
         browser.get(Settings.inital_website)
+        status_check_list = {0: ended, 1: playing, 2: paused, 3: buffering, 5: video cued}
         for video in video_list:
             # Cannot use status == 200 to determin video availability
             # http = httplib2.Http()
@@ -135,7 +136,8 @@ class Trainer:
                 )
                 while player_status != 0 and elapsed_time < Settings.watch_time:
                     if 0 <= round(elapsed_time) % 60 <= 3:
-                        print(f'status: {player_status}, time: {elapsed_time}')
+                        print(
+                            f'status: {status_check_list[player_status]}, video time: {elapsed_time}s.')
                     # Slow down the checking process to prevent overload
                     time.sleep(2)
                     player_status = browser.execute_script(
