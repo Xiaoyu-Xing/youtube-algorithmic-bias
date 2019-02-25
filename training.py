@@ -65,8 +65,11 @@ class Trainer:
                 'Nothing to train, did already you parse the list?')
         print(f'Train for {name} in progress, total length {len(video_list)}')
         fp = webdriver.FirefoxProfile()
+        option = webdriver.FirefoxOptions()
+        if Settings.headless:
+            option.add_argument('--headless')
         fp.add_extension(Settings.ad_block_path)
-        browser = webdriver.Firefox(firefox_profile=fp)
+        browser = webdriver.Firefox(firefox_profile=fp, firefox_options=option)
         # Delete initial coockies, if any
         browser.delete_all_cookies()
         # Load page before load cookies !!!

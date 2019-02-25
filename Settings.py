@@ -38,6 +38,7 @@ extended_shuffle_by_random_number = True
 
 
 # >>>>>>>>>>>>Second section: for training profiles<<<<<<<<<<<<
+headless = True # running in linux server need to run without GUI, then set to True
 # If you need to parse all json files
 # Give the dir to the lowest common folder below
 training_directory = 'sample_output'
