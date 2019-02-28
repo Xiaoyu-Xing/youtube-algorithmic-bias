@@ -1,3 +1,7 @@
+# Fix: 1. time stamp on youtube link '?t='' 
+# 2. document: settings details here, research method on onenote, how to run in readme
+# 3. disgard window handle method, use firefox profiles to load pre-installed extention and start firefox binary from local
+
 # Set your parameters here
 
 # >>>>>>>>>>>>First section: for creating profiles<<<<<<<<<<<<
