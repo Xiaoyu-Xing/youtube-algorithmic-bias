@@ -74,7 +74,6 @@ class Trainer:
         browser = webdriver.Firefox(firefox_profile=fp, firefox_options=option)
         # Delete initial coockies, if any
         browser.delete_all_cookies()
-        # Load page before load cookies !!!
         handles = set(browser.window_handles)
         # '4294967297' is the window handle for "AdBlock is installed!"
         if '4294967297' in handles:
@@ -86,7 +85,9 @@ class Trainer:
             browser.switch_to_window('4294967297')
             browser.close()
             browser.switch_to_window(new_handle)
-        # browser.get(Settings.inital_website)
+        # Load page before load cookies !!! Must have, even may opened from above
+        browser.get(Settings.inital_website)
+        time.sleep(3)
         cookies_list = self._read_json(cookies_path)[0]
         good_counter, bad_counter = 0, 0
         for cookie in cookies_list:
@@ -95,12 +96,13 @@ class Trainer:
             except Exception as e:
                 pass
                 # Usually loading cookies failed due to specific page not loaded
-                # print(f'Exception for cookie {cookie} due to {e}')
+                print(f'Exception for cookie {cookie} due to {e}')
             finally:
                 pass
                 # print('Load cookies finished. May not successful.')
         # Refresh page
         browser.get(Settings.inital_website)
+        time.sleep(3)
         status_check_list = {0: 'ended', 1: 'playing',
                              2: 'paused', 3: 'buffering', 5: 'video cued'}
         for video in video_list:
@@ -111,6 +113,11 @@ class Trainer:
             #     print(f'{video} unavailable, skip to next one.')
             #     continue
             # print(int(response[0]['status']))
+
+            # Remove timestamp in the url
+            if "t=" in video:
+                # chop off "&t=", "?t=" or "#t="
+                video = video.split('t=')[0][:-1]
             try:
                 local_counter += 1
                 print(f'\n***Now visiting #{local_counter} video: {video}')
