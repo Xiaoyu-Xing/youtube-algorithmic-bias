@@ -5,3 +5,5 @@ from_Huyen/
 __*__/
 .ipynb_checkpoints/
 *.log
+__pycache__/
+*.py[cod]
