@@ -79,16 +79,16 @@ ad_block_path = './training/youtube_adblock-3.0.1-an+fx.xpi'
 seed_cookie_path = 'training/cookiebro-cookies.json'  # starter cookie before training
 training_cookie_path = 'training/after_training_cookie.json' # where to save cookie after training
 # How many seconds to watch for each video:
-watch_time = 20
+watch_time = 300
 # Initial web to visit before train, DO NOT CHANGE unless for other projects
 inital_website = 'https://www.youtube.com/'
 # Training batch size to prevent memory overload:
-training_batch_size = 30
+training_batch_size = 100
 
 # Whether to play at the fastest playback speed
 fast = True
 # Report time interval, how long between report current status, unit: seconds
-report_interval = 5 # should more than 2 seconds
+report_interval = 30 # should more than 2 seconds
 
 
 # >>>>>>>>>>>>Third section: for training in parallel mode<<<<<<<<<<<<
@@ -100,21 +100,21 @@ report_interval = 5 # should more than 2 seconds
 master_mode = True 
 log_root_path = 'log/'
 
-training_list = ['sample_output/base/base_videos_feminism.json', 
-                 'sample_output/base/base_videos_inceltears.json', 
-                 'sample_output/base/base_videos_metoo.json', 
-                 'sample_output/base/base_videos_incel.json', 
-                 'sample_output/base/base_videos_enoughtrumpspam.json', 
-                 'sample_output/base/base_videos_the_donald.json', 
-                 'sample_output/base/base_videos_mensrights.json']
+# training_list = ['sample_output/base/base_videos_feminism.json', 
+#                  'sample_output/base/base_videos_inceltears.json', 
+#                  'sample_output/base/base_videos_metoo.json', 
+#                  'sample_output/base/base_videos_incel.json', 
+#                  'sample_output/base/base_videos_enoughtrumpspam.json', 
+#                  'sample_output/base/base_videos_the_donald.json', 
+#                  'sample_output/base/base_videos_mensrights.json']
 
-# training_list = ['sample_output/extended_RNG/related_videos_RNG_mensrights.json', 
-#                  'sample_output/extended_RNG/related_videos_RNG_incel.json', 
-#                  'sample_output/extended_RNG/related_videos_RNG_enoughtrumpspam.json', 
-#                  'sample_output/extended_RNG/related_videos_RNG_inceltears.json', 
-#                  'sample_output/extended_RNG/related_videos_RNG_feminism.json', 
-#                  'sample_output/extended_RNG/related_videos_RNG_metoo.json', 
-#                  'sample_output/extended_RNG/related_videos_RNG_the_donald.json']
+training_list = ['sample_output/extended_RNG/related_videos_RNG_mensrights.json', 
+                 'sample_output/extended_RNG/related_videos_RNG_incel.json', 
+                 'sample_output/extended_RNG/related_videos_RNG_enoughtrumpspam.json', 
+                 'sample_output/extended_RNG/related_videos_RNG_inceltears.json', 
+                 'sample_output/extended_RNG/related_videos_RNG_feminism.json', 
+                 'sample_output/extended_RNG/related_videos_RNG_metoo.json', 
+                 'sample_output/extended_RNG/related_videos_RNG_the_donald.json']
 
 # training_list = ['sample_output/extended_diversity/related_videos_diversity_inceltears.json', 
 #                  'sample_output/extended_diversity/related_videos_diversity_enoughtrumpspam.json', 
