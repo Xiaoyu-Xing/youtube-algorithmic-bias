@@ -43,7 +43,7 @@ extended_shuffle_by_random_number = True
 headless = False  # running in linux server need to run without GUI, then set to True
 
 # There are two training mode: 
-
+training_method = 2 # Choose between 1 or 2
 # 1) given the folder path to all of the json profiles, such as the 'sample_output' folder
 # which contains all base, extended profiles (by 2 methods),
 # then specify which reddit profile and whether base or extended need to train, set parameters below:
@@ -51,7 +51,6 @@ headless = False  # running in linux server need to run without GUI, then set to
 # If you need to parse all json files
 # Give the dir to the lowest common folder below
 training_directory = 'sample_output'
-# full training process:
 # full traning profile name, use the reddit name, check the keys summary.json file
 # If not None, make sure training_directory is valid
 full_training_name = 'the_donald'
@@ -61,31 +60,71 @@ full_training_category = 'base'
 # 2) given a specific json file path, and only train by those videos
 # If you only need to parse and train one list
 # Give the dir to json below
-full_list_path = ''  # Secondary choice, set full_training_name to None to use this
-one_path = 'training/test.json' # This is for testing purpose, ignore in real training
+full_list_path = './sample_output/base/base_videos_inceltears.json'  # Secondary choice, set full_training_name to None to use this
+# one_path = 'training/test.json' # This is for testing purpose, ignore in real training
 
 
 # Other parameters:
 
 # Path to a firefox profile
 firefox_profile_path = ''
+# Path to local firefox binary
+firefox_binary_path = './firefox-65/firefox/firefox'
+# Whether to block the ads:
+ads_block = True
+# path to ad block extension for firefox, only working when ad_block is True
+ad_block_path = './training/youtube_adblock-3.0.1-an+fx.xpi'
 # Path to the cookies
 # Current account: yout317317@gmail.com, pass: al...b... DOB: 19800101, no gender
 seed_cookie_path = 'training/cookiebro-cookies.json'  # starter cookie before training
-training_coockie_path = 'training/after_training_cookie.json' # where to save cookie after training
+training_cookie_path = 'training/after_training_cookie.json' # where to save cookie after training
 # How many seconds to watch for each video:
-watch_time = 30
+watch_time = 300
 # Initial web to visit before train, DO NOT CHANGE unless for other projects
 inital_website = 'https://www.youtube.com/'
 # Training batch size to prevent memory overload:
-training_batch_size = 20
-# path to ad block extension for firefox
-ad_block_path = 'adblock_for_firefox-3.25.0-an+fx.xpi'
-# Whether to play at the fastest playback speed
-fast = True
-# Report time interval, how long between report current status, unit: seconds
-report_interval = 5 # should more than 2 seconds
+training_batch_size = 100
 
+# Whether to play at the fastest playback speed
+fast = False
+# Report time interval, how long between report current status, unit: seconds
+report_interval = 30 # should more than 2 seconds
 
 
 # >>>>>>>>>>>>Third section: for training in parallel mode<<<<<<<<<<<<
+# Set to true if train in parallel
+# Turn on master mode will override training setting above, including:
+# 1) only method 2 will be used, which means only a list provided will be trained
+# 2) seed and traning cookies needs be provided here
+# 3) log path need to be provided for log and screenshot
+master_mode = True 
+log_root_path = 'log/'
+
+training_list = ['sample_output/base/base_videos_feminism.json', 
+                 'sample_output/base/base_videos_inceltears.json', 
+                 'sample_output/base/base_videos_metoo.json', 
+                 'sample_output/base/base_videos_incel.json', 
+                 'sample_output/base/base_videos_enoughtrumpspam.json', 
+                 'sample_output/base/base_videos_the_donald.json', 
+                 'sample_output/base/base_videos_mensrights.json']
+
+# training_list = ['sample_output/extended_RNG/related_videos_RNG_mensrights.json', 
+#                  'sample_output/extended_RNG/related_videos_RNG_incel.json', 
+#                  'sample_output/extended_RNG/related_videos_RNG_enoughtrumpspam.json', 
+#                  'sample_output/extended_RNG/related_videos_RNG_inceltears.json', 
+#                  'sample_output/extended_RNG/related_videos_RNG_feminism.json', 
+#                  'sample_output/extended_RNG/related_videos_RNG_metoo.json', 
+#                  'sample_output/extended_RNG/related_videos_RNG_the_donald.json']
+
+# training_list = ['sample_output/extended_diversity/related_videos_diversity_inceltears.json', 
+#                  'sample_output/extended_diversity/related_videos_diversity_enoughtrumpspam.json', 
+#                  'sample_output/extended_diversity/related_videos_diversity_the_donald.json', 
+#                  'sample_output/extended_diversity/related_videos_diversity_mensrights.json', 
+#                  'sample_output/extended_diversity/related_videos_diversity_feminism.json', 
+#                  'sample_output/extended_diversity/related_videos_diversity_incel.json',  
+#                  'sample_output/extended_diversity/related_videos_diversity_metoo.json']
+# For current project, below list length needs to be same with above list length
+seed_cookies_list = ['training/cookiebro-cookies.json'] * 7
+training_cookies_list = ['training/after_training_cookie.json'] * 7
+
+absolute_path_to_py = '/home/xiaoyu/youtube/youtube-algorithmic-bias/' # May necessary in virtual env
