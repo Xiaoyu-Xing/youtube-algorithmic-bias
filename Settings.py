@@ -40,7 +40,7 @@ extended_shuffle_by_random_number = True
 
 
 # >>>>>>>>>>>>Second section: for individual training profiles<<<<<<<<<<<<
-headless = False  # running in linux server need to run without GUI, then set to True
+headless = True  # running in linux server need to run without GUI, then set to True
 
 # There are two training mode: 
 training_method = 2 # Choose between 1 or 2
@@ -79,16 +79,16 @@ ad_block_path = './training/youtube_adblock-3.0.1-an+fx.xpi'
 seed_cookie_path = 'training/cookiebro-cookies.json'  # starter cookie before training
 training_cookie_path = 'training/after_training_cookie.json' # where to save cookie after training
 # How many seconds to watch for each video:
-watch_time = 300
+watch_time = 20
 # Initial web to visit before train, DO NOT CHANGE unless for other projects
 inital_website = 'https://www.youtube.com/'
 # Training batch size to prevent memory overload:
-training_batch_size = 100
+training_batch_size = 30
 
 # Whether to play at the fastest playback speed
-fast = False
+fast = True
 # Report time interval, how long between report current status, unit: seconds
-report_interval = 30 # should more than 2 seconds
+report_interval = 5 # should more than 2 seconds
 
 
 # >>>>>>>>>>>>Third section: for training in parallel mode<<<<<<<<<<<<
@@ -126,5 +126,3 @@ training_list = ['sample_output/base/base_videos_feminism.json',
 # For current project, below list length needs to be same with above list length
 seed_cookies_list = ['training/cookiebro-cookies.json'] * 7
 training_cookies_list = ['training/after_training_cookie.json'] * 7
-
-absolute_path_to_py = '/home/xiaoyu/youtube/youtube-algorithmic-bias/' # May necessary in virtual env

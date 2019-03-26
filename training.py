@@ -224,10 +224,12 @@ def full_test():
 
 
 @click.command()
-@click.option("--path", "path", help="Json video list to train")
-@click.option("--sc", "seed_cookie", help="Seed cookie to begin training")
-@click.option("--tc", "training_cookie", help="Training cookie to save after training")
+@click.option("--path", "path", default='sample_output/base/base_videos_feminism.json', help="Json video list to train")
+@click.option("--sc", "seed_cookie", default='training/cookiebro-cookies.json', help="Seed cookie to begin training")
+@click.option("--tc", "training_cookie", default='training/after_training_cookie.json', help="Training cookie to save after training")
 def traing_master_mode(path, seed_cookie, training_cookie):
+    if not path or not seed_cookie or not training_cookie:
+        raise Exception('In master mode, but no arguments parsed in from command')
     trainer = Trainer()
     reddit_name = os.path.splitext(path)[0]
     train_list, _, _ = trainer._read_json(path)

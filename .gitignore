@@ -5,6 +5,7 @@ from_Huyen/
 __*__/
 .ipynb_checkpoints/
 *.log
-*.py[cod]
+*/*.py[cod]
 log/
 */firefox/
+__pycache__/
