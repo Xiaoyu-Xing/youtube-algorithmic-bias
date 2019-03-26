@@ -1,15 +1,15 @@
 from selenium import webdriver
+from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 import json
 import os
 import time
+import click
 import Settings
 
 
 class Trainer:
 
-    def __init__(self,
-                 directory=Settings.training_directory
-                 ):
+    def __init__(self, directory=Settings.training_directory):
         self.train_directory = directory
         self.base_path, self.extended_diversity, self.extended_RNG = '', '', ''
         # Notice: summary json file is also stored here, need to be careful when extracting videos
@@ -23,6 +23,7 @@ class Trainer:
 
     def get_all_list(self):
         for (cur_dir, sub_dir, cur_files) in os.walk(self.train_directory):
+            print((cur_dir, sub_dir, cur_files))
             # Process base profiles basic version rather than detailed version
             if 'base' in cur_dir and 'detailed' not in cur_dir:
                 for file in cur_files:
@@ -46,74 +47,75 @@ class Trainer:
                         name = os.path.splitext(file)[0].split('_', 3)[-1]
                         self.extended_RNG_lists[name] = v_list
 
-    def get_one_list(self, one_path=Settings.one_path):
+    def get_one_list(self, one_path):
         v_list, _, _ = self._read_json(one_path)
         name = os.path.splitext(one_path)[0].split('_', 3)[-1]
         self.one_profile = name
         self.one_list = v_list
 
-    def _exe_js(browser, scripts):
-        return
-
-    # Some notice:
-    # 1. when the video is finished, selenium won't see the 10s "play next"
-    # it will automatically play the next
-    # 2. No idea what is video cued???
-    def train_one_batch(self, name, video_list, cookies_path=Settings.seed_cookie_path):
-        if len(video_list) == 0:
-            raise Exception(
-                'Nothing to train, did already you parse the list?')
-        print(
-            f'---Train for {name} in progress, current batch size {len(video_list)}---')
-        local_counter = 0
+    def setup_browser(self, cookies_path):
         fp = webdriver.FirefoxProfile()
         option = webdriver.FirefoxOptions()
+        # binary = FirefoxBinary(Settings.firefox_binary_path)
         if Settings.headless:
             option.add_argument('--headless')
-        fp.add_extension(Settings.ad_block_path)
+        if Settings.ads_block:
+            fp.add_extension(Settings.ad_block_path)
         browser = webdriver.Firefox(firefox_profile=fp, firefox_options=option)
-        # Delete initial coockies, if any
+
+        # Old ways to kill first-run popup page of adblocker_for_firefox3.25.0
+        # handles = set(browser.window_handles)
+        # # '4294967297' is the window handle for "AdBlock is installed!"
+        # if '4294967297' in handles:
+        #     if len(handles) == 1:
+        #         browser.get(Settings.inital_website)
+        #         handles = set(browser.window_handles)
+        #     handles.remove('4294967297')
+        #     new_handle = handles.pop()
+        #     browser.switch_to_window('4294967297')
+        #     browser.close()
+        #     browser.switch_to_window(new_handle)
+        # # Load page before load cookies !!! Must have, even may opened from above
+        
+        # Delete initial cookies, if any
         browser.delete_all_cookies()
-        handles = set(browser.window_handles)
-        # '4294967297' is the window handle for "AdBlock is installed!"
-        if '4294967297' in handles:
-            if len(handles) == 1:
-                browser.get(Settings.inital_website)
-                handles = set(browser.window_handles)
-            handles.remove('4294967297')
-            new_handle = handles.pop()
-            browser.switch_to_window('4294967297')
-            browser.close()
-            browser.switch_to_window(new_handle)
-        # Load page before load cookies !!! Must have, even may opened from above
         browser.get(Settings.inital_website)
         time.sleep(3)
         cookies_list = self._read_json(cookies_path)[0]
-        good_counter, bad_counter = 0, 0
         for cookie in cookies_list:
             try:
                 browser.add_cookie(cookie)
             except Exception as e:
                 pass
                 # Usually loading cookies failed due to specific page not loaded
-                print(f'Exception for cookie {cookie} due to {e}')
+                # print(f'Exception for cookie {cookie} due to {e}')
             finally:
                 pass
                 # print('Load cookies finished. May not successful.')
         # Refresh page
         browser.get(Settings.inital_website)
         time.sleep(3)
-        status_check_list = {0: 'ended', 1: 'playing',
+        return browser
+
+    # Some notice:
+    # 1. when the video is finished, selenium won't see the 10s "play next"
+    # it will automatically play the next
+    # 2. No idea what is video cued???
+    def train_one_batch(self, name, 
+                        video_list, 
+                        cookies_path,
+                        training_cookie):
+        if len(video_list) == 0:
+            raise Exception(
+                'Nothing to train, did already you parse the list?')
+        print(
+            f'---Train for {name} in progress, current batch size {len(video_list)}---')
+        browser = self.setup_browser(cookies_path)
+        local_counter = 0
+        good_counter, bad_counter = 0, 0
+        status_check_list = {-1: 'unstarted', 0: 'ended', 1: 'playing',
                              2: 'paused', 3: 'buffering', 5: 'video cued'}
         for video in video_list:
-            # Cannot use status == 200 to determin video availability
-            # http = httplib2.Http()
-            # response = http.request(video, 'HEAD')
-            # if int(response[0]['status']) != 200:
-            #     print(f'{video} unavailable, skip to next one.')
-            #     continue
-            # print(int(response[0]['status']))
-
             # Remove timestamp in the url
             if "t=" in video:
                 # chop off "&t=", "?t=" or "#t="
@@ -160,17 +162,44 @@ class Trainer:
                 bad_counter += 1
                 continue
         # Write new cookies for next training session.
-        with open(Settings.training_coockie_path, 'w') as f:
+        with open(training_cookie, 'w') as f:
             json.dump(browser.get_cookies(), f)
         # Need to close all tabs
         browser.quit()
         return good_counter, bad_counter
 
-    def train_all(self, name=Settings.full_training_name,
-                  category=Settings.full_training_category,
-                  path=Settings.full_list_path):
+    def train_a_list(self, train_list, 
+                     reddit_name, 
+                     seed_cookie=Settings.seed_cookie_path,
+                     training_cookie=Settings.training_cookie_path):
+        full_list, name = train_list, reddit_name
         batch_size = Settings.training_batch_size
-        if name:
+        print(f'\n>>>>>Full training begins, total: {len(full_list)}<<<<<\n')
+        full_good_counter, full_bad_counter = 0, 0
+        for i in range(0, len(full_list), batch_size):
+            print(
+                f'---Current training range: from [{i+1} to {min(i+batch_size, len(full_list))}].---')
+            if i == 0:
+                good, bad = self.train_one_batch(
+                    name, full_list[i:i + batch_size], seed_cookie, training_cookie)
+            else:
+                good, bad = self.train_one_batch(
+                    name, full_list[i:i + batch_size], training_cookie, training_cookie)
+            full_good_counter += good
+            full_bad_counter += bad
+        print(f'---Total training metrics: ---\
+            ---successful: {full_good_counter}, failed: {full_bad_counter}---')
+        print(f'>>>>>Training finished.<<<<<')
+
+    def train_a_path(self, path):
+        full_list, _, _ = self._read_json(path)
+        name = os.path.splitext(path)[0]
+        self.train_a_list(full_list, name)
+
+    def train_by_reddit_or_list(self, name=Settings.full_training_name,
+                                category=Settings.full_training_category,
+                                path=Settings.full_list_path):
+        if Settings.training_method == 1:
             self.get_all_list()
             if category == 'base':
                 full_list = self.base_lists
@@ -184,39 +213,31 @@ class Trainer:
             full_list = full_list.get(name, None)
             if not full_list:
                 raise Exception('Not a valid reddit name.')
-        elif path:
-            full_list, _, _ = self._read_json(path)
-            name = os.path.splitext(path)[0]
-        print(f'\n>>>>>Full training begins, total: {len(full_list)}<<<<<\n')
-        full_good_counter, full_bad_counter = 0, 0
-        for i in range(0, len(full_list), batch_size):
-            print(
-                f'---Current training range: from [{i+1} to {min(i+batch_size, len(full_list))}].---')
-            if i == 0:
-                good, bad = self.train_one_batch(
-                    name, full_list[i:i + batch_size], Settings.seed_cookie_path)
-            else:
-                good, bad = self.train_one_batch(
-                    name, full_list[i:i + batch_size], Settings.training_coockie_path)
-            full_good_counter += good
-            full_bad_counter += bad
-        print(f'---Total training metrics: ---\
-            ---successful: {full_good_counter}, failed: {full_bad_counter}---')
-        print(f'>>>>>Training finished.<<<<<')
-
-
-def short_test():
-    trainer = Trainer()
-    trainer.get_one_list()
-    print(trainer.one_list)
-    print(trainer.one_profile)
-    trainer.train_one_batch('yout317317', trainer.one_list)
+            self.train_a_list(full_list, name)
+        elif Settings.training_method == 2:  
+            self.train_a_path(path)
 
 
 def full_test():
     trainer = Trainer()
-    trainer.train_all()
+    trainer.train_by_reddit_or_list()
+
+
+@click.command()
+@click.option("--path", "path", help="Json video list to train")
+@click.option("--sc", "seed_cookie", help="Seed cookie to begin training")
+@click.option("--tc", "training_cookie", help="Training cookie to save after training")
+def traing_master_mode(path, seed_cookie, training_cookie):
+    trainer = Trainer()
+    reddit_name = os.path.splitext(path)[0]
+    train_list, _, _ = trainer._read_json(path)
+    trainer.train_a_list(train_list, reddit_name, seed_cookie, training_cookie)
+
+
 
 
 if __name__ == '__main__':
-    full_test()
+    if Settings.master_mode:
+        traing_master_mode()
+    else:
+        full_test()
