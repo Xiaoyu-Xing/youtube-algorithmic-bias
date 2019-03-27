@@ -99,7 +99,7 @@ report_interval = 10 # should more than 2 seconds
 # 2) seed and traning cookies needs be provided here
 # 3) log path need to be provided for log and screenshot
 master_mode = True 
-log_root_path = '/home/data/xiaoyu'
+log_root_path = '/home/data/xiaoyu/training'
 
 # training_list = ['sample_output/base/base_videos_feminism.json', 
 #                  'sample_output/base/base_videos_inceltears.json', 

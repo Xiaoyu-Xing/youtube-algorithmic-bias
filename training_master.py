@@ -29,7 +29,7 @@ def main():
         raise Exception('names list, cookies dimentions not match')
     cmds = []
     today = str(datetime.datetime.now().strftime('%Y-%b-%d-%H-%M'))
-    log_path = os.path.join(Settings.log_root_path + '-log', today)
+    log_path = os.path.join(Settings.log_root_path, today + '-log')
     if not os.path.exists(log_path):
         os.makedirs(log_path)
     for n, sc, tc, t in zip(names, scl, tcl, tl):
@@ -41,6 +41,7 @@ def main():
         print(f'Command for {n}: {cmd}')
         cmds.append(cmd)
     print(f'\nMaster training starts, current time: {time.ctime()}')
+    print(f'log path: {log_path}')
     with Pool(max_workers=len(cmds)) as pool:
         pool.map(run_command, cmds)
     print(f'\nMaster training ends, current time: {time.ctime()}')
