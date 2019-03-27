@@ -1,19 +1,28 @@
-# from selenium import webdriver
-# from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
-# import time
-# import Settings
+from selenium import webdriver
+from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
+import time
+from selenium.webdriver.firefox.options import Options
+
+import Settings
+
+from pyvirtualdisplay import Display
+display = Display(visible=0, size=(1920 * 2, 1080 * 2))
+display.start()
+binary = FirefoxBinary(Settings.firefox_binary_path)
+options = Options()
+fp = webdriver.FirefoxProfile()
+options.headless = False
+browser = webdriver.Firefox(firefox_profile=fp, firefox_binary=binary)
+browser.maximize_window()
+
+browser.get('https://www.youtube.com/watch?v=4_7bPNQxp1o')
+time.sleep(5)
+
+browser.save_screenshot('newscreenshot.png')
+time.sleep(2)
 
 
-# binary = FirefoxBinary(Settings.firefox_binary_path)
-# fp = webdriver.FirefoxProfile()
-# fp.add_extension(Settings.ad_block_path)
-
-# browser = webdriver.Firefox(firefox_profile=fp, firefox_binary=binary)
-
-# browser.get('https://www.youtube.com/watch?v=4_7bPNQxp1o')
-# time.sleep(15)
-
-# browser.close()
+browser.close()
 
 
 import subprocess
@@ -50,4 +59,5 @@ def mp_main():
     
 
 if __name__ == '__main__':
-    mp_main()
+    pass
+
