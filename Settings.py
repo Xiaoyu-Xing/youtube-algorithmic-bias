@@ -85,7 +85,7 @@ watch_time = 300  # should be more than 5 seconds
 # Initial web to visit before train, DO NOT CHANGE unless for other projects
 inital_website = 'https://www.youtube.com/'
 # Training batch size to prevent memory overload:
-training_batch_size = 100
+training_batch_size = 100  # Must be more than 2, should be more than 20
 screenshot_total_counts = 2  # How many screenshot needed
 # How many seconds between each screenshots, real intervel will be rougly equal to this
 screenshot_interval = 8  # In seconds
@@ -101,6 +101,8 @@ report_interval = 10  # should more than 2 seconds
 # 1) only method 2 will be used, which means only a list provided will be trained
 # 2) seed and traning cookies needs be provided here
 # 3) log path need to be provided for log and screenshot
+
+# Attention: must set path for Click: export LC_ALL=C.UTF-8, export LANG=C.UTF-8
 master_mode = True
 log_root_path = '/home/data/xiaoyu/training'
 
