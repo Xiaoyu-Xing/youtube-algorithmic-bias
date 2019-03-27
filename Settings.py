@@ -40,7 +40,7 @@ extended_shuffle_by_random_number = True
 
 
 # >>>>>>>>>>>>Second section: for individual training profiles<<<<<<<<<<<<
-headless = True  # running in linux server need to run without GUI, then set to True
+headless = False  # Using PyVirtualDisplay, keep this to false
 
 # There are two training mode: 
 training_method = 2 # Choose between 1 or 2
@@ -60,26 +60,27 @@ full_training_category = 'base'
 # 2) given a specific json file path, and only train by those videos
 # If you only need to parse and train one list
 # Give the dir to json below
-full_list_path = './sample_output/base/base_videos_inceltears.json'  # Secondary choice, set full_training_name to None to use this
+full_list_path = 'sample_output/base/base_videos_inceltears.json'  # Secondary choice, set full_training_name to None to use this
 # one_path = 'training/test.json' # This is for testing purpose, ignore in real training
 
 
 # Other parameters:
 
-# Path to a firefox profile
-firefox_profile_path = ''
+# Path to a firefox profile with extension installed or other functionality
+firefox_profile_with_functions = 'training/firefox-profile/'
+# Path to a blank firefox profile
+firefox_profile_blank = 'training/firefox-profile-blank'
+
 # Path to local firefox binary
-firefox_binary_path = './firefox-65/firefox/firefox'
+firefox_binary_path = 'firefox-66/firefox/firefox'
 # Whether to block the ads:
 ads_block = True
-# path to ad block extension for firefox, only working when ad_block is True
-ad_block_path = './training/youtube_adblock-3.0.1-an+fx.xpi'
 # Path to the cookies
 # Current account: yout317317@gmail.com, pass: al...b... DOB: 19800101, no gender
 seed_cookie_path = 'training/cookiebro-cookies.json'  # starter cookie before training
 training_cookie_path = 'training/after_training_cookie.json' # where to save cookie after training
 # How many seconds to watch for each video:
-watch_time = 300
+watch_time = 300 # should be more than 5 seconds
 # Initial web to visit before train, DO NOT CHANGE unless for other projects
 inital_website = 'https://www.youtube.com/'
 # Training batch size to prevent memory overload:
@@ -88,7 +89,7 @@ training_batch_size = 100
 # Whether to play at the fastest playback speed
 fast = True
 # Report time interval, how long between report current status, unit: seconds
-report_interval = 30 # should more than 2 seconds
+report_interval = 10 # should more than 2 seconds
 
 
 # >>>>>>>>>>>>Third section: for training in parallel mode<<<<<<<<<<<<
@@ -98,7 +99,7 @@ report_interval = 30 # should more than 2 seconds
 # 2) seed and traning cookies needs be provided here
 # 3) log path need to be provided for log and screenshot
 master_mode = True 
-log_root_path = 'log/'
+log_root_path = 'home/data/xiaoyu'
 
 # training_list = ['sample_output/base/base_videos_feminism.json', 
 #                  'sample_output/base/base_videos_inceltears.json', 
