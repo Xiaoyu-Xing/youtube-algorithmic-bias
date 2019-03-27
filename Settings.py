@@ -1,6 +1,4 @@
-# Fix: 1. time stamp on youtube link '?t='' 
-# 2. document: settings details here, research method on onenote, how to run in readme
-# 3. disgard window handle method, use firefox profiles to load pre-installed extention and start firefox binary from local
+# Fix: document: settings details here, research method on onenote, how to run in readme
 
 # Set your parameters here
 
@@ -42,8 +40,8 @@ extended_shuffle_by_random_number = True
 # >>>>>>>>>>>>Second section: for individual training profiles<<<<<<<<<<<<
 headless = False  # Using PyVirtualDisplay, keep this to false
 
-# There are two training mode: 
-training_method = 2 # Choose between 1 or 2
+# There are two training mode:
+training_method = 2  # Choose between 1 or 2
 # 1) given the folder path to all of the json profiles, such as the 'sample_output' folder
 # which contains all base, extended profiles (by 2 methods),
 # then specify which reddit profile and whether base or extended need to train, set parameters below:
@@ -60,7 +58,8 @@ full_training_category = 'base'
 # 2) given a specific json file path, and only train by those videos
 # If you only need to parse and train one list
 # Give the dir to json below
-full_list_path = 'sample_output/base/base_videos_inceltears.json'  # Secondary choice, set full_training_name to None to use this
+# Secondary choice, set full_training_name to None to use this
+full_list_path = 'sample_output/base/base_videos_inceltears.json'
 # one_path = 'training/test.json' # This is for testing purpose, ignore in real training
 
 
@@ -77,19 +76,23 @@ firefox_binary_path = 'firefox-66/firefox/firefox'
 ads_block = True
 # Path to the cookies
 # Current account: yout317317@gmail.com, pass: al...b... DOB: 19800101, no gender
-seed_cookie_path = 'training/cookiebro-cookies.json'  # starter cookie before training
-training_cookie_path = 'training/after_training_cookie.json' # where to save cookie after training
+# starter cookie before training
+seed_cookie_path = 'training/cookiebro-cookies.json'
+# where to save cookie after training
+training_cookie_path = 'training/after_training_cookie.json'
 # How many seconds to watch for each video:
-watch_time = 300 # should be more than 5 seconds
+watch_time = 300  # should be more than 5 seconds
 # Initial web to visit before train, DO NOT CHANGE unless for other projects
 inital_website = 'https://www.youtube.com/'
 # Training batch size to prevent memory overload:
 training_batch_size = 100
-
+screenshot_total_counts = 2  # How many screenshot needed
+# How many seconds between each screenshots, real intervel will be rougly equal to this
+screenshot_interval = 8  # In seconds
 # Whether to play at the fastest playback speed
 fast = True
 # Report time interval, how long between report current status, unit: seconds
-report_interval = 10 # should more than 2 seconds
+report_interval = 10  # should more than 2 seconds
 
 
 # >>>>>>>>>>>>Third section: for training in parallel mode<<<<<<<<<<<<
@@ -98,31 +101,31 @@ report_interval = 10 # should more than 2 seconds
 # 1) only method 2 will be used, which means only a list provided will be trained
 # 2) seed and traning cookies needs be provided here
 # 3) log path need to be provided for log and screenshot
-master_mode = True 
+master_mode = True
 log_root_path = '/home/data/xiaoyu/training'
 
-# training_list = ['sample_output/base/base_videos_feminism.json', 
-#                  'sample_output/base/base_videos_inceltears.json', 
-#                  'sample_output/base/base_videos_metoo.json', 
-#                  'sample_output/base/base_videos_incel.json', 
-#                  'sample_output/base/base_videos_enoughtrumpspam.json', 
-#                  'sample_output/base/base_videos_the_donald.json', 
+# training_list = ['sample_output/base/base_videos_feminism.json',
+#                  'sample_output/base/base_videos_inceltears.json',
+#                  'sample_output/base/base_videos_metoo.json',
+#                  'sample_output/base/base_videos_incel.json',
+#                  'sample_output/base/base_videos_enoughtrumpspam.json',
+#                  'sample_output/base/base_videos_the_donald.json',
 #                  'sample_output/base/base_videos_mensrights.json']
 
-training_list = ['sample_output/extended_RNG/related_videos_RNG_mensrights.json', 
-                 'sample_output/extended_RNG/related_videos_RNG_incel.json', 
-                 'sample_output/extended_RNG/related_videos_RNG_enoughtrumpspam.json', 
-                 'sample_output/extended_RNG/related_videos_RNG_inceltears.json', 
-                 'sample_output/extended_RNG/related_videos_RNG_feminism.json', 
-                 'sample_output/extended_RNG/related_videos_RNG_metoo.json', 
+training_list = ['sample_output/extended_RNG/related_videos_RNG_mensrights.json',
+                 'sample_output/extended_RNG/related_videos_RNG_incel.json',
+                 'sample_output/extended_RNG/related_videos_RNG_enoughtrumpspam.json',
+                 'sample_output/extended_RNG/related_videos_RNG_inceltears.json',
+                 'sample_output/extended_RNG/related_videos_RNG_feminism.json',
+                 'sample_output/extended_RNG/related_videos_RNG_metoo.json',
                  'sample_output/extended_RNG/related_videos_RNG_the_donald.json']
 
-# training_list = ['sample_output/extended_diversity/related_videos_diversity_inceltears.json', 
-#                  'sample_output/extended_diversity/related_videos_diversity_enoughtrumpspam.json', 
-#                  'sample_output/extended_diversity/related_videos_diversity_the_donald.json', 
-#                  'sample_output/extended_diversity/related_videos_diversity_mensrights.json', 
-#                  'sample_output/extended_diversity/related_videos_diversity_feminism.json', 
-#                  'sample_output/extended_diversity/related_videos_diversity_incel.json',  
+# training_list = ['sample_output/extended_diversity/related_videos_diversity_inceltears.json',
+#                  'sample_output/extended_diversity/related_videos_diversity_enoughtrumpspam.json',
+#                  'sample_output/extended_diversity/related_videos_diversity_the_donald.json',
+#                  'sample_output/extended_diversity/related_videos_diversity_mensrights.json',
+#                  'sample_output/extended_diversity/related_videos_diversity_feminism.json',
+#                  'sample_output/extended_diversity/related_videos_diversity_incel.json',
 #                  'sample_output/extended_diversity/related_videos_diversity_metoo.json']
 # For current project, below list length needs to be same with above list length
 seed_cookies_list = ['training/cookiebro-cookies.json'] * 7
