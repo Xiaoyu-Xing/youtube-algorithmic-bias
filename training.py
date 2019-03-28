@@ -113,6 +113,11 @@ class Trainer:
         js = 'return document.getElementById("movie_player").getCurrentTime()'
         return self._run_js(browser, js)
 
+    def take_screenshot(self, browser, path):
+        print('Screenshot Taken')
+        browser.save_screenshot(path)
+        return
+
     # Some notice:
     # 1. when the video is finished, selenium won't see the 10s "play next"
     # it will automatically play the next
@@ -134,7 +139,7 @@ class Trainer:
             video = self._clean_youtube_link(video)
             video_screenshot_path = video.replace(
                 '/', '-').replace(':', '-').replace('.', '-')
-            start_time = time.time()
+            report_timer = screenshot_timer = start_time = time.time()
             refresh_flag = 2
             screenshot_count = 0
             screenshot_total = Settings.screenshot_total_counts
@@ -152,16 +157,19 @@ class Trainer:
                 player_status = self._get_player_status(browser)
                 elapsed_time = self._get_elapsed_time(browser)
                 while player_status != 'ended' and elapsed_time < Settings.watch_time:
-                    if int(time.time() - start_time) % Settings.report_interval <= 3:
+                    if int(time.time() - report_timer) > Settings.report_interval:
                         previous_status = self._get_player_status(browser)
                         print(
                             f'status: {previous_status}, elapsed time: {elapsed_time:7.2f}s.')
-                    if screenshot_count < screenshot_total and elapsed_time % Settings.screenshot_interval < 2:
-                        print('Screenshot Taken')
-                        browser.save_screenshot(os.path.join(log_path, video_screenshot_path) +
+                        report_timer = time.time()
+                    if screenshot_count < screenshot_total and \
+                            int(time.time() - screenshot_timer) > Settings.screenshot_interval:
+                        save_screenshot_path = (os.path.join(log_path, video_screenshot_path) +
                                                 str(screenshot_count) +
                                                 '.png')
+                        self.take_screenshot(browser, save_screenshot_path)
                         screenshot_count += 1
+                        screenshot_timer = time.time()
                     # Slow down the checking process to prevent overload
                     time.sleep(2)
                     player_status = self._get_player_status(browser)

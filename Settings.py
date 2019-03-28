@@ -81,7 +81,7 @@ seed_cookie_path = 'training/cookiebro-cookies.json'
 # where to save cookie after training
 training_cookie_path = 'training/after_training_cookie.json'
 # How many seconds to watch for each video:
-watch_time = 300  # should be more than 5 seconds
+watch_time = 150  # should be more than 5 seconds
 # Initial web to visit before train, DO NOT CHANGE unless for other projects
 inital_website = 'https://www.youtube.com/'
 # Training batch size to prevent memory overload:
