@@ -128,8 +128,8 @@ class Trainer:
         browser = self._setup_browser(cookies_path)
         local_counter = 0
         good_counter, bad_counter = 0, 0
-        print(
-            f'---Train for {name} in progress, current batch size {len(video_list)}---')
+        print(f'---In side a new batch, ' +
+              f'train for {name} in progress, current batch size {len(video_list)}---')
         for video in video_list:
             video = self._clean_youtube_link(video)
             video_screenshot_path = video.replace(
@@ -152,8 +152,6 @@ class Trainer:
                 player_status = self._get_player_status(browser)
                 elapsed_time = self._get_elapsed_time(browser)
                 while player_status != 'ended' and elapsed_time < Settings.watch_time:
-                    # Slow down the checking process to prevent overload
-                    time.sleep(2)
                     if int(time.time() - start_time) % Settings.report_interval <= 3:
                         previous_status = self._get_player_status(browser)
                         print(
@@ -164,6 +162,8 @@ class Trainer:
                                                 str(screenshot_count) +
                                                 '.png')
                         screenshot_count += 1
+                    # Slow down the checking process to prevent overload
+                    time.sleep(2)
                     player_status = self._get_player_status(browser)
                     elapsed_time = self._get_elapsed_time(browser)
                     # Sometimes the video will stuck at somewhere
