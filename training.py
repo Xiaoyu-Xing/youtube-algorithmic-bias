@@ -167,7 +167,7 @@ class Trainer:
                         report_timer = time.time()
                     if screenshot_count < screenshot_total and \
                             int(time.time() - screenshot_timer) > Settings.screenshot_interval:
-                        save_screenshot_path = (os.path.join(log_path, video_screenshot_path) +
+                        save_screenshot_path = (os.path.join(log_path, video_screenshot_path) + '--' +
                                                 str(screenshot_count) +
                                                 '.png')
                         self.take_screenshot(browser, save_screenshot_path)
