@@ -81,18 +81,18 @@ seed_cookie_path = 'training/cookiebro-cookies.json'
 # where to save cookie after training
 training_cookie_path = 'training/after_training_cookie.json'
 # How many seconds to watch for each video:
-watch_time = 150  # should be more than 5 seconds
+watch_time = 150  # should be more than 5 seconds, VIDEO TIME
 # Initial web to visit before train, DO NOT CHANGE unless for other projects
 inital_website = 'https://www.youtube.com/'
 # Training batch size to prevent memory overload:
 training_batch_size = 100  # Must be more than 2, should be more than 20
 screenshot_total_counts = 2  # How many screenshot needed
 # How many seconds between each screenshots, real intervel will be rougly equal to this
-screenshot_interval = 8  # In seconds
+screenshot_interval = 8  # In seconds, REAL TIME
 # Whether to play at the fastest playback speed
-fast = True
+fast = True # Notice: if true, the video time is 2 times faster than real time
 # Report time interval, how long between report current status, unit: seconds
-report_interval = 10  # should more than 2 seconds, this is real time, not time in videos
+report_interval = 10  # should more than 2 seconds, REAL TIME
 
 
 # >>>>>>>>>>>>Third section: for training in parallel mode<<<<<<<<<<<<
