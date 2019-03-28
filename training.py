@@ -154,7 +154,8 @@ class Trainer:
                     # Set to play at the fastest rate
                     fast_js = f'document.getElementById("movie_player").setPlaybackRate({list(playback_rates)[-1]})'
                     self._run_js(browser, fast_js)
-                player_status = self._get_player_status(browser)
+                previous_status = player_status = self._get_player_status(
+                    browser)
                 elapsed_time = self._get_elapsed_time(browser)
                 while player_status != 'ended' and elapsed_time < Settings.watch_time:
                     if int(time.time() - report_timer) > Settings.report_interval:
