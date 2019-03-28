@@ -136,7 +136,8 @@ class Trainer:
                 '/', '-').replace(':', '-').replace('.', '-')
             start_time = time.time()
             refresh_flag = 2
-            screenshot_flag = Settings.screenshot_total_counts
+            screenshot_count = 0
+            screenshot_total = Settings.screenshot_total_counts
             try:
                 local_counter += 1
                 print(
@@ -157,11 +158,12 @@ class Trainer:
                         previous_status = self._get_player_status(browser)
                         print(
                             f'status: {previous_status}, elapsed time: {elapsed_time:7.2f}s.')
-                    if screenshot_flag and elapsed_time % Settings.screenshot_interval < 2:
+                    if screenshot_count < screenshot_total and elapsed_time % Settings.screenshot_interval < 2:
                         print('Screenshot Taken')
-                        browser.save_screenshot(os.path.join(
-                            log_path, video_screenshot_path) + '.png')
-                        screenshot_flag = 0
+                        browser.save_screenshot(os.path.join(log_path, video_screenshot_path) +
+                                                str(screenshot_count) +
+                                                '.png')
+                        screenshot_count += 1
                     player_status = self._get_player_status(browser)
                     elapsed_time = self._get_elapsed_time(browser)
                     # Sometimes the video will stuck at somewhere
@@ -269,9 +271,9 @@ def full_test():
 
 
 @click.command()
-@click.option("--path", "path", help="Json video list to train")
-@click.option("--sc", "seed_cookie", help="Seed cookie to begin training")
-@click.option("--tc", "training_cookie", help="Training cookie to save after training")
+@click.option("--path", "path", default=Settings.training_list[0], help="Json video list to train")
+@click.option("--sc", "seed_cookie", default=Settings.seed_cookies_list[0], help="Seed cookie to begin training")
+@click.option("--tc", "training_cookie", default=Settings.training_cookies_list[0], help="Training cookie to save after training")
 def traing_master_mode(path, seed_cookie, training_cookie):
     if not path or not seed_cookie or not training_cookie:
         raise Exception(
