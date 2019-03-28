@@ -157,6 +157,8 @@ class Trainer:
                 previous_status = player_status = self._get_player_status(
                     browser)
                 elapsed_time = self._get_elapsed_time(browser)
+                print(
+                    f'status: {previous_status}, elapsed time: {elapsed_time:7.2f}s.')
                 while player_status != 'ended' and elapsed_time < Settings.watch_time:
                     if int(time.time() - report_timer) > Settings.report_interval:
                         previous_status = self._get_player_status(browser)

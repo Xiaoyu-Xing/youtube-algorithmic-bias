@@ -92,7 +92,7 @@ screenshot_interval = 8  # In seconds
 # Whether to play at the fastest playback speed
 fast = True
 # Report time interval, how long between report current status, unit: seconds
-report_interval = 10  # should more than 2 seconds
+report_interval = 10  # should more than 2 seconds, this is real time, not time in videos
 
 
 # >>>>>>>>>>>>Third section: for training in parallel mode<<<<<<<<<<<<
