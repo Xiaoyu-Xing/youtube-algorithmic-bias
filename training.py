@@ -186,11 +186,13 @@ class Trainer:
                         if refresh_flag == 2 and \
                                 (time.time() - start_time) > Settings.watch_time // 3:
                             browser.refresh()
+                            print("Browser refreshed.")
                             refresh_flag -= 1
                         # we waited more time
                         elif refresh_flag == 1 and \
                                 (time.time() - start_time) > 2 * Settings.watch_time // 3:
                             browser.refresh()
+                            print("Browser refreshed.")
                             refresh_flag -= 1
                     if (time.time() - start_time) > 3 * Settings.watch_time:
                         raise Exception('Unknown reason, timeout reached')
