@@ -218,24 +218,17 @@ class Trainer:
         full_good_counter, full_bad_counter = 0, 0
         for i in range(0, len(full_list), batch_size):
             restart_flag = 2
-            try:
-                print(f'---Current training range: from [{i+1} to {min(i+batch_size, len(full_list))}].---')
-                # i % (i - 1) is for select seed_cookit initially, then select training_cookie afterwards
-                good, bad = self.train_one_batch(name,
-                                                 full_list[i:i + batch_size],
-                                                 [seed_cookie, training_cookie][i % (i - 1)],
-                                                 training_cookie)
-            except Exception as e:
-                print(f'Exception: {e}, current restart left: {restart_flag}')
-                if restart_flag:
+            for i in range(restart_flag, -1):
+                try:
+                    print(f'---Current training range: from [{i+1} to {min(i+batch_size, len(full_list))}].---')
+                    # i % (i - 1) is for select seed_cookit initially, then select training_cookie afterwards
                     good, bad = self.train_one_batch(name,
                                                      full_list[i:i + batch_size],
                                                      [seed_cookie, training_cookie][i % (i - 1)],
                                                      training_cookie)
-                    restart_flag -= 1
-                else:
-                    print('Running out of restart for this batch, move on to next batch.')
-                    continue
+                    break
+                except Exception as e:
+                    print(f'Exception: {e}, current restart left: {i}')
             full_good_counter += good
             full_bad_counter += bad
             # Give the program sometime to clear the old residue
