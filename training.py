@@ -72,7 +72,7 @@ class Trainer:
             cookies_list = self.read_json(cookies_path)[0]
         except Exception as e:
             print(f"Loading cookie error: {e}, reload")
-            time.sleep(random.randint(2, 15))
+            time.sleep(random.randint(1, 5))
             cookies_list = self.read_json(cookies_path)[0]
         for cookie in cookies_list:
             try:
@@ -218,7 +218,7 @@ class Trainer:
         full_good_counter, full_bad_counter = 0, 0
         for i in range(0, len(full_list), batch_size):
             restart_flag = 2
-            for i in range(restart_flag, -1):
+            for restart_index in range(restart_flag, 0, -1):
                 try:
                     print(f'---Current training range: from [{i+1} to {min(i+batch_size, len(full_list))}].---')
                     # i % (i - 1) is for select seed_cookit initially, then select training_cookie afterwards
@@ -228,7 +228,7 @@ class Trainer:
                                                      training_cookie)
                     break
                 except Exception as e:
-                    print(f'Exception: {e}, current restart left: {i}')
+                    print(f'Exception: {e}, current restart left: {restart_index}')
             full_good_counter += good
             full_bad_counter += bad
             # Give the program sometime to clear the old residue
