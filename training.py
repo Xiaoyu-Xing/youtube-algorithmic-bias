@@ -9,6 +9,7 @@ import time
 import datetime
 import click
 import Settings
+import random
 
 
 class Trainer:
@@ -32,22 +33,19 @@ class Trainer:
             if 'base' in cur_dir and 'detailed' not in cur_dir:
                 for file in cur_files:
                     if 'json' in file:
-                        v_list, _, _ = self.read_json(
-                            os.path.join(cur_dir, file))
+                        v_list, _, _ = self.read_json(os.path.join(cur_dir, file))
                         name = os.path.splitext(file)[0].split('_', 2)[-1]
                         self.base_lists[name] = v_list
             if 'extended' in cur_dir and 'diversity' in cur_dir:
                 for file in cur_files:
                     if 'json' in file:
-                        v_list, _, _ = self.read_json(
-                            os.path.join(cur_dir, file))
+                        v_list, _, _ = self.read_json(os.path.join(cur_dir, file))
                         name = os.path.splitext(file)[0].split('_', 3)[-1]
                         self.extended_diversity_lists[name] = v_list
             if 'extended' in cur_dir and 'RNG' in cur_dir:
                 for file in cur_files:
                     if 'json' in file:
-                        v_list, _, _ = self.read_json(
-                            os.path.join(cur_dir, file))
+                        v_list, _, _ = self.read_json(os.path.join(cur_dir, file))
                         name = os.path.splitext(file)[0].split('_', 3)[-1]
                         self.extended_RNG_lists[name] = v_list
 
@@ -70,7 +68,12 @@ class Trainer:
         browser.delete_all_cookies()
         browser.get(Settings.inital_website)
         time.sleep(3)
-        cookies_list = self.read_json(cookies_path)[0]
+        try:
+            cookies_list = self.read_json(cookies_path)[0]
+        except Exception as e:
+            print(f"Loading cookie error: {e}, reload")
+            time.sleep(random.randint(2, 15))
+            cookies_list = self.read_json(cookies_path)[0]
         for cookie in cookies_list:
             try:
                 browser.add_cookie(cookie)
@@ -133,20 +136,18 @@ class Trainer:
         browser = self._setup_browser(cookies_path)
         local_counter = 0
         good_counter, bad_counter = 0, 0
-        print(f'---In side a new batch, ' +
+        print(f'---Inside a new batch, ' +
               f'train for {name} in progress, current batch size {len(video_list)}---')
         for video in video_list:
             video = self._clean_youtube_link(video)
-            video_screenshot_path = video.replace(
-                '/', '-').replace(':', '-').replace('.', '-')
+            video_screenshot_path = video.replace('/', '-').replace(':', '-').replace('.', '-')
             report_timer = screenshot_timer = start_time = time.time()
             refresh_flag = 2
             screenshot_count = 0
             screenshot_total = Settings.screenshot_total_counts
             try:
                 local_counter += 1
-                print(
-                    f'\n***Now visiting #{local_counter} video: {video}, now: {time.ctime()}')
+                print(f'\n***Now visiting #{local_counter} video: {video}, now: {time.ctime()}')
                 browser.get(video)
                 # YouTube API reference: https://developers.google.com/youtube/iframe_api_reference
                 if Settings.fast:
@@ -157,19 +158,16 @@ class Trainer:
                 previous_status = player_status = self._get_player_status(
                     browser)
                 elapsed_time = self._get_elapsed_time(browser)
-                print(
-                    f'status: {previous_status}, elapsed time: {elapsed_time:7.2f}s.')
+                print(f'status: {previous_status}, elapsed time: {elapsed_time:7.2f}s.')
                 while player_status != 'ended' and elapsed_time < Settings.watch_time:
                     if int(time.time() - report_timer) > Settings.report_interval:
                         previous_status = self._get_player_status(browser)
-                        print(
-                            f'status: {previous_status}, elapsed time: {elapsed_time:7.2f}s.')
+                        print(f'status: {previous_status}, elapsed time: {elapsed_time:7.2f}s.')
                         report_timer = time.time()
                     if screenshot_count < screenshot_total and \
                             int(time.time() - screenshot_timer) > Settings.screenshot_interval:
                         save_screenshot_path = (os.path.join(log_path, video_screenshot_path) + '--' +
-                                                str(screenshot_count) +
-                                                '.png')
+                                                str(screenshot_count) + '.png')
                         self.take_screenshot(browser, save_screenshot_path)
                         screenshot_count += 1
                         screenshot_timer = time.time()
@@ -221,34 +219,28 @@ class Trainer:
         for i in range(0, len(full_list), batch_size):
             restart_flag = 2
             try:
-                print(
-                    f'---Current training range: from [{i+1} to {min(i+batch_size, len(full_list))}].---')
+                print(f'---Current training range: from [{i+1} to {min(i+batch_size, len(full_list))}].---')
                 # i % (i - 1) is for select seed_cookit initially, then select training_cookie afterwards
                 good, bad = self.train_one_batch(name,
                                                  full_list[i:i + batch_size],
-                                                 [seed_cookie, training_cookie][i %
-                                                                                (i - 1)],
+                                                 [seed_cookie, training_cookie][i % (i - 1)],
                                                  training_cookie)
             except Exception as e:
                 print(f'Exception: {e}, current restart left: {restart_flag}')
                 if restart_flag:
                     good, bad = self.train_one_batch(name,
-                                                     full_list[i:i +
-                                                               batch_size],
-                                                     [seed_cookie, training_cookie][i % (
-                                                         i - 1)],
+                                                     full_list[i:i + batch_size],
+                                                     [seed_cookie, training_cookie][i % (i - 1)],
                                                      training_cookie)
                     restart_flag -= 1
                 else:
-                    print(
-                        'Running out of restart for this batch, move on to next batch.')
+                    print('Running out of restart for this batch, move on to next batch.')
                     continue
             full_good_counter += good
             full_bad_counter += bad
             # Give the program sometime to clear the old residue
             time.sleep(10)
-        print(f'---Total training metrics: ---\
-            ---successful: {full_good_counter}, failed: {full_bad_counter}---')
+        print(f'---Total training metrics: ------successful: {full_good_counter}, failed: {full_bad_counter}---')
         print(f'>>>>>Training finished.<<<<<')
 
     def train_a_path(self, path):
@@ -268,8 +260,7 @@ class Trainer:
             elif category == 'RNG':
                 full_list = self.extended_RNG_lists
             else:
-                raise Exception(
-                    'Not a valid category among base, diversity, RNG.')
+                raise Exception('Not a valid category among base, diversity, RNG.')
             full_list = full_list.get(name, None)
             if not full_list:
                 raise Exception('Not a valid reddit name.')
@@ -287,18 +278,21 @@ def full_test():
 @click.option("--path", "path", default=Settings.training_list[0], help="Json video list to train")
 @click.option("--sc", "seed_cookie", default=Settings.seed_cookies_list[0], help="Seed cookie to begin training")
 @click.option("--tc", "training_cookie", default=Settings.training_cookies_list[0], help="Training cookie to save after training")
-def traing_master_mode(path, seed_cookie, training_cookie):
+def training_master_mode(path, seed_cookie, training_cookie):
     if not path or not seed_cookie or not training_cookie:
-        raise Exception(
-            'In master mode, but either cookies lists or training list empty.')
+        raise Exception('In master mode, but either cookies lists or training list empty.')
     trainer = Trainer()
     reddit_name = os.path.splitext(path)[0]
     train_list, _, _ = trainer.read_json(path)
-    trainer.train_a_list(train_list, reddit_name, seed_cookie, training_cookie)
+    try:
+        trainer.train_a_list(train_list, reddit_name, seed_cookie, training_cookie)
+    except Exception as e:
+        print(f"Restrat the whole training process, due to fatal error: {e}")
+        trainer.train_a_list(train_list, reddit_name, seed_cookie, training_cookie)
 
 
 if __name__ == '__main__':
     if Settings.master_mode:
-        traing_master_mode()
+        training_master_mode()
     else:
         full_test()

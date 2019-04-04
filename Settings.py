@@ -90,7 +90,7 @@ screenshot_total_counts = 2  # How many screenshot needed
 # How many seconds between each screenshots, real intervel will be rougly equal to this
 screenshot_interval = 8  # In seconds, REAL TIME
 # Whether to play at the fastest playback speed
-fast = True # Notice: if true, the video time is 2 times faster than real time
+fast = True  # Notice: if true, the video time is 2 times faster than real time
 # Report time interval, how long between report current status, unit: seconds
 report_interval = 10  # should more than 2 seconds, REAL TIME
 
@@ -104,7 +104,7 @@ report_interval = 10  # should more than 2 seconds, REAL TIME
 
 # Attention: must set path for Click: export LC_ALL=C.UTF-8, export LANG=C.UTF-8
 master_mode = True
-log_root_path = '/home/data/xiaoyu/testing3'
+log_root_path = '/home/data/xiaoyu/testing5'
 
 # training_list = ['sample_output/base/base_videos_feminism.json',
 #                  'sample_output/base/base_videos_inceltears.json',
