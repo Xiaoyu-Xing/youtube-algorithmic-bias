@@ -6,6 +6,7 @@ import Settings
 from concurrent.futures import ProcessPoolExecutor as Pool
 import datetime
 
+
 def run_command(cmd):
     # Shell need to set to true
     result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
@@ -34,10 +35,10 @@ def main():
         os.makedirs(log_path)
     for n, sc, tc, t in zip(names, scl, tcl, tl):
         cmd = f'nohup {sys.executable} training.py ' + \
-                f'--path {t} ' + \
-                f'--sc {sc} ' + \
-                f'--tc {tc} ' + \
-                f'> {os.path.join(log_path, n)}.log &'
+            f'--path {t} ' + \
+            f'--sc {sc} ' + \
+            f'--tc {tc} ' + \
+            f'> {os.path.join(log_path, n)}.log &'
         print(f'Command for {n}: {cmd}')
         cmds.append(cmd)
     print(f'\nMaster training starts, current time: {time.ctime()}')
@@ -47,9 +48,12 @@ def main():
     print(f'\nMaster training ends, current time: {time.ctime()}')
 
 
-
 if __name__ == '__main__':
     if Settings.master_mode:
         main()
+        time.sleep(60)
+        # Seen leftover firefox processes after finish running normally
+        # Linux uses fork to create new processes, os._exit() will kill such processes.
+        os._exit()
     else:
         raise Exception('Not in master training mode')

@@ -104,7 +104,7 @@ report_interval = 10  # should more than 2 seconds, REAL TIME
 
 # Attention: must set path for Click: export LC_ALL=C.UTF-8, export LANG=C.UTF-8
 master_mode = True
-log_root_path = '/home/data/xiaoyu/testing5'
+log_root_path = '/home/data/xiaoyu/testing6'
 
 # training_list = ['sample_output/base/base_videos_feminism.json',
 #                  'sample_output/base/base_videos_inceltears.json',
