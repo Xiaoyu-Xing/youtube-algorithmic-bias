@@ -54,6 +54,6 @@ if __name__ == '__main__':
         time.sleep(60)
         # Seen leftover firefox processes after finish running normally
         # Linux uses fork to create new processes, os._exit() will kill such processes.
-        os._exit()
+        os._exit(0)
     else:
         raise Exception('Not in master training mode')
