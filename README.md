@@ -53,3 +53,6 @@ python build_profiles.py
 ```python
 python training.py [video list path] [seed cookie list path] [after training saving path]
 ```
+
+## To be improved:
+- Due to change of plan and requirement of this research project, the training.py and/or training-master.py needs refractoring to separate functionality for coupling with testing (not implemented yet).
