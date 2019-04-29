@@ -132,3 +132,12 @@ training_list = ['sample_output/extended_RNG/related_videos_RNG_mensrights.json'
 # For current project, below list length needs to be same with above list length
 seed_cookies_list = ['training/cookiebro-cookies.json'] * 7
 training_cookies_list = ['training/after_training_cookie.json'] * 7
+
+
+
+# >>>>>>>>>>>>Forth section: for pilot testing<<<<<<<<<<<<
+keyword = "mueller report"
+additional_label = "login" # Add what additional label to add to mark current testing
+report_results_number = 50
+recommend_results_number = 60  # max ~40, limited by fed list from youtube
+testing_output = 'testing/'
