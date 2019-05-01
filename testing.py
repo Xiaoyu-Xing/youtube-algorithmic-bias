@@ -12,6 +12,7 @@ import Settings as sts
 import random
 from collections import OrderedDict
 
+
 class Testing:
     def __init__(self, start="https://www.youtube.com/", driver=None):
         self.driver = driver
@@ -24,7 +25,7 @@ class Testing:
             os.makedirs(sts.testing_output)
         self.driver.implicitly_wait(5)
         self.driver.get(start)
-        
+
     def get_seconds(self, number, unit):
         if "second" in unit:
             return int(number)
@@ -50,13 +51,14 @@ class Testing:
         info = video.get_attribute("aria-label")
         # All info including title, source, uploaded time, video length, views
         # e.g. : "Trump holds first 'MAGA' rally since Mueller report release by Fox News Streamed 19 hours ago 1 hour, 26 minutes 284,647 views"
-        source, uploaded_time, video_length, views = self.parse_info(title, info)
+        source, uploaded_time, video_length, views, up_time = self.parse_info(title, info)
         ret = {"href": href,
-              "source": source,
-              "upload time": "Approximate: " + uploaded_time.strftime("%m/%d/%Y %H:%M:%S"),
-              "video length": f"{video_length} seconds",
-              "views": views,
-              "query time": datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S")}
+               "source": source,
+               "uploaded on": f"{up_time} seconds ago from query time",
+               "upload time": "Approximate: " + uploaded_time.strftime("%m/%d/%Y %H:%M:%S"),
+               "video length": f"{video_length} seconds",
+               "views": views,
+               "query time": datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S")}
         return ret
 
     def parse_info(self, title, info):
@@ -70,7 +72,7 @@ class Testing:
         source_uptime = source_uptime.split()
         length_views = length_views.split()
         unit_list = ["second", "minute", "hour", "day", "week", "month", "year"]
-        for i in range(len(source_uptime)): 
+        for i in range(len(source_uptime)):
             # All the words after "by" until the first digit is Source
             if source_uptime[i].isdigit() and source_uptime[i + 1].rstrip("s") in unit_list:
                 source_uptime = source_uptime[i:]
@@ -78,13 +80,13 @@ class Testing:
             else:
                 source.append(source_uptime[i])
         source = " ".join(source)
-        up_time = self.get_seconds(source_uptime[0], source_uptime[1]) # Get the total seconds from uploaded
-        uploaded_time = datetime.datetime.now() - datetime.timedelta(seconds=up_time) # Calculate the uploaded datetime
-        views = int("".join(length_views[-2].split(","))) # Get all the views
-        length_views = length_views[:-2] # remove the views
-        for i in range(0, len(length_views), 2): # for all the left words, convert all time to seconds
+        up_time = self.get_seconds(source_uptime[0], source_uptime[1])  # Get the total seconds from uploaded
+        uploaded_time = datetime.datetime.now() - datetime.timedelta(seconds=up_time)  # Calculate the uploaded datetime
+        views = int("".join(length_views[-2].split(",")))  # Get all the views
+        length_views = length_views[:-2]  # remove the views
+        for i in range(0, len(length_views), 2):  # for all the left words, convert all time to seconds
             video_length += self.get_seconds(length_views[i], length_views[i + 1])
-        return source, uploaded_time, video_length, views
+        return source, uploaded_time, video_length, views, up_time
 
     def search(self, keyword=sts.keyword, results=sts.report_results_number):
         driver = self.driver
@@ -104,14 +106,14 @@ class Testing:
         for video in video_list:
             title = video.get_attribute("title")  # Title
             if title in video_dict:
-                continue 
+                continue
             try:
                 video_dict[title] = self.parse_video(video)
             except Exception as e:
                 print(e)
                 print(video.get_attribute("aria-label"))
                 continue
-            if len(video_dict.keys()) >= results: # Get the targeted number of results
+            if len(video_dict.keys()) >= results:  # Get the targeted number of results
                 break
         with open(os.path.join(sts.testing_output, f"{keyword}_search_result_{sts.additional_label}.json"), "w") as f:
             json.dump(video_dict, f, indent=4)
@@ -145,13 +147,14 @@ class Testing:
             for href, info in zip(temp_href_list, temp_info_list):
                 try:
                     rec_title = info.split(" by ")[0]
-                    source, uploaded_time, video_length, views = self.parse_info(rec_title, info)
+                    source, uploaded_time, video_length, views, up_time = self.parse_info(rec_title, info)
                     ret = {"href": href,
-                          "source": source,
-                          "upload time": "Approximate: " + uploaded_time.strftime("%m/%d/%Y %H:%M:%S"),
-                          "video length": f"{video_length} seconds",
-                          "views": views,
-                          "query time": datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S")}
+                           "source": source,
+                           "uploaded on": f"{up_time} seconds ago from query time",
+                           "upload time": "Approximate: " + uploaded_time.strftime("%m/%d/%Y %H:%M:%S"),
+                           "video length": f"{video_length} seconds",
+                           "views": views,
+                           "query time": datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S")}
                     recommend_dict[title].append(ret)
                     if len(recommend_dict[title]) >= results:
                         break
@@ -164,7 +167,7 @@ class Testing:
             json.dump(recommend_dict, f, indent=4)
         return recommend_dict
 
-            
+
 def main():
     tester = Testing()
     video_dict = tester.search()
