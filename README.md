@@ -12,9 +12,9 @@ Then top 50 videos for each profile (based on upvotes) will be selected as the b
 if any profile total videos are less than specified number, then all of them will be chosen. Videos can be shuffled to ensure randomness.
 
 ### 2. Generate extended profiles (two method):
-..1) By random number generator:
+1) By random number generator:
 Let D be the digits after decimal points of ratio in the profiles, R be the ratio, C be a random number generated in the range of [0, 10^D). If C <= R\*10^D, the top P% videos in this subreddit would be chosen into the extended list. Default P is 10 (so 10% of the top videos will be sampled if this subreddit is chosen). For each subreddit in each profile, above random choosing process is perfomed, total videos chosen will be sampled together with base videos as one extended profile. Videos can be shuffled to ensure randomness.
-..2) By diversity index: 
+2) By diversity index: 
 Based on the profiles, a diversity number **N** can be choosen, for example: 1.2. 
 Then top (ranked by overlaping ratio) **X\*N** (here 50\*1.2=60) subreddits that have cross population with those base profiles will be chosen, 
 then for each profile, those top (60) subreddits will be normalized on their overlap ratio. The normalized ratio is denoted as **R**. 
@@ -22,7 +22,7 @@ The number of videos for each subreddits will be caculated by **K** = **R**\***X
 Top upvotes videos for each subreddit will be chosen based on the calculated number **K**. Those chosen videos will be sampled together with base videos as one extended profile. Videos can be shuffled to ensure randomness.
 
 ### Training
-Given a list of cookies for login, a list of video lists for each profile to viewing. The scripts will run parallelly to open browser, loading cookies, and automating to view all the videos on each list. More setting details checking the GitHub Setting.py file. 
+1. Given a list of cookies for login, a list of video lists for each profile to viewing. The scripts will run parallelly to open browser, loading cookies, and automating to view all the videos on each list. More setting details checking the GitHub Setting.py file. 
 
 ### Testing
 ### 1. Pilot testing
