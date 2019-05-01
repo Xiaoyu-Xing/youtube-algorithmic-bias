@@ -36,8 +36,9 @@ To verify the necessity of creating Google accounts and log in when training and
 - build_profiles.py/.ipynb: contains the python scripts to get the training lists.
 - test\*.py: contains temporary testing scripts, ignore those. 
 - training.py: contains the scripts to log in by a cookie and tranining with a json video list.
-- training.py: contains the multiprocessing module to facilitate parallel training.
-
+- training_master.py: contains the multiprocessing module to facilitate parallel training.
+- testing.py: contains the function to search by keyword and record top x results, and for each above result, get the top y recommendatoin list.
+- testing\: contains the output of query search results and recommendation list after running testing.py
 
 ## How to use the python scripts:
 
@@ -54,5 +55,11 @@ python build_profiles.py
 python training.py [video list path] [seed cookie list path] [after training saving path]
 ```
 
-## To be improved:
-- Due to change of plan and requirement of this research project, the training.py and/or training-master.py needs refractoring to separate functionality for coupling with testing (not implemented yet).
+- To generate search results by a keywords and recommendation list.
+```python
+python testing.py
+```
+
+## TODO:
+- Due to change of plan and requirement of this research project, the training.py and/or training-master.py needs refractoring to separate functionality for coupling with testing.py.
+- For testing.py, currently duplicates are removed based on title. It may be better to use link/href as the key to remove duplicates, or just keep duplicates.
