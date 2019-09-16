@@ -4,8 +4,8 @@ generated_profiles_output/
 from_Huyen/
 __*__/
 .ipynb_checkpoints/
-*/geckodriver.log
+**/geckodriver.log
 */*.py[cod]
 #firefox binary folders
-*/firefox/
+**/firefox/
 __pycache__/
