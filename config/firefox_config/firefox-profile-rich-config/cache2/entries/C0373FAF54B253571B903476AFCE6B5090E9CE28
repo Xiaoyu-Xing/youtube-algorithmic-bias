@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title i18n="installedtitle">AdBlock is now installed!</title>
+      <meta charset="UTF-8">
+
+      <link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
+            <script type="text/javascript">
+          const _SERVER_EXPERIMENT = {"id":"EXP 656","expNum":656,"name":"Installed RecurringOnLeft","variant":"Control","variantIndex":0,"isRunning":true,"variants":["Control","RecurringOnLeft"]};
+
+          adblockGeo = {
+              "countryName": "United States",
+              "countryCode": "US"
+          };
+
+          (function() {
+              var errors = [];
+              var pageLoaded = false;
+              function logError(msg, url, lineNum, colNum) {
+                  if (typeof _logV2Error === 'function') {
+                        _logV2Error(msg, url, lineNum, colNum);
+                  }
+              }
+
+              window.onerror = function(msg, url, lineNum, colNum) {
+                  if (pageLoaded === false) {
+                      errors.push([msg, url, lineNum, colNum]);
+                  } else {
+                      logError(msg, url, lineNum, colNum);
+                  }
+              };
+
+              window.onload = function(e) {
+                  pageLoaded = true;
+                  if (errors.length > 0) {
+                      for (var i = 0; i < errors.length; i++) {
+                          var msg = errors[i][0];
+                          var url = errors[i][1];
+                          var lineNum = errors[i][2];
+                          var colNum = errors[i][3];
+                          logError(msg, url, lineNum, colNum);
+                      }
+                  }
+              };
+          })();
+      </script>
+      <!-- Setup experiment before loading ga.js -->
+      <script src="../js/experiment.js?v=1539375595"></script>
+
+      <!-- DONT REMOVE user.js -->
+      <script src="../js/user.js?var=1.1.1b"></script>
+      <!-- Redirect users to a different page
+      <script src="js/redirecttest.js"></script> -->
+
+      <script src="js/jquery.min.js"></script>
+      <script src="/i18n/localesIndex.js"></script>
+      <script src="../i18n/i18n.js?v=1541623131"></script>
+      <!-- Logging lib -->
+      <script src="../js/log.js?v=1547579504"></script>
+
+      <!-- Google Analytics -->
+      <script src="../js/ga.js"></script>
+
+      <!-- Checkout functions -->
+      <script src="https://js.stripe.com/v3/"></script>
+      <script src="https://checkout.stripe.com/v3/checkout.js"></script>
+      <script src="../js/payment/lib/payment_libs.js?v=1550179537"></script>
+
+      <!-- Currency -->
+      <script src="../js/currency.js?v=1542231032"></script>
+      <link rel="stylesheet" href="css/donations.css?v=1552578695"/>
+      <link rel="stylesheet" type="text/css" href="../css/stripeButton.css"/>
+      <link rel="stylesheet" type="text/css" href="./css/index.css?v=1.0.0b">
+   </head>
+
+   <body class="control_background">
+    <!-- header -->
+    <div id="fake_header" style="margin-top: 20px;"></div>
+    <!-- END header -->
+    <!-- wrapper -->
+    <div id="wrapper">
+        <!-- installer progress bar -->
+        <div id="loading-wrapper" style="display: none;">
+        <div class="card" id="loading">
+            <div id="loading-text-container">
+                <span id="gab_installing_adblock" i18n="installing_adblock">Installing AdBlock...</span>
+                <strong><span id="done" i18n="done" style="display: none;"></span></strong>
+            </div>
+            <br/>
+            <div id="loading-progress-container">
+                <progress id="chrome-loading-progress" value=0 max=1>
+                    <div id="safari-loading-progress"></div>
+                </progress>
+            </div>
+        </div>
+        <div class="cleaner-warning">
+            <a href="#" i18n="seeing_this_every_time_you_start_your_browser">Seeing this every time you start your browser?</a>
+        </div>
+        </div>
+
+        <!-- card -->
+        <div class="card" id="last-step">
+        <!-- main -->
+        <div id="main">
+            <!-- pitch -->
+            <div id="pitch">
+                <!-- Make sure the right image is shown once the experiment ends, right now they're switched, new logo is variant -->
+                <div style="float:left; margin-right: 5px; margin-bottom: 5px" id="ab_logo_div">
+                    <div>
+                        <img src="../images/adblock_logo_stripe_test.png" style="margin:5px; width: 130px; height: 130px;"><br/>
+                    </div>
+                </div>
+                <div style="float:left; margin-right: 5px; margin-bottom: 5px; display: none;" id="ab_logo_div_2">
+                    <div>
+                        <img src="../images/adblock_logo_stripe_test.png" style="margin:14px; width: 111px; height: 111px;"><br/>
+                    </div>
+                </div>
+
+                <div class="not-delayed" id="test_control_body">
+                    <h2 id="title" i18n="honor_system">The honor system</h2>
+                    <p>
+                        <span i18n="hi_from_adblock">Hi from the AdBlock Team.</span>  <span i18n="install_ty">Thank you for installing AdBlock!</span>
+                    </p>
+                    <div i18n="honor_ware" id="honor_gab">AdBlock is honor-ware, which means that we <b>trust each other</b> to be nice:</div>
+                    <br>
+                    <div id="ul_div">
+                        <ul id="bullet_ul" style="margin: 0px 0px 0px 10px">
+                            <li i18n="choose_the_price" id="gab_choose_price">You <b>pay what you can afford</b> for AdBlock. We let <b>you</b> choose the price.</li>
+                            <li i18n="thank_you_short" id="thank_you_letter">We'll send you a <b>thank you note</b> for paying.</li>
+                            <li i18n="refund" id="test_refund">You get a <b>refund</b> - and you can <b>keep AdBlock</b> - if you don't <i>love</i> it.</li>
+                        </ul>
+                    </div>
+                    <p i18n="eight_full_time" id="control_dev_count">
+                        AdBlock has <b>eight full time employees</b> that depend on your contributions and support.  We're
+                        trusting you a <i>lot</i>, but we think it's the decent thing to do.
+                    </p>
+                    <p id="variant_dev_count" style="display: none;">
+                        AdBlock has <b>ten full time employees</b> that depend on your contributions and support.  We're
+                        trusting you a <i>lot</i>, but we think it's the decent thing to do.
+                    </p>
+                    <p id="pamayc">
+                        <span i18n="pamayc_refund">Please pay as much as you can, since if you change your mind you have <b>60 days</b> to get a refund!</span>
+                    </p>
+                </div>
+            </div>
+            <!-- div end pitch -->
+
+          <div id="pmt_box_wrapper">
+            <!-- pay-controls -->
+            <div id="pay-controls">
+                <section name="pwyw_2" id="pwyw_2" class="payment">
+                    <div class="one-container">
+                    <div id="three">
+                        <div id="nafp_one_time_only">
+                            <span id="nafp_monthly" i18n="pwyw_amount_title_no_colon" style="font-size: 18px; display: none; font-weight: 700;">Name a fair price</span>
+                            <span i18n="pwyw_amount_title" id="nafp">Name a fair price (in USD):</span>
+                            <span i18n="pwyw_amount_title_generic" id="nafpg" style="display: none;">Name a fair price:</span>
+                            <select id="currency_dropdown" style="display: none;">
+                            </select>
+                        </div>
+                        <div style="display: flex; flex-direction: flow; align-items: center;" id="pmt-options-container">
+                            <div style="margin-top: 5px;">
+                                <div id="maotd" i18n="make_one_time_donation" style="display: none;">Make a <b>one time</b> donation:</div>                                <table style="margin-top: 5px;" id="payment_options_table3">
+                                    <tr>
+                                        <td>
+                                            <div>
+                                                <input type="radio" name="price3" id="1_radio3" value="5" style="margin: 3px 3px 0 0;">
+                                                <label><span class="currency_symbol">$</span><span id="1_value3">5</span></label>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="right_td">
+                                                <input type="radio" name="price3" id="2_radio3" value="10">
+                                                <label><span class="currency_symbol">$</span><span id="2_value3">10</span></label>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="right_td">
+                                                <input type="radio" name="price3" id="3_radio3" value="20">
+                                                <label><span class="currency_symbol">$</span><span id="3_value3">20</span></label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                        <div>
+                                            <input type="radio" name="price3" id="4_radio3" value="35" checked="" style="margin: 3px 3px 0 0;">                                            <label><span class="currency_symbol">$</span><span id="4_value3">35</span></label>
+                                        </div>
+                                        </td>
+                                        <td>
+                                            <div class="right_td">
+                                                <input type="radio" name="price3" id="5_radio3" value="50">
+                                                <label><span class="currency_symbol">$</span><span id="5_value3">50</span></label>
+                                            </div>
+                                        </td>
+                                        <td id="sixth_one_time_value">
+                                            <div class="right_td">
+                                                <input type="radio" name="price3" id="6_radio3" value="100">
+                                                <label><span class="currency_symbol">$</span><span id="6_value3">100</span></label>
+                                            </div>
+                                        </td>
+                                        <td id="custom_box_one_time">
+                                            <div class="right_td">
+                                                <input type="radio" name="price3" id="override3" value="35">
+                                                <span class="currency_symbol">$</span>
+                                                <input type="text" id="override-price3" size="7" placeholder="35.00">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="monthly_extension" style="display: none;">
+                            <div>&nbsp;</div>
+                            <hr style="height: 45px; color: rgba(0, 0, 0, .1); vertical-align: middle; margin: 0 20px;">
+                            </div>
+                            <div class="monthly_extension" style="margin-top: 5px; display: none;">
+                                <div id="oamd" i18n="or_monthly_donation">Or a <b>monthly</b> donation:</div>                                <table id="payment_options_table3_recurring" style="margin-top: 5px;">
+                                    <tr>
+                                        <td>
+                                            <div>
+                                                <input type="radio" name="price3" id="7_radio3" data-recurring="true" value="1.99" style="margin: 3px 3px 0 0;">
+                                                <label><span class="currency_symbol">$</span><span id="7_value3">1.99</span></label>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="right_td">
+                                                <input type="radio" name="price3" id="8_radio3" data-recurring="true" value="2.99">
+                                                <label><span class="currency_symbol">$</span><span id="8_value3">2.99</span></label>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="right_td">
+                                                <input type="radio" name="price3" id="9_radio3" data-recurring="true" value="3.99">
+                                                <label><span class="currency_symbol">$</span><span id="9_value3">3.99</span></label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                        <div>
+                                            <input type="radio" name="price3" id="10_radio3" data-recurring="true" value="4.99" style="margin: 3px 3px 0 0;">                                            <label><span class="currency_symbol">$</span><span id="10_value3">4.99</span></label>
+                                        </div>
+                                        </td>
+                                        <td>
+                                            <div class="right_td">
+                                                <input type="radio" name="price3" id="11_radio3" data-recurring="true" value="9.99">
+                                                <label><span class="currency_symbol">$</span><span id="11_value3">9.99</span></label>
+                                            </div>
+                                        </td>
+                                        <td id="custom_box_one_time">
+                                            <div class="right_td">
+                                                <input type="radio" name="price3" data-recurring="true" id="override3_recurring" value="4.99">
+                                                <span class="currency_symbol">$</span>
+                                                <input type="text" id="override-price3-recurring" size="7" placeholder="4.99">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            </div>
+                        </div><!-- end flexbox div -->
+                        <div class="guideline_one_time" style="display: none;">At least <span class="currency_symbol">$</span><span id="min-row-amount">5</span> to help cover fees, please!</div>
+                        <div class="guideline_recurring" style="display: none;">At least <span class="currency_symbol">$</span><span id="min-recurring-row-amount">0.99</span> per month to help cover fees, please!</div>
+                    </div><!-- end three div -->
+                    </div><!-- end one-container div -->
+                </section><!-- end pwyw_2 section -->
+
+                <!-- payout -->
+                <div id="payout">
+                <!-- :( -->
+                <div id="not-paying" style="display: none;">
+                    <div i18n="unlike_other">Unlike other ad-blockers, we rely on our users to stay afloat!  If you can afford to help AdBlock remain the best ad-blocker available, please do.</div>
+                    </br>
+                    <div i18n="cant_pay">Or, if you can't pay, please close this tab and continue to enjoy AdBlock with our blessing.</div>
+                    </br>
+                    <div i18n="by_the_way" i18n_replacement_el="other-ways-link">By the way: There are also <a target="_blank" href="https://help.getadblock.com/support/solutions/articles/6000055836">other ways you can support AdBlock</a> that don't cost you a cent! :)</div>
+                    <a target="_blank" id="other-ways-link" href="https://help.getadblock.com/support/solutions/articles/6000055836"></a>
+                </div>
+                <!-- END :( -->
+                </div>
+                <!-- END payout -->
+                <!-- EXPERIMENT CODE -->
+                <div id="payment-br-div">
+                    <br/>
+                </div>
+                <!-- payment types -->
+                <div id="payment-types" style="display: none;">
+                    <div class="call-to-action" id="pay-with" i18n="pay_with">Pay with:</div>
+                    <div id="stripeContainer">
+                    <button id="stripeButton" class="stripe-button payment-button">
+                    <span i18n="credit_card" id="lock">Credit card</span>
+                    </button>
+                    </div>
+                    <div class="paypal-button payment-button"></div>
+                    <div class="ideal-button" style="display: none;"></div>
+                    <div class="alipay-button" style="display: none;"></div>
+                </div>
+                <!-- END payment-types -->
+
+            <div id="bottom-full-spacer" style="margin-top: 7px;">
+                &nbsp;
+            </div>
+          </div><!-- end pmt box wrapper -->
+
+        <div id="aa-callout">
+            <h2 i18n="quick_note" style="margin-bottom: 10px; font-size: 150%;">A quick note before you go</h2>
+            <p>
+                <span i18n="started_blocking">
+                    AdBlock started blocking intrusive ads the moment it was installed. But you may see <b>a few non-intrusive ads</b> on some sites.
+                </span>
+                <span i18n="good_neighbors" i18n_replacement_el="aa-helpdesk-link">
+                    We try to be
+                    <a href="https://help.getadblock.com/support/solutions/articles/6000092027-why-does-adblock-allow-some-ads-to-appear-" target="_blank">
+                        good web neighbors
+                    </a>
+                    by striking a balance between protecting you from bad ads and depriving responsible sites of the revenue they need to provide the content
+                    you love.
+                </span>
+                <a id="aa-helpdesk-link" href="https://help.getadblock.com/support/solutions/articles/6000092027-why-does-adblock-allow-some-ads-to-appear-" target="_blank"></a>
+
+                <span i18n="opt_out" i18n_replacement_el="disableacceptableads">
+                    You can <a id="disableacceptableads" href="#">opt out now</a> or turn this setting on or off later in AdBlock's options.
+                </span>
+                <a id="disableacceptableads" href="#"></a>
+
+                <span i18n="your_choice">
+                    It's your choice, always.
+                </span>
+            </p>
+
+            <h4 i18n="help_an_email_away">Help is just an email away</h4>
+            <p i18n="need_us" i18n_replacement_el="helpdesk-link">
+                If you ever need us, 24x7 self-help and 8x5 email help is available on our support portal,
+                <a href="https://help.getadblock.com" target="_blank">help.getadblock.com</a>.
+            </p>
+            <a id="helpdesk-link" href="https://help.getadblock.com" target="_blank"></a>
+            <span i18n="thanks_again">Thanks again for choosing AdBlock.</span>
+            <span i18n="happy_browsing">Happy browsing!</span>
+            <p>
+                <span i18n="love">Love,</span>
+                <br />
+                <span i18n="the_adblock_team">The AdBlock Team</span>
+            </p>
+            <p>
+                <span i18n="adblock_mobile">
+                    P.S. AdBlock blocks web ads on <b>mobile devices</b>, too!
+                </span>
+                <span i18n="mobile_links">
+                    Get <a href="https://itunes.apple.com/us/app/adblock-for-mobile/id1036484810?mt=8" target="_blank">
+                        AdBlock for iOS
+                    </a> in the App Store or
+                    <a href="https://play.google.com/store/apps/details?id=com.betafish.adblocksbrowser" target="_blank">
+                        AdBlock for Samsung Internet
+                    </a> in Google Play.
+                </span>
+            </p>
+        </div>
+
+            <!-- payment thank you -->
+            <div style="display: none;" id="cc_success">
+                <h1 i18n="payment_sent">Payment Sent!  Thanks!</h1>
+            </div>
+            <!-- END payment thank you -->
+        </div>
+        <!-- END main -->
+        </div>
+        <!-- END card -->
+    </div>
+
+    <!-- END wrapper -->
+    <script src="js/donations.js?v=1548790070"></script>
+    <script type="text/javascript">
+        if (typeof _experiment !== "undefined" && _experiment.isExperimentRunning("*") && _experiment.xNumber("*") === 647) {
+            $("#control_dev_count").hide();
+            $("#variant_dev_count").show();
+        }
+    </script>
+</body>
+</html>
+qÿCÛeˆ      \šÕª\šÕ²@0SY       5    :https://getadblock.com/installed/?u=11sjblb351114237 strongly-framed 1 security-info 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 request-method GET response-head HTTP/1.1 200 OK
+Server: nginx
+Date: Wed, 27 Mar 2019 01:45:16 GMT
+Content-Type: text/html; charset=UTF-8
+ original-response-headers Server: nginx
+Date: Wed, 27 Mar 2019 01:45:16 GMT
+Content-Type: text/html; charset=UTF-8
+Transfer-Encoding: chunked
+Connection: keep-alive
+ uncompressed-len 0 net-response-time-onstart 2313 net-response-time-onstop 2420 predictor::resource-count 22 predictor::https://fonts.googleapis.com/css?family=Lato:400,700 1,1,1553651114,4096 predictor::https://getadblock.com/js/experiment.js?v=1539375595 1,1,1553651114,4096 predictor::https://getadblock.com/js/user.js?var=1.1.1b 1,1,1553651114,4096 predictor::https://getadblock.com/installed/js/jquery.min.js 1,1,1553651114,4097 predictor::https://getadblock.com/i18n/localesIndex.js 1,1,1553651114,4097 predictor::https://getadblock.com/i18n/i18n.js?v=1541623131 1,1,1553651114,4096 predictor::https://getadblock.com/js/log.js?v=1547579504 1,1,1553651114,4096 predictor::https://getadblock.com/js/ga.js 1,1,1553651114,4097 predictor::https://js.stripe.com/v3/ 1,1,1553651114,4096 predictor::https://checkout.stripe.com/v3/checkout.js 1,1,1553651114,4096 predictor::https://getadblock.com/js/payment/lib/payment_libs.js?v=1550179537 1,1,1553651114,4096 predictor::https://getadblock.com/js/currency.js?v=1542231032 1,1,1553651114,4096 predictor::https://getadblock.com/installed/css/donations.css?v=1552578695 1,1,1553651114,4096 predictor::https://getadblock.com/css/stripeButton.css 1,1,1553651114,4097 predictor::https://getadblock.com/installed/css/index.css?v=1.0.0b 1,1,1553651114,4096 predictor::https://getadblock.com/images/adblock_logo_stripe_test.png 1,1,1553651114,4097 predictor::https://getadblock.com/installed/js/donations.js?v=1548790070 1,1,1553651114,4096 predictor::https://www.google-analytics.com/analytics.js 1,1,1553651114,4096 predictor::https://fonts.gstatic.com/s/lato/v15/S6uyw4BMUTPHjx4wXg.woff2 1,1,1553651114,4096 predictor::https://fonts.gstatic.com/s/lato/v15/S6u9w4BMUTPHh6UVSwiPGQ.woff2 1,1,1553651114,4096 predictor::https://www.google-analytics.com/r/collect?v=1&_v=j73&a=704339451&t=pageview&_s=1&dl=https%3A%2F%2Fgetadblock.com%2Finstalled%2F%3Fu%3D11sjblb351114237&ul=en-us&de=UTF-8&dt=AdBlock%20is%20now%20installed!&sd=24-bit&sr=1920x1200&vp=1280x966&je=0&_u=IEBAAAAB~&jid=810892224&gjid=163701844&cid=307823770.1553651118&tid=UA-30459713-5&_gid=913154752.1553651118&_r=1&z=1627006569 1,1,1553651114,4096 predictor::https://getadblock.com/images/smallWhiteLock.png 1,1,1553651114,4096   V

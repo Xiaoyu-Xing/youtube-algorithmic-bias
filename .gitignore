@@ -1,11 +1,11 @@
-data/
-output/
+raw_reddit_data/
+generated_profiles_output/
 *.zip
 from_Huyen/
 __*__/
 .ipynb_checkpoints/
-*.log
+*/geckodriver.log
 */*.py[cod]
-log/
+#firefox binary folders
 */firefox/
 __pycache__/
