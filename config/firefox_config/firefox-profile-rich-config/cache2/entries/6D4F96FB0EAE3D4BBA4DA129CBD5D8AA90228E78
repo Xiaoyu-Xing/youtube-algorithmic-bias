@@ -1,0 +1,901 @@
+{
+  "now_you_have_adblock_hooray":{
+    "message":"Now you have AdBlock!  Hooray!",
+    "description":"Install page title.  'Hooray' is a silly word shouted when you are excited, for example if your team just won a game."
+  },
+  "any_new_tabs_you_open_Will_be_automatically_ad_free":{
+    "message":"Any new tabs you open will be automatically ad-free.",
+    "description":"Install page subtitle"
+  },
+  "installing_adblock":{
+    "message":"Installing AdBlock...",
+    "description":"Install page: shown while progress bar loads"
+  },
+  "done":{
+    "message":"done.",
+    "description":"Install page: appended to the 'installing_adblock' message once the progress bar reaches 100%"
+  },
+  "seeing_this_every_time_you_start_your_browser":{
+    "message":"Seeing this every time you start your browser?",
+    "description":"Install page: link to click for help"
+  },
+  "filecleanerwarning":{
+    "message":"If you see this message every time you start AdBlock, please make sure you are not using a file cleaner that also cleans 'localStorage' files.",
+    "description":"Help for users who use hyperactive file cleaners"
+  },
+  "for_more_options_right_click":{
+    "message":"For more options, you can right click web pages or click the $img$ toolbar button.",
+    "description":"Install page: explaining how to use adblock in more detail.",
+    "placeholders":{
+      "img":{
+        "content":"<img src=\"..\/..\/img\/icon19.png\"\/>",
+        "example":"A small picture of the toolbar button.  Do not translate."
+      }
+    }
+  },
+  "installedtitle":{
+    "message":"AdBlock is now installed!",
+    "description":"Title for the installation success page"
+  },
+  "honor_system":{
+    "message":"The honor system",
+    "description":"Donation page string"
+  },
+  "pamayc_refund":{
+    "message":"Please pay as much as you can, since if you change your mind you have <b>60 days<\/b> to get a refund!",
+    "description":"Donation page string"
+  },
+  "paymac_trusting":{
+    "message":"Are we naïve for trusting you to pay?  I guess we'll find out :)",
+    "description":"Donation page string"
+  },
+  "pwyw_amount_title":{
+    "message":"Name a fair price (in USD):",
+    "description":"Phrase before user selects a price"
+  },
+  "pwyw_amount_title_generic":{
+    "message":"Name a fair price:",
+    "description":"Phrase before user selects a price"
+  },
+  "pwyw_amount_title_no_colon":{
+    "message":"Name a fair price",
+    "description":"Phrase before user selects a price"
+  },
+  "make_one_time_donation":{
+    "message":"Make a <b>one time<\/b> donation:",
+    "description":"Header above one time donation section"
+  },
+  "or_monthly_donation":{
+    "message":"Or a <b>monthly<\/b> donation:",
+    "description":"Header above monthly donation section"
+  },
+  "pwyw_amount_hint":{
+    "message":"At least $5 to help cover fees, please!",
+    "description":"Displayed when the user types in less than 5 US dollars."
+  },
+  "pwyw_amount_hint_generic":{
+    "message":"At least $amount$ to help cover fees, please!",
+    "description":"Displayed when the user types in a very small amount. The placeholder will automatically be replaced by an amount and the correct currency for the user's country, such as $5, £4, or 5€.",
+    "placeholders":{
+      "amount":{
+        "content":"<span id=\"min-row-span\"><span class=\"currency_symbol\">&#36;<\/span><span id=\"min-row-amount\">5<\/span><\/span>",
+        "example":"$5"
+      }
+    }
+  },
+  "pwyw_amount_hint_generic_recurring":{
+    "message":"At least $amount$ per month to help cover fees, please!",
+    "description":"Displayed when the user types in a very small amount. The placeholder will automatically be replaced by an amount and the correct currency for the user's country, such as $5, £4, or 5€.",
+    "placeholders":{
+      "amount":{
+        "content":"<span id=\"min-row-span\"><span class=\"currency_symbol\">&#36;<\/span><span id=\"min-row-amount\">5<\/span><\/span>",
+        "example":"$5"
+      }
+    }
+  },
+  "payment_sent":{
+    "message":"Payment Sent!  Thanks!",
+    "description":"Donation page string"
+  },
+  "payment_sent_2":{
+    "message":"Thanks!  We'll charge your card soon.",
+    "description":"Donation page string"
+  },
+  "currency_converter":{
+    "message":"Currency converter",
+    "description":"Donation page string"
+  },
+  "other":{
+    "message":"other...",
+    "description":"Donation page string"
+  },
+  "pay_with":{
+    "message":"Pay with:",
+    "description":"Donation page string"
+  },
+  "credit_card":{
+    "message":"Credit card",
+    "description":"Donation page string"
+  },
+  "unlike_other":{
+    "message":"Unlike other ad-blockers, we rely on our users to stay afloat!  If you can afford to help AdBlock remain the best ad-blocker available, please do.",
+    "description":"Donation page string"
+  },
+  "cant_pay":{
+    "message":"Or, if you can't pay, please close this tab and continue to enjoy AdBlock with our blessing.",
+    "description":"Donation page string"
+  },
+  "by_the_way":{
+    "message":"By the way: There are also <a>other ways you can support AdBlock<\/a> that don't cost you a cent! :)",
+    "description":"Donation page string"
+  },
+  "honor_ware":{
+    "message":"AdBlock is honor-ware, which means that we <b>trust each other<\/b> to be nice:\n",
+    "description":"Donation page string"
+  },
+  "choose_the_price":{
+    "message":"You <b>pay what you can afford<\/b> for AdBlock. We let <b>you<\/b> choose the price.",
+    "description":"Donation page string"
+  },
+  "thank_you_short":{
+    "message":"We'll send you a <b>thank you note<\/b> for paying.",
+    "description":"Donation page string"
+  },
+  "refund":{
+    "message":"You get a <b>refund<\/b> - and you can <b>keep AdBlock<\/b> - if you don't <i>love<\/i> it.",
+    "description":"Donation page string"
+  },
+  "hi_from_adblock":{
+    "message":"Hi from the AdBlock Team.",
+    "description":"Alternate donation page introduction"
+  },
+  "enjoy_using":{
+    "message":"We hope you enjoy using AdBlock!",
+    "description":"For existing users who visit getadblock.com\/pay to donate"
+  },
+  "install_ty":{
+    "message":"Thank you for installing AdBlock!",
+    "description":"Show appreciation for just installing the extension"
+  },
+  "full_time_devs":{
+    "message":"AdBlock has <b>five full time developers<\/b> that depend on your contributions and support.  We're trusting you a <i>lot<\/i>, but we think it's the decent thing to do.",
+    "description":"Donations help support AdBlock and its team"
+  },
+  "eight_full_time":{
+    "message":"AdBlock has <b>eight full time employees<\/b> that depend on your contributions and support.",
+    "description":"Donations help support AdBlock and its team"
+  },
+  "trusting_you":{
+    "message":"We're trusting you a <i>lot<\/i>, but we think it's the decent thing to do.",
+    "description":"Donations help support AdBlock and its team"
+  },
+  "ads_that_dont_suck":{
+    "message":"Ads that don't stink",
+    "description":"Title for section about Acceptable Ads."
+  },
+  "aa_program":{
+    "message":"AdBlock now participates in the <a>Acceptable Ads Program<\/a>",
+    "description":"First half of the following sentence: AdBlock now participates in the Acceptable Ads Program and has partnered with the EFF in support of the new \"Do Not Track\" standard."
+  },
+  "eff_dnt":{
+    "message":"and has <a>partnered with the EFF<\/a> in support of the new \"Do Not Track\" standard.",
+    "description":"Second half of the following sentence: AdBlock now participates in the Acceptable Ads Program and has partnered with the EFF in support of the new \"Do Not Track\" standard."
+  },
+  "compensating_websites":{
+    "message":"These are both great starts towards compensating great websites for producing quality content in ways that don't degrade your web browsing experience or violate your privacy.",
+    "description":"Refers to the Acceptable Ads program and EFF's Do Not Track standard."
+  },
+  "block_all_ads":{
+    "message":"Want to block all ads?",
+    "description":"Subtitle for paragraph about disabling the Acceptable Ads filter list."
+  },
+  "disable_acceptable_ads":{
+    "message":"You can easily $opentag$disable Acceptable Ads$closetag$ and see no ads whatsoever, regardless of whether you donate to support AdBlock.",
+    "description":"Link to disable the Acceptable Ads filter list in AdBlock's options. The 'opentag' and 'closetag' placeholders will be replaced with relevant HTML 'A' tags.",
+    "placeholders":{
+      "opentag":{
+        "content":"<a id=\"disableacceptableads\" href=\"#\">",
+        "example":"<a id=\"disableacceptableads\" href=\"#\">"
+      },
+      "closetag":{
+        "content":"<\/a>",
+        "example":"<\/a>"
+      }
+    }
+  },
+  "feedback_better_job":{
+    "message":"We also welcome your feedback about how we can do the best job making your web experience enjoyable and secure, without punishing good websites for their hard work.",
+    "description":"Request for comments and suggestions about making both AdBlock and the web better."
+  },
+  "annoying_ads_blocked":{
+    "message":"Annoying ads will now be blocked",
+    "description":"Subtitle for section about blocking ads that are not considered as acceptable."
+  },
+  "encourage_websites":{
+    "message":"We'd like to encourage websites to use straightforward, unobtrusive advertising.",
+    "description":"The Acceptable Ads program is a plea to advertisers, their ad agencies, online ad networks and websites to stop making bad online advertising -- ads that are obnoxious, annoying and obtrusive."
+  },
+  "strict_guidelines":{
+    "message":"That's why we've established <a>strict guidelines<\/a> to identify acceptable ads, which are shown under default settings.",
+    "description":"Link to the criteria to define an ad as 'acceptable'. Ads on the Acceptable Ads filter list are not blocked by default."
+  },
+  "block_every_ad":{
+    "message":"If you still want to block every ad you can disable this in a few seconds.",
+    "description":"Emphasize on the fact that the Acceptable Ads filter list can be disabled easily to block all ads."
+  },
+  "available_ios":{
+    "message":"Now also available on your iPhone or iPad!",
+    "description":"Text next to 'Download on the App Store' button."
+  },
+  "stripe_secure":{
+    "message":"Securely processed by Stripe.com",
+    "description":"Message for the credit card payment pop-up window. Indicates that the transaction will be processed in a secure manner. Should preferably stay under 36 characters."
+  },
+  "adblock_updated":{
+    "message":"Your AdBlock has been updated!",
+    "description":"Update page title"
+  },
+  "version_number":{
+    "message":"(version $number$)",
+    "description":"Update page subtitle with the version number of the latest release",
+    "placeholders":{
+      "number":{
+        "content":"<span class=\"update_version_number\">3.16.0<\/span>",
+        "example":"3.16.0"
+      }
+    }
+  },
+  "blocked_ads_for_you":{
+    "message":"So far, we have blocked $number$ ads for you - and we are just getting started.",
+    "description":"Update page introduction. The placeholder will be replaced with the exact number of ads AdBlock has blocked for the user.",
+    "placeholders":{
+      "number":{
+        "content":"<span class=\"update_block_count\">1,500<\/span>",
+        "example":"1,500"
+      }
+    }
+  },
+  "blocked_ads_for_you_generic":{
+    "message":"Every day we block dozens of intrusive ads, pop-ups, and trackers for you―and we're just getting started.",
+    "description":"Generic update page introduction."
+  },
+  "release_includes":{
+    "message":"This release includes a number of important updates we think you're going to love.",
+    "description":"Update page introduction."
+  },
+  "note_sponsors":{
+    "message":"But first, a quick note to our sponsors:",
+    "description":"Update page introduction. 'Sponsors' refers to AdBlock users who would like to support the project."
+  },
+  "user_supported":{
+    "message":"AdBlock is user-supported software. We don't show you ads or sell your personal information to stay afloat.",
+    "description":"Update page, second paragraph."
+  },
+  "user_supported_free":{
+    "message":"AdBlock is <b>free<\/b>, user-supported software. We don't show you ads or sell your personal information to stay afloat.",
+    "description":"Update page, second paragraph."
+  },
+  "rely_on_contributions":{
+    "message":"<b>We rely on your contributions<\/b> to support the continuing development of AdBlock.",
+    "description":"Update page, second paragraph."
+  },
+  "not_possible_without_your_help":{
+    "message":"This release and all the good stuff we're working on <b>wouldn't be possible without your help<\/b>.",
+    "description":"Update page, second paragraph."
+  },
+  "please_fair_price":{
+    "message":"Please pay what you think is a fair price for not seeing the $number$ ads we've blocked for you so far. <b>Every donation helps!<\/b>",
+    "description":"Update page, second paragraph. The placeholder will be replaced with the exact number of ads AdBlock has blocked for the user.",
+    "placeholders":{
+      "number":{
+        "content":"<span class=\"update_block_count\">1,500<\/span>",
+        "example":"1,500"
+      }
+    }
+  },
+  "please_fair_price_generic":{
+    "message":"Please pay what you think is a fair price for not seeing the ads we've blocked for you so far. <b>Every donation helps!<\/b>",
+    "description":"Update page, second paragraph. The placeholder will be replaced with the exact number of ads AdBlock has blocked for the user."
+  },
+  "sixty_days_refund":{
+    "message":"And if you're not delighted, you have a full 60 days to get a refund.",
+    "description":"Update page, second paragraph."
+  },
+  "pay_what_you_can":{
+    "message":"Please pay what you can:",
+    "description":"Update page, donation message."
+  },
+  "introducing_features":{
+    "message":"Now that that's out of the way, here are some of the new features we've introduced in the last few versions of AdBlock. Even more changes are coming soon!",
+    "description":"Update page, section with enhancements or new features added in the latest release."
+  },
+  "introducing_features_this_release":{
+    "message":"Now that that's out of the way, here are some of the new features we've introduced. Even more changes are coming soon!",
+    "description":"Update page, section with enhancements or new features added in the latest release."
+  },
+  "hide_ads_on_facebook":{
+    "message":"<b>We can now hide ads on Facebook.<\/b> A new way to filter ad requests allows us to hide unblockable ads like the ones on Facebook.",
+    "description":"Feature or enhancement introduced in the lastest version of AdBlock."
+  },
+  "block_ads_more_sites":{
+    "message":"<b>We can now block more kinds of ads on more sites.<\/b> By blocking two of the ways ad companies are exploiting vulnerabilities in Chrome, we're making it harder to sneak ads past AdBlock on news, streaming video, and other popular sites.",
+    "description":"Feature or enhancement introduced in the lastest version of AdBlock."
+  },
+  "protect_you":{
+    "message":"<b>We now protect you from<\/b>",
+    "description":"Feature or enhancement introduced in the lastest version of AdBlock."
+  },
+  "cryptocurrency_miners":{
+    "message":"<b>cryptocurrency miners.<\/b>",
+    "description":"Feature or enhancement introduced in the lastest version of AdBlock."
+  },
+  "add_mining_protection":{
+    "message":"We have added protection against sites that use your computer to generate a profit by \"mining\" Bitcoin and other digital currencies without your consent.",
+    "description":"Feature or enhancement introduced in the lastest version of AdBlock."
+  },
+  "excited_improvements":{
+    "message":"We're excited about all the additional improvements we'll be bringing to AdBlock over the next few months.",
+    "description":"Update page, section with enhancements or new features added in the latest release."
+  },
+  "drop_us_a_line":{
+    "message":"Drop us a line.",
+    "description":"Link to send the AdBlock team a message with feedback."
+  },
+  "what_you_think":{
+    "message":"We'd love to know what you think.",
+    "description":"Invitation to send the AdBlock team a message with ideas or feedback."
+  },
+  "signed_adblock":{
+    "message":"Love,<br>AdBlock",
+    "description":"Signature (by AdBlock) at the end of the update page. 'Love' is used as a closing formula\/salutation and can be replaced with something like 'Thank you, AdBlock' or 'Signed, AdBlock' in your translation."
+  },
+  "ps_nothing_to_be_done":{
+    "message":"P.S. There's nothing you need to do to get the update. We've already done it for you. You're welcome!",
+    "description":"Postscript at the bottom of the update page. 'P.S.' is short for 'postcript', which is an additional remark at the end of a letter after the signature."
+  },
+  "love":{
+    "message":"Love,",
+    "description":"Sign-off on installed page. Used as a familiar alternative to \"sincerely\"."
+  },
+  "the_adblock_team":{
+    "message":"The AdBlock Team",
+    "description":"The signature on the installed page."
+  },
+  "click_here_to":{
+    "message":"Click here to",
+    "description":"Part 1 of message to click on the link to subscribe to a filter list."
+  },
+  "subscribe":{
+    "message":"subscribe",
+    "description":"Part 2 of message to click on the link to subscribe to a filter list. This is the link."
+  },
+  "to_this_filter_list":{
+    "message":"to this filter list.",
+    "description":"Part 3 of message to click on the link to subscribe to a filter list."
+  },
+  "dont_feel_like_donating":{
+    "message":"Don't feel like donating?",
+    "description":"Header for section about anonymous data collection."
+  },
+  "no_problem":{
+    "message":"No problem!",
+    "description":"Part 1 of message about anonymous data collection."
+  },
+  "improve_anonymous_info":{
+    "message":"You can still help us improve AdBlock by allowing us to collect anonymous information about the way you use it.",
+    "description":"Part 2 of message about anonymous data collection."
+  },
+  "what_data_will_we_collect":{
+    "message":"What data will we collect?",
+    "description":"Part 3 of message about anonymous data collection. This is a link to more information about the data collection."
+  },
+  "sure_ill_help":{
+    "message":"Sure, I'll help!",
+    "description":"Button to click to opt-in to anonymous data collection."
+  },
+  "update_adblock_updated":{
+    "message":"Your AdBlock has been updated!",
+    "description":"Update page title"
+  },
+  "update_version_number":{
+    "message":"(version $number$)",
+    "description":"Update page subtitle with the version number of the latest release",
+    "placeholders":{
+      "number":{
+        "content":"<span class=\"update_version_number\">3.27.0<\/span>",
+        "example":"3.27.0"
+      }
+    }
+  },
+  "update_hard_at_work":{
+    "message":"We’ve been hard at work improving AdBlock over the last few months.",
+    "description":"Update page introduction"
+  },
+  "update_new_features_improvements":{
+    "message":"Our most recent releases include a ton of new features and improvements.",
+    "description":"Update page introduction"
+  },
+  "update_quick_note":{
+    "message":"We’ve provided an overview of what we’ve been working on below, but first a quick note to our sponsors:",
+    "description":"Update page introduction"
+  },
+  "update_adblock_free":{
+    "message":"AdBlock is <b>free<\/b>, user-supported software.",
+    "description":"Update page, second paragraph"
+  },
+  "update_wouldnt_be_possible":{
+    "message":"This release and all the other good stuff we're working on <b>wouldn't be possible without your help<\/b>.",
+    "description":"Update page, second paragraph"
+  },
+  "update_blocked_ads_for_you":{
+    "message":"Please pay what you think is a fair price for not seeing the <b>$number$ ads<\/b> we've blocked for you so far.",
+    "description":"Update page, second paragraph. The placeholder will be replaced with the exact number of ads AdBlock has blocked for the user.",
+    "placeholders":{
+      "number":{
+        "content":"<span class=\"update_block_count\">1,500<\/span>",
+        "example":"1,500"
+      }
+    }
+  },
+  "update_every_donation_helps":{
+    "message":"<b>Every donation helps!<\/b>",
+    "description":"Update page, second paragraph"
+  },
+  "update_pay_what_you_can":{
+    "message":"Please pay what you can:",
+    "description":"Update page, donation message."
+  },
+  "update_pay_with":{
+    "message":"Pay with:",
+    "description":"Donation page string"
+  },
+  "update_overview_of_features":{
+    "message":"Here is an overview of just a few of the new features we've introduced in the last few versions of AdBlock.",
+    "description":"Update page, section with enhancements or new features added in the latest release."
+  },
+  "update_more_changes_soon":{
+    "message":"Even more changes are coming soon!",
+    "description":"Update page, section with enhancements or new features added in the latest release."
+  },
+  "update_faster_and_privacy":{
+    "message":"<b>Faster browsing and privacy protection.<\/b>",
+    "description":"Feature or enhancement introduced in the lastest version of AdBlock."
+  },
+  "update_load_faster_and_harder_tracking":{
+    "message":"We’ve implemented a feature that helps websites load faster and makes it harder for companies to track you by redirecting certain requests for widely-used files.",
+    "description":"Feature or enhancement introduced in the lastest version of AdBlock."
+  },
+  "update_local_caching":{
+    "message":"We call this our local caching feature and you can learn more about it $opentag$on our blog$closetag$.",
+    "description":"Feature or enhancement introduced in the lastest version of AdBlock.",
+    "placeholders":{
+      "opentag":{
+        "content":"<a id=\"bloglink\" href=\"#\">",
+        "example":"<a id=\"bloglink\" href=\"#\">"
+      },
+      "closetag":{
+        "content":"<\/a>",
+        "example":"<\/a>"
+      }
+    }
+  },
+  "update_temporarily_pause":{
+    "message":"<b>A new way to temporarily pause AdBlock.<\/b>",
+    "description":"Feature or enhancement introduced in the lastest version of AdBlock."
+  },
+  "update_automatically_back_on":{
+    "message":"We’ve added a pause feature that automatically turns AdBlock back on when you browse to a different site.",
+    "description":"Feature or enhancement introduced in the lastest version of AdBlock."
+  },
+  "update_easier_to_visit":{
+    "message":"This makes it easier to visit sites that ask you to turn off AdBlock.",
+    "description":"Feature or enhancement introduced in the lastest version of AdBlock."
+  },
+  "update_old_pause_still_there":{
+    "message":"Don’t worry the old pause feature didn’t go anywhere, it’s still there too!",
+    "description":"Feature or enhancement introduced in the lastest version of AdBlock."
+  },
+  "update_excited_additional_improvements":{
+    "message":"We're excited about these and all the additional improvements we'll be bringing to AdBlock over the next few months.",
+    "description":"Update page, section with enhancements or new features added in the latest release."
+  },
+  "update_drop_us_a_line":{
+    "message":"Drop us a line.",
+    "description":"Link to send the AdBlock team a message with feedback."
+  },
+  "update_know_what_you_think":{
+    "message":"We'd love to know what you think.",
+    "description":"Invitation to send the AdBlock team a message with ideas or feedback."
+  },
+  "update_love_adblock":{
+    "message":"Love,<br>AdBlock",
+    "description":"Signature (by AdBlock) at the end of the update page. 'Love' is used as a closing formula\/salutation and can be replaced with something like 'Thank you, AdBlock' or 'Signed, AdBlock' in your translation."
+  },
+  "update_pwyw_amount_title_no_colon":{
+    "message":"Name a fair price",
+    "description":"Phrase before user selects a price"
+  },
+  "update_make_one_time_donation":{
+    "message":"Make a <b>one time<\/b> donation:",
+    "description":"Header above one time donation section"
+  },
+  "update_or_monthly_donation":{
+    "message":"Or a <b>monthly<\/b> donation:",
+    "description":"Header above monthly donation section"
+  },
+  "update_pwyw_amount_hint_generic":{
+    "message":"At least $amount$ to help cover fees, please!",
+    "description":"Displayed when the user types in a very small amount. The placeholder will automatically be replaced by an amount and the correct currency for the user's country, such as $5, £4, or 5€.",
+    "placeholders":{
+      "amount":{
+        "content":"<span id=\"min-row-span\"><span class=\"currency_symbol\">&#36;<\/span><span id=\"min-row-amount\">5<\/span><\/span>",
+        "example":"$5"
+      }
+    }
+  },
+  "update_pwyw_amount_hint_generic_recurring":{
+    "message":"At least $amount$ per month to help cover fees, please!",
+    "description":"Displayed when the user types in a very small amount. The placeholder will automatically be replaced by an amount and the correct currency for the user's country, such as $5, £4, or 5€.",
+    "placeholders":{
+      "amount":{
+        "content":"<span id=\"min-row-span\"><span class=\"currency_symbol\">&#36;<\/span><span id=\"min-row-amount\">5<\/span><\/span>",
+        "example":"$5"
+      }
+    }
+  },
+  "update_payment_sent":{
+    "message":"Payment Sent!  Thanks!",
+    "description":"Donation page string"
+  },
+  "update_payment_sent_2":{
+    "message":"Thanks!  We'll charge your card soon.",
+    "description":"Donation page string"
+  },
+  "update_credit_card":{
+    "message":"Credit card",
+    "description":"Donation page string"
+  },
+  "ff_update_antitracking_feature":{
+    "message":"A $opentag$new feature$closetag$ that makes it harder for companies to track your browsing habits",
+    "description":"Link to article about our new local content caching feature. The 'opentag' and 'closetag' placeholders will be replaced with relevant HTML 'A' tags.",
+    "placeholders":{
+      "opentag":{
+        "content":"<a id=\"articlelink\" href=\"#\">",
+        "example":"<a id=\"articlelink\" href=\"#\">"
+      },
+      "closetag":{
+        "content":"<\/a>",
+        "example":"<\/a>"
+      }
+    }
+  },
+  "ff_update_cryptomining_protection":{
+    "message":"Protection against sites that use your computer to $opentag$mine for cryptocurrency$closetag$",
+    "description":"Link to article aobut new anti-cryptomining feature. The 'opentag' and 'closetag' placeholders will be replaced with relevant HTML 'A' tags.",
+    "placeholders":{
+      "opentag":{
+        "content":"<a id=\"articlelink\" href=\"#\">",
+        "example":"<a id=\"articlelink\" href=\"#\">"
+      },
+      "closetag":{
+        "content":"<\/a>",
+        "example":"<\/a>"
+      }
+    }
+  },
+  "ff_update_improve_blocking":{
+    "message":"A series of fixes to improve our ad blocking abilities and decrease page load times",
+    "description":"Description of improvements made in this update."
+  },
+  "update_adblock_updated_logo":{
+    "message":"Your $logo$ has been updated",
+    "description":"Update page title. The placeholder will be replaced with the AdBlock logo.",
+    "placeholders":{
+      "logo":{
+        "content":"<div id='logo'><\/div>",
+        "example":"<div id='logo'><\/div>"
+      }
+    }
+  },
+  "update_busy_improving":{
+    "message":"We've been busy making AdBlock better.",
+    "description":"Update page subtitle."
+  },
+  "update_recent_updates":{
+    "message":"We want the Internet to be safer and more enjoyable to use, so we've recently made a number of updates to AdBlock, including:",
+    "description":"Update page introduction to improvements made in this version."
+  },
+  "update_rely_your_contributions":{
+    "message":"We rely on your contributions to keep AdBlock going.",
+    "description":"Update page conclusion."
+  },
+  "update_made_possible_donations":{
+    "message":"This work and all of the work we have planned this year for AdBlock is made possible by donations from people like you.",
+    "description":"Update page conclusion."
+  },
+  "update_every_donation_helps_simple":{
+    "message":"Every donation helps!",
+    "description":"Update page conclusion."
+  },
+  "update_we_appreciate_it":{
+    "message":"We appreciate it!",
+    "description":"Update page conclusion."
+  },
+  "update_select_support":{
+    "message":"Select your support",
+    "description":"Update page payment text."
+  },
+  "update_monthly_donation":{
+    "message":"Monthly donation",
+    "description":"Update page payment text."
+  },
+  "update_ont_time_donation":{
+    "message":"One-time donation",
+    "description":"Update page payment text."
+  },
+  "update_choose_payment":{
+    "message":"Choose payment:",
+    "description":"Update page payment text."
+  },
+  "pay_what_you_can_no_colon":{
+    "message":"Pay what you can",
+    "description":"Update page, title above payment block"
+  },
+  "donate_support_adblock":{
+    "message":"Please donate to support AdBlock",
+    "description":"Update page, title above summary of changes made in this version"
+  },
+  "home_footer_btn":{
+    "message":"home",
+    "description":"Button in the footer"
+  },
+  "contributors_footer_btn":{
+    "message":"contributors",
+    "description":"Button in the footer"
+  },
+  "support_footer_btn":{
+    "message":"support",
+    "description":"Button in the footer"
+  },
+  "privacy_policy":{
+    "message":"privacy policy",
+    "description":"Button in the footer"
+  },
+  "blog":{
+    "message":"blog",
+    "description":"Button in the footer"
+  },
+  "license_gplv3":{
+    "message":"LICENSE (GPLv3)",
+    "description":"Button in the footer. Do not translate 'GPLv3', and have the word 'LICENSE' in uppercase."
+  },
+  "quick_note":{
+    "message":"A quick note before you go",
+    "description":"Title for the informational section of the donation page"
+  },
+  "started_blocking":{
+    "message":"AdBlock started blocking intrusive ads the moment it was installed. But you may see <b>a few non-intrusive ads<\/b> on some sites.",
+    "description":"Message letting the user know that AdBlock starts working immediately and that Acceptable Ads are enabled."
+  },
+  "good_neighbors":{
+    "message":"We try to be $opentag$good web neighbors$closetag$ by striking a balance between protecting you from bad ads and depriving responsible sites of the revenue they need to provide the content you love.",
+    "description":"Information about Acceptable Ads. Links to our knowledge base article about Acceptable Ads.",
+    "placeholders":{
+      "opentag":{
+        "content":"<a id=\"aalink\" href=\"#\">",
+        "example":"<a id=\"aalink\" href=\"#\">"
+      },
+      "closetag":{
+        "content":"<\/a>",
+        "example":"<\/a>"
+      }
+    }
+  },
+  "opt_out":{
+    "message":"You can $opentag$opt out now$closetag$ or turn this setting on or off later in AdBlock's options.",
+    "description":"Message about opting out of Acceptable Ads. Link disables Acceptable Ads.",
+    "placeholders":{
+      "opentag":{
+        "content":"<a id=\"disableaalink\" href=\"#\">",
+        "example":"<a id=\"disableaalink\" href=\"#\">"
+      },
+      "closetag":{
+        "content":"<\/a>",
+        "example":"<\/a>"
+      }
+    }
+  },
+  "your_choice":{
+    "message":"It's your choice, always.",
+    "description":"Continuation of message about opting out of Acceptable Ads."
+  },
+  "help_an_email_away":{
+    "message":"Help is just an email away",
+    "description":"Subtitle for section of donation page about contacting us."
+  },
+  "need_us":{
+    "message":"If you ever need us, 24x7 self-help and 8x5 email help is available on our support portal, $helplink$.",
+    "description":"Link to our support website",
+    "placeholders":{
+      "helplink":{
+        "content":"<a href=\"https:\/\/help.getadblock.com\">help.getadblock.com<\/a>",
+        "example":"<a href=\"https:\/\/help.getadblock.com\">help.getadblock.com<\/a>"
+      }
+    }
+  },
+  "thanks_again":{
+    "message":"Thanks again for choosing AdBlock.",
+    "description":"Closing message on donation page"
+  },
+  "happy_browsing":{
+    "message":"Happy browsing!",
+    "description":"Exclamation wishing the user an enjoyable browsing experience."
+  },
+  "p_s":{
+    "message":"P.S.",
+    "description":"'P.S.' is short for 'postcript', which is an additional remark at the end of a letter after the signature."
+  },
+  "adblock_mobile":{
+    "message":"AdBlock blocks web ads on <b>mobile devices<\/b>, too!",
+    "description":"Part of postcript on donation page."
+  },
+  "mobile_links":{
+    "message":"Get $opentag1$AdBlock for iOS$closetag1$ in the App Store or $opentag2$AdBlock for Samsung Internet$closetag2$ in Google Play.",
+    "description":"Links to our mobile products",
+    "placeholders":{
+      "opentag1":{
+        "content":"<a id=\"ioslink\" href=\"#\">",
+        "example":"<a id=\"ioslink\" href=\"#\">"
+      },
+      "closetag1":{
+        "content":"<\/a>",
+        "example":"<\/a>"
+      },
+      "opentag2":{
+        "content":"<a id=\"samsunglink\" href=\"#\">",
+        "example":"<a id=\"samsunglink\" href=\"#\">"
+      },
+      "closetag2":{
+        "content":"<\/a>",
+        "example":"<\/a>"
+      }
+    }
+  },
+  "recent_releases":{
+    "message":"Recent releases have included a slew of new features and improvements.",
+    "description":"Part of the intro on the update page."
+  },
+  "highlighted":{
+    "message":"We've highlighted a few of them below, but first a quick note to our sponsors:",
+    "description":"Part of the intro on the update page."
+  },
+  "free_user_supported":{
+    "message":"AdBlock is <b>free<\/b>, user-supported software.",
+    "description":"Part of the intro on the update page."
+  },
+  "release_not_possible":{
+    "message":"This release and everything else we do <b>wouldn't be possible without you<\/b>.",
+    "description":"Part of the intro on the update page."
+  },
+  "donate_fair_price":{
+    "message":"Please donate what you think is a fair price for not seeing annoying, intrusive ads on every website you visit.",
+    "description":"Part of the intro on the update page."
+  },
+  "pause_unpause":{
+    "message":"Quickly pause and unpause AdBlock using keyboard shortcuts.",
+    "description":"Feature or enhancement introduced in the lastest version of AdBlock."
+  },
+  "keyboard_commands":{
+    "message":"By popular demand, we made it easy to pause and resume blocking ads with keyboard commands.",
+    "description":"Feature or enhancement introduced in the lastest version of AdBlock."
+  },
+  "better_blocking":{
+    "message":"Better blocking of ads that try to get around AdBlock.",
+    "description":"Feature or enhancement introduced in the lastest version of AdBlock."
+  },
+  "circumvention_industry":{
+    "message":"An industry has formed around forcing ads on users who have chosen not to see them, using advanced ad technology to circumvent ad blockers.",
+    "description":"Feature or enhancement introduced in the lastest version of AdBlock."
+  },
+  "new_filter_list":{
+    "message":"AdBlock now includes a new filter list that makes defeating that aggressive technology easier.",
+    "description":"Feature or enhancement introduced in the lastest version of AdBlock."
+  },
+  "subscribe_here":{
+    "message":"If you'd like to try out this new filter list, $opentag$subscribe here$closetag$.",
+    "description":"Link to subscribe to the Anti-Circumvention filter list",
+    "placeholders":{
+      "opentag":{
+        "content":"<a id=\"subscribelink\" href=\"#\">",
+        "example":"<a id=\"subscribelink\" href=\"#\">"
+      },
+      "closetag":{
+        "content":"<\/a>",
+        "example":"<\/a>"
+      }
+    }
+  },
+  "improved_ad_hiding":{
+    "message":"Improved ad hiding.",
+    "description":"Feature or enhancement introduced in the lastest version of AdBlock."
+  },
+  "futher_improved_hiding":{
+    "message":"We have further improved our ability to hide ad elements on many websites.",
+    "description":"Feature or enhancement introduced in the lastest version of AdBlock."
+  },
+  "unsubscribe_here":{
+    "message":"We've automatically subscribed you to this filter list, but you can always $opentag$unsubscribe here$closetag$.",
+    "description":"Link to unsubscribe from the Anti-Circumvention filter list",
+    "placeholders":{
+      "opentag":{
+        "content":"<a id=\"disableanticircumvention\" href=\"#\">",
+        "example":"<a id=\"disableanticircumvention\" href=\"#\">"
+      },
+      "closetag":{
+        "content":"<\/a>",
+        "example":"<\/a>"
+      }
+    }
+  },
+  "improve_memory_and_ads":{
+    "message":"Improvements in memory usage and ad hiding.",
+    "description":"Feature or enhancement introduced in the lastest version of AdBlock."
+  },
+  "reduce_memory":{
+    "message":"We updated AdBlock to reduce its initial memory usage by 8%.",
+    "description":"Feature or enhancement introduced in the lastest version of AdBlock."
+  },
+  "improve_hiding_ability":{
+    "message":"We also further improved our ability to hide ad elements on many websites.",
+    "description":"Feature or enhancement introduced in the lastest version of AdBlock."
+  },
+  "pause_context_menu":{
+    "message":"Quickly pause and unpause AdBlock using the context (right-click) menu.",
+    "description":"Feature or enhancement introduced in the lastest version of AdBlock."
+  },
+  "easier_pause_resume":{
+    "message":"By popular demand, we made it easier to pause and resume blocking ads.",
+    "description":"Feature or enhancement introduced in the lastest version of AdBlock."
+  },
+  "right_click_menu":{
+    "message":"Just right-click the page wherever your cursor is, and select an option from the AdBlock menu.",
+    "description":"Feature or enhancement introduced in the lastest version of AdBlock."
+  },
+  "more_ad_blocking":{
+    "message":"More and better ad blocking.",
+    "description":"Feature or enhancement introduced in the lastest version of AdBlock."
+  },
+  "new_list_anticircumvention":{
+    "message":"AdBlock now includes a new filter list that makes defeating aggressive ad technology easier.",
+    "description":"Feature or enhancement introduced in the lastest version of AdBlock."
+  },
+  "new_language_lists":{
+    "message":"We also added filter lists to block ads on Vietnamese, Norwegian, and Brazilian Portuguese websites.",
+    "description":"Feature or enhancement introduced in the lastest version of AdBlock."
+  },
+  "enhancements_improvements":{
+    "message":"Filter list enhancements, interface improvements, and a bug fix.",
+    "description":"Feature or enhancement introduced in the lastest version of AdBlock."
+  },
+  "other_fixes_improvements":{
+    "message":"We also updated links to a few filter lists and made others more secure; updated some translations and cleaned up the AdBlock menu; and fixed a bug in our blacklist and whitelist wizards.",
+    "description":"Feature or enhancement introduced in the lastest version of AdBlock."
+  }
+}
+�����      \�խ\�խ@0S[\�-   M    :https://getadblock.com/installed/i18n/_locales/en/messages.json?v=1541534310 strongly-framed 1 security-info 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 request-method GET response-head HTTP/1.1 200 OK
+Server: nginx
+Date: Wed, 27 Mar 2019 01:45:17 GMT
+Content-Type: application/json
+Content-Length: 39034
+Last-Modified: Fri, 02 Nov 2018 15:26:30 GMT
+ETag: "987a-579b028da8430"
+Accept-Ranges: bytes
+ original-response-headers Server: nginx
+Date: Wed, 27 Mar 2019 01:45:17 GMT
+Content-Type: application/json
+Content-Length: 39034
+Connection: keep-alive
+Last-Modified: Fri, 02 Nov 2018 15:26:30 GMT
+ETag: "987a-579b028da8430"
+Accept-Ranges: bytes
+ net-response-time-onstart 107 net-response-time-onstop 108   �z

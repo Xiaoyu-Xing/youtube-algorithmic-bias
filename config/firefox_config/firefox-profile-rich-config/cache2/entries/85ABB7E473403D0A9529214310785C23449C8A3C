@@ -1,0 +1,279 @@
+var _ADBLOCK_PROPER = "A";
+var _ADBLOCK_PREMIUM = "P";
+var abLogV2Url = "https://log.getadblock.com/v2/record_log.php";
+if (document.location.hostname !== undefined) {
+    if (document.location.hostname === "localhost" ||
+        (/^dev/).test(document.location.hostname) === true) {
+        abLogV2Url = "http://dev.log.getadblock.com/v2/record_log.php";
+    }
+}
+
+_logV2Message = function(event, params, callback) {
+    // Add basic params: userid, flavor, and os
+    params['u'] = getUserIdOrUnknown();
+    params['f'] = getBrowser();
+    params['o'] = getOSSingleChar();
+    params['l'] = getLanguage();
+    params['p'] = false;
+    params['psess'] = "";
+    params['wsrc'] = "core";
+    if (typeof isPremium === "function" && isPremium() === true) {
+        params['p'] = isPremium();
+        // get premium userid instead of regular
+        params['u'] = getPremiumUserIdOrUnknown();
+        if (typeof getPremiumSession === "function") {
+            params['psess'] = getPremiumSession();
+        }
+    }
+    
+    var payload = {'event':  event, 'payload': params};
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("post", abLogV2Url, true);
+
+    if (typeof callback === "function") {
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+                if (typeof callback === "function") {
+                    callback();
+                }
+            }
+        }
+    }
+
+    xhr.send(JSON.stringify(payload));
+}
+
+_logV2DownloadButtonClick = function(extension, loc) {
+    if (extension !== _ADBLOCK_PROPER && extension !== _ADBLOCK_PREMIUM) {
+        return;
+    }
+    if (typeof loc !== 'string') {
+        loc = "";
+    }
+    var payload = { 
+        "s": getPlainSource(), 
+        "exp": 0,
+        "var": 0,
+        "ext": extension,
+        "cid": "0",
+        "sid": "0",
+        "loc": loc
+    };
+
+    if (typeof _experiment !== 'undefined' && _experiment.isExperimentRunning("*")) {
+        payload['exp'] = _experiment.xNumber("*");
+        payload['var'] = _experiment.variantIndex("*") + 1;
+    }
+
+    if (typeof isPremium === 'function' && isPremium()) {
+        if (typeof getPremiumCid === 'function' && typeof getPremiumSid === 'function') {
+            payload['sid'] = getPremiumSid();
+            payload['cid'] = getPremiumCid();
+        }
+    }
+
+    _logV2Message("download_button_clicked", payload);
+}
+
+_logV2PaymentButtonClick = function(processor, cents, buttonType, isSubscription, subType) {
+    var isSub = isSubscription === true ? isSubscription : false;
+    var sType = typeof subType === "string" && isSub === true ? subType : "";
+    var payload = { 
+        "s": getPlainSource(), 
+        "processor": processor,
+        "buttonType": buttonType,
+        "cents": cents,
+        "exp": 0,
+        "var": 0,
+        "isSub": isSub,
+        "subType": sType,
+    };
+    if (typeof _experiment !== 'undefined' && _experiment.isExperimentRunning("*")) {
+        payload['exp'] = _experiment.xNumber("*");
+        payload['var'] = _experiment.variantIndex("*") + 1;
+    }
+    if (typeof isPremium === 'function' && isPremium()) {
+        _logV2PremiumPaymentButtonClick(payload);
+    } else {
+        _logV2Message("payment_button_clicked", payload);
+    }
+}
+
+_logV2PremiumPaymentButtonClick = function(payload) {
+    payload['sid'] = "0";
+    payload['cid'] = "0";
+    if (typeof getPremiumCid === 'function' && typeof getPremiumSid === 'function') {
+        payload['sid'] = getPremiumSid();
+        payload['cid'] = getPremiumCid();
+    }
+    _logV2Message("premium_payment_button_clicked", payload);
+}
+
+_logV2PageView = function(page, additionalParams) {
+    var payload = {
+        "s": getPlainSource(),
+        "exp": 0,
+        "var": 0,
+    };
+    if (typeof additionalParams === "object") {
+        for (var prop in additionalParams) {
+            payload[prop] = additionalParams[prop];
+        }
+    }
+    if (typeof _experiment !== 'undefined' && _experiment.isExperimentRunning("*")) {
+        payload['exp'] = _experiment.xNumber("*");
+        payload['var'] = _experiment.variantIndex("*") + 1;
+    }
+
+    _logV2Message(page + "_page_view", payload);
+}
+
+_logV2PremiumPageView = function(page, additionalParams) {
+    var payload = {
+        "exp": 0,
+        "var": 0,
+        "cid": "0",
+        "sid": "0",
+    };
+    if (typeof additionalParams === "object") {
+        for (var prop in additionalParams) {
+            payload[prop] = additionalParams[prop];
+        }
+    }
+    if (typeof _experiment !== 'undefined' && _experiment.isExperimentRunning("*")) {
+        payload['exp'] = _experiment.xNumber("*");
+        payload['var'] = _experiment.variantIndex("*") + 1;
+    }
+    if (typeof getPremiumCid === 'function' && typeof getPremiumSid === 'function') {
+        payload['sid'] = getPremiumSid();
+        payload['cid'] = getPremiumCid();
+    }
+    // Landing page needs special params
+    if (page === "landing_page") {
+        payload["abId"] = getUserIdOrUnknown();
+        payload["abprId"] = getPremiumUserIdOrUnknown();
+    }
+
+    _logV2Message("premium_" + page + "_page_view", payload);
+}
+
+_logV2UninstallReason = function(reason, miscText, t, bc, abclt, callback) {
+    var payload = {
+        "s": getPlainSource(),
+        "cid": "0",
+        "sid": "0",
+        "reason": reason,
+        "misc_text": miscText,
+        "t": t,
+        "bc": bc,
+        "abclt": abclt
+    }
+    
+    if (typeof isPremium === 'function' && isPremium()) {
+        if (typeof getPremiumCid === 'function' && typeof getPremiumSid === 'function') {
+            payload['sid'] = getPremiumSid();
+            payload['cid'] = getPremiumCid();
+        }
+    }
+
+    _logV2Message("uninstall_reason", payload, callback);
+}
+
+_logV2MiscButtonClick = function(buttonName, additionalParams, callback) {
+    var payload = {
+        "s": getPlainSource(),
+        "name": buttonName,
+        "exp": 0,
+        "var": 0,
+        "sid": "0",
+        "cid": "0",
+    }
+
+    if (typeof additionalParams === "object") {
+        for (var prop in additionalParams) {
+            payload[prop] = additionalParams[prop];
+        }
+    }
+    
+    if (typeof isPremium === 'function' && isPremium()) {
+        if (typeof getPremiumCid === 'function' && typeof getPremiumSid === 'function') {
+            payload['sid'] = getPremiumSid();
+            payload['cid'] = getPremiumCid();
+        }
+    }
+
+    if (typeof _experiment !== 'undefined' && _experiment.isExperimentRunning("*")) {
+        payload['exp'] = _experiment.xNumber("*");
+        payload['var'] = _experiment.variantIndex("*") + 1;
+    }
+
+    _logV2Message("misc_button_click", payload, callback);
+}
+
+_logV2MiscEvent = function(event_name, additionalParams, callback) {
+    var payload = {
+        "s": getPlainSource(),
+        "event_name": event_name,
+        "exp": 0,
+        "var": 0,
+    }
+
+    if (typeof additionalParams === "object") {
+        for (var prop in additionalParams) {
+            payload[prop] = additionalParams[prop];
+        }
+    }
+    
+    if (typeof _experiment !== 'undefined' && _experiment.isExperimentRunning("*")) {
+        payload['exp'] = _experiment.xNumber("*");
+        payload['var'] = _experiment.variantIndex("*") + 1;
+    }
+
+    _logV2Message("misc_event", payload, callback);
+}
+
+_logV2Error = function(errorMessage, sourceFile, lineNum, colNum, additionalParams) {
+    if (errorMessage === null || typeof errorMessage !== "string") { return false; }
+    sourceFile = sourceFile !== null && typeof sourceFile === "string" ? sourceFile : "";
+    lineNum = (lineNum !== null && !isNaN(lineNum)) ? Number(lineNum) : -1;
+    colNum = (colNum !== null && !isNaN(colNum)) ? Number(colNum) : -1;
+    
+    var payload = {
+        "s": getPlainSource(),
+        "exp": 0,
+        "var": 0,
+        "error_msg": errorMessage,
+        "source_file": sourceFile,
+        "line_num": lineNum,
+        "col_num": colNum,
+    };
+    if (typeof additionalParams === "object") {
+        for (var prop in additionalParams) {
+            payload[prop] = additionalParams[prop];
+        }
+    }
+    if (typeof _experiment !== 'undefined' && _experiment.isExperimentRunning("*")) {
+        payload['exp'] = _experiment.xNumber("*");
+        payload['var'] = _experiment.variantIndex("*") + 1;
+    }
+
+    _logV2Message("website_error", payload);
+};
+ ασ!κ“      \Υ­\Υ­@0S[\£Υ   .    :https://getadblock.com/js/log.js?v=1547579504 strongly-framed 1 security-info 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 request-method GET response-head HTTP/1.1 200 OK
+Server: nginx
+Date: Wed, 27 Mar 2019 01:45:17 GMT
+Content-Type: application/javascript
+Content-Length: 8302
+Last-Modified: Thu, 17 Jan 2019 19:47:03 GMT
+ETag: "206e-57faca89f533d"
+Accept-Ranges: bytes
+ original-response-headers Server: nginx
+Date: Wed, 27 Mar 2019 01:45:17 GMT
+Content-Type: application/javascript
+Content-Length: 8302
+Connection: keep-alive
+Last-Modified: Thu, 17 Jan 2019 19:47:03 GMT
+ETag: "206e-57faca89f533d"
+Accept-Ranges: bytes
+ uncompressed-len 0 net-response-time-onstart 379 net-response-time-onstop 380    n

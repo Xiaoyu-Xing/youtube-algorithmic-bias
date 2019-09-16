@@ -1,0 +1,634 @@
+SAFARI = !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/);
+
+$(".cleaner-warning a").click(function() {
+    alert(translate("filecleanerwarning"));
+});
+
+$(".nav a").click(function() {
+    showCard(this.name);
+    return false; 
+});
+
+// Fade out any visible cards and fade in the card with ID |cardId|.
+function showCard(cardId) {
+    var card = $("#" + cardId);
+    function show() {
+        card.fadeIn();
+    }
+    var visible = $("#.card:visible");
+    if (visible.length)
+        visible.fadeOut(show);
+    else
+        show();
+}
+
+// Show a loading progress indicator for a few seconds while the user
+// gets her bearings.
+function showLoadingBar() {
+    var start = Date.now();
+    var testmode = !!document.location.search.match(/testmode/);
+    var loadingOriginal = (function() {
+        $("#loading-wrapper").show();
+        
+        var runLength = 2500; // Should take this many ms
+        var pctTime = (Date.now() - start) / runLength; // Goes from 0 to 1
+
+        // Start slow, then speed up.
+        var pctDone = Math.pow(pctTime, 4);
+
+        var bar = $("#chrome-loading-progress");
+        bar[0].value = pctDone;
+        if (SAFARI) { // progress bar not yet supported
+            $("#chrome-loading-progress").css({"background-color": "#ccc", "border": "1px solid black"});
+            $("#safari-loading-progress").css("width", Math.min(100, Math.round(pctDone * 100)) + "%");
+            // Safari for some reason will not show the updated progress bar, when
+            // this page is not an extension resource.  See http://goo.gl/mwAbo .
+            $("<style></style>").appendTo($(document.body)).remove();
+        }
+
+        if (pctDone < 1 && testmode === false) {
+            window.setTimeout(arguments.callee, 20);
+            return;
+        }
+
+        window.setTimeout(function() {
+            // Loaded
+            var delay = 1800;
+            if (testmode === true) {
+                delay = 0;
+            }
+            $("#loading-wrapper").
+              find("#done").fadeIn().end().
+              delay(delay).
+              fadeOut(function() {
+                  showCard("last-step");
+                  $("#privacy_footer").fadeIn();
+              });
+        }, 200);
+    });
+
+    loadingOriginal();
+}
+
+function formatDollarValue(amt) {
+    var amt_str = "";
+    var count = 0;
+    for (var i = amt.length - 1; i > -1; i--) {
+        count++;
+        amt_str = amt[i] + amt_str;
+        if (count % 3 === 0 && i !== 0) {
+            amt_str = "," + amt_str;
+        }
+    }
+    return amt_str;
+}
+
+// TODO(stephen): make more robust
+function changeCurrencySymbolAndAmounts(currencyCode) {
+    $(".currency_symbol").text(_currency.getSymbol(currencyCode));
+    var amountsArray = _currency.oneTimeAmountsForCurrency(currencyCode);
+    if (amountsArray.length === 6) {
+        for (var i = 0; i < amountsArray.length; i++) {
+            $("#" + (i+1) + "_value3").text(formatDollarValue(amountsArray[i]));
+            $("#" + (i+1) + "_radio3").attr('value', amountsArray[i]);
+        }
+        if (!$("#override3").is(':checked')) {
+            $("#override3").attr('value', amountsArray[3]);
+        }
+        $("#override-price3").attr('placeholder', formatDollarValue(amountsArray[3]));
+    }
+}
+
+chrome.i18n._initialize("en", "i18n/_locales/", function() {
+    if (typeof localizePage === "function") {
+        localizePage();
+    }
+    var noInstall = !!document.location.search.match(/noinstall/);
+    if (noInstall) {
+        showCard("last-step");
+    } else {
+        showLoadingBar();
+    }
+    /*
+    When this callback fires, translation is complete. We set the following links after
+    translation finishes because the translation process erases the original content of a tag
+    and inserts the translated string it looks up by the i18n attribute from loaded messages.json
+    file(s). It replaces any HTML content inside the tag (like links) after the translation is complete.
+
+    Usually we can use the i18n_replacement_el attribute with a matching id to an empty link that
+    is created outside of the tag that is replaced like this:
+
+    <span i18n_replacement_el="ioslink">Some text and a link <a href="#"></a></span>
+    <a id="ioslink" href="https://itunes.apple.com/us/app/adblock-for-mobile/id1036484810?mt=8" target="_blank"></a>
+
+    i18n code currently supports just one href per tag, so for now we have to set the ids manually.
+    */
+    $("a#ioslink") // "Adblock for iOS" in the App Store
+        .attr("href", "https://itunes.apple.com/us/app/adblock-for-mobile/id1036484810?mt=8")
+        .attr("target", "_blank");
+    $("a#samsunglink") // "AdBlock for Samsung Internet" in Google Play.
+        .attr("href", "https://play.google.com/store/apps/details?id=com.betafish.adblocksbrowser")
+        .attr("target", "_blank");
+});
+
+
+// TESTS RUNNING, THAR BE DRAGONS
+$(function() {
+    var myListener = function () {
+        document.removeEventListener('mousemove', myListener, false);
+        if (typeof _logV2MiscEvent !== "undefined") {
+            _logV2MiscEvent("mouse moved");
+        }
+    };
+    
+    document.addEventListener('mousemove', myListener, false);
+}());
+
+/* Donations jQuery */
+$(function () {
+    var tests = [
+        [/OPR/, "O"],
+        [/chrome/i, "E"],
+        [/safari/i, "S"],
+        [/./, "U"]
+    ];
+    tests.forEach(function (test) {
+        if (window.FLAVOR)
+            return;
+        if (test[0].test(navigator.userAgent))
+            window.FLAVOR = test[1];
+    });
+});
+
+var _amountCents = 0;
+var paypalSelector = '.paypal-button';
+var stripeSelector = '.stripe-button';
+var idealSelector = '.ideal-button';
+var alipaySelector = '.alipay-button';
+var applePaySelector = '#apple-pay';
+
+function updateContainerHeight() {
+    if ($("#not-paying").is(":visible")) {
+      //var height = $('#not-paying').position().top; 
+      //$("#last-step").height(height);
+    } else {
+      $("#last-step.card").css("height", "auto");
+    }
+}
+
+/* input box listener, sets form price to user input */
+function showZeroMessage(overrideValue) {
+    var numeric = $.isNumeric(overrideValue);
+    var zero = overrideValue == 0;
+    $('#not-paying').toggle(zero);
+}
+
+function showSubAmountMessage(overrideValue, amount, type) {
+    var numeric = $.isNumeric(overrideValue);
+    var underAmount = numeric && (overrideValue < amount);
+    var zero = overrideValue == 0;
+    if (type === "onetime") {
+        $('.guideline_one_time').toggle(underAmount);
+    } else if (type === "recurring") {
+        $('.guideline_recurring').toggle(underAmount);
+    }
+    if (underAmount) {
+        $(paypalSelector).addClass("paypal-button-grey");
+        $(stripeSelector).prop("disabled", true);
+        $(idealSelector).addClass("disabled");
+        $(alipaySelector).addClass("disabled");
+        $(applePaySelector).addClass("disabled");
+    } else {
+        $(paypalSelector).removeClass("paypal-button-grey");
+        $(stripeSelector).prop("disabled", false);
+        $(idealSelector).removeClass("disabled");
+        $(alipaySelector).removeClass("disabled");
+        $(applePaySelector).removeClass("disabled");
+    }
+}
+
+function getCustomAmountFromElement(element) {
+    var value = $(element).val();
+    var curr = getCurrency().toLowerCase();
+    if (value == "") {
+        return getPlaceholderAmountForElement(element);
+    }
+    if (curr !== "jpy") {
+        value = value.replace(",", ".");
+    }
+    return value;
+}
+
+function getMinimumPaymentAmount() {
+    var curr = getCurrency().toLowerCase();
+    if ($('input[name="price3"]:checked').data('recurring') !== true) {
+        if (typeof _currency.oneTimeAmountsForCurrency(curr) === 'object' && 
+            _currency.oneTimeAmountsForCurrency(curr).length === 6) {
+            return parseInt(_currency.oneTimeAmountsForCurrency(curr)[0]);
+        }
+    }
+    if (___AB_RECURRING_SHOW === true) {
+        if ($('input[name="price3"]:checked').data('recurring') === true) {
+            if (_currency && typeof _currency.recurringMinimumAmount === "function") {
+                return parseFloat(_currency.recurringMinimumAmount(curr));
+            }
+        }
+    }
+    return 5;
+}
+
+function potentiallyLogOnCustomEntered(overrideValue, amount) {
+    var numeric = $.isNumeric(overrideValue);
+    var underAmount = numeric && (overrideValue < amount);
+    var zero = overrideValue == 0;
+
+    if (zero) {
+        _logV2MiscEvent("zero_entered");
+    } else if (underAmount) {
+        _logV2MiscEvent("under_min_amount_entered");
+    }
+}
+
+$('#override-price3').keyup(function() {
+    $('.guideline_recurring').hide();
+    var overrideValue = getCustomAmountFromElement(this);
+    $('#override3')[0].checked = true;
+    var minimumPaymentAmount = getMinimumPaymentAmount();
+    $('#override3').val(overrideValue);
+    $(".guideline_one_time #min-row-amount").text(formatDollarValue(String(minimumPaymentAmount)));
+    $(".guideline_one_time .currency_symbol").text(_currency.getSymbol(getCurrency()));
+    showSubAmountMessage(overrideValue, minimumPaymentAmount, 'onetime');
+    potentiallyLogOnCustomEntered(overrideValue, minimumPaymentAmount);
+    updateContainerHeight();
+});
+
+$('#override-price3-recurring').keyup(function() {
+    $('.guideline_one_time').hide();
+    var overrideValue = getCustomAmountFromElement(this);
+    $('#override3_recurring')[0].checked = true;
+    var minimumPaymentAmount = getMinimumPaymentAmount();
+    $('#override3_recurring').val(overrideValue);
+    $(".guideline_recurring #min-row-amount").text(formatDollarValue(String(minimumPaymentAmount)));
+    $(".guideline_recurring .currency_symbol").text(_currency.getSymbol(getCurrency()));
+    showSubAmountMessage(overrideValue, minimumPaymentAmount, 'recurring');
+    potentiallyLogOnCustomEntered(overrideValue, minimumPaymentAmount);
+    updateContainerHeight();
+});
+
+$('input[name="price3"]').change(function() {
+    $('.guideline_recurring').hide();
+    $('.guideline_one_time').hide();
+    if (!$('#override3')[0].checked && !$('#override3_recurring')[0].checked) {
+        $('#not-paying').hide();
+        $(paypalSelector).removeClass("paypal-button-grey");
+        $(stripeSelector).prop("disabled", false);
+        $(idealSelector).removeClass("disabled");
+    } else if ($('#override3')[0].checked) {
+        var overrideValue = getCustomAmountFromElement('#override3');
+        showSubAmountMessage(overrideValue, getMinimumPaymentAmount(), 'onetime');
+    } else if ($('#override3_recurring')[0].checked) {
+        var overrideValue = getCustomAmountFromElement('#override3_recurring');
+        showSubAmountMessage(overrideValue, getMinimumPaymentAmount(), 'recurring');
+    }
+    updateContainerHeight();
+});
+/* end input box listener */
+
+function getPlaceholderAmountForElement(element) {
+    var curr = getCurrency();
+    if ($(element)[0].id === "override-price3-recurring") {
+        if (___AB_RECURRING_SHOW === true) {
+            if (typeof _currency.recurringAmountsForCurrency(curr) === 'object' && 
+                _currency.recurringAmountsForCurrency(curr).length === 10) {
+                return _currency.recurringAmountsForCurrency(curr)[8];
+            }
+        }
+        return "4.99";
+    } else {
+        if (___AB_DROPDOWN_SHOW === true) {
+            if (typeof _currency.oneTimeAmountsForCurrency(curr) === 'object' && 
+                _currency.oneTimeAmountsForCurrency(curr).length === 6) {
+                return _currency.oneTimeAmountsForCurrency(curr)[3];
+            }
+        }
+        return "35";
+    }
+}
+
+function getAmountString() {
+    var v = 0;
+    if (v == 0 || v == undefined || v == "") {
+        v=$('input[name="price3"]:checked').val();
+        if (v == 0 || v == undefined || v == "") {
+            v = getPlaceholderAmountForElement($('input[name="price3"]:checked'));
+        }
+    }
+    return v;
+}
+
+/* main functions */
+$(function () {
+    if (FLAVOR == "S") {
+        // Offer the correct email address as a gift
+        $("#main").find(".browser-name").text("safari");
+    }
+    
+    // Update the slider UI and maybe plead with the user not to pay $0
+    function onSliderChange() {
+        var zero = ($("#slider").val() == 0);
+        $("#not-paying").toggle(zero);
+        $("#payment-types").toggle(!zero);
+        $("#last-step.card").css("height", "auto");
+    }
+
+    onSliderChange(); // set amount from default slider position
+});
+
+// Safari bug: click a button to submit a form, close the newly opened window
+// using your mouse (not keyboard), try to click the button again: nothing happens.
+// Any button submitting a form to the same URL won't work.  Workaround: modify the
+// URL harmlessly after onclick, so any later clicks are to a new URL.
+$('form input[type="image"]').click(function () {
+    var that = this;
+    window.setTimeout(function () {
+        var theForm = $(that).closest("form")[0];
+        if (!/\?/.test(theForm.action))
+            theForm.action += "?";
+        theForm.action += "&";
+    }, 0);
+});
+/* end main functions */
+
+function experimentWithParams(expNum, variant) {
+    return typeof _experiment === "object" && _experiment.isExperimentRunning("*") && 
+        _experiment.xNumber("*") === expNum && _experiment.variant("*") === variant;
+}
+
+if (typeof _experiment !== 'undefined') { 
+    $(".ios-download-button").click(function (e) {
+        if (typeof _logV2MiscEvent !== "undefined") {
+            _logV2MiscEvent("ios-download-button press");
+        }
+    });
+
+    // Add experiments here, if multiple experiments running then choose one randomly.
+    // Don't add all experiments since the last one added will be the one that's running.
+    // _experiment.addExperiment("ll", "EXP 631", 631, [ "Original", "Min_OneDollar" ], _experiment.EN_LOCALE_ONLY, [_experiment.ALL_BROWSERS]);
+    // _experiment.setDistribution("*", [0, 1]);
+}
+
+var ___AB_DROPDOWN_SHOW = false;
+var ___AB_RECURRING_SHOW = false;
+var ___AB_DIFF_PAYMENT_AMOUNTS = false;
+var ___AB_USING_CURRENCY_LIB = false;
+
+if (typeof _currency === "object" && typeof _currency.getDefaultDropdownList === "function" &&
+    typeof _currency.canShowCurrencyDropdown === "function" && _currency.canShowCurrencyDropdown() === true) {
+    var cc = getCountryCode();
+    ___AB_DROPDOWN_SHOW = true;
+    ___AB_USING_CURRENCY_LIB = true;
+
+    if (___AB_DROPDOWN_SHOW === true) {
+        var currency_dropdown = document.getElementById("currency_dropdown");
+        var dropdownItems = _currency.getDefaultDropdownList();
+        for (var i = 0; i < dropdownItems.length; i++) {
+            var option = document.createElement("option"); 
+            option.text = dropdownItems[i][1];
+            option.value = dropdownItems[i][0];
+            currency_dropdown.appendChild(option);
+        }
+    }
+}
+
+if (typeof _currency === "object" && typeof _currency.getDefaultDropdownList === "function" &&
+    typeof _currency.hasDifferentPaymentAmounts === "function" && _currency.hasDifferentPaymentAmounts() === true) {
+    ___AB_DIFF_PAYMENT_AMOUNTS = true;
+    ___AB_USING_CURRENCY_LIB = true;
+}
+
+function getCurrency() {
+    if (___AB_DROPDOWN_SHOW === true) {
+        return $("#currency_dropdown").val().toUpperCase();
+    }
+    return "USD";
+}
+
+/* paypal and other payment option events */
+$(document).ready(function () {
+    var cc = getCountryCode();
+    function isRecurring() {
+        var recurring = false;
+        if ($('input[name="price3"]:checked').data('recurring') === true) {
+            recurring = true;
+        }
+        return recurring;
+    }
+
+    function getSubType() {
+        return "monthly";
+    }
+
+    function getStripeLocale() {
+      if (___AB_USING_CURRENCY_LIB === true) {
+            var langOverride = getLanguageQueryString();
+            if (langOverride !== "") {
+                return langOverride;
+            }
+            return 'auto';
+        }
+        return 'en';
+    }
+
+    Paypal.init({
+        testmode: !!document.location.search.match(/testmode/),
+        button: paypalSelector,
+        currency: getCurrency,
+        getDollarsString: function() {
+          v=getAmountString();
+          return v;
+        },
+        itemName: function() {
+            return "AdBlock";
+        },
+        recurring: isRecurring,
+        subType: getSubType,
+        locale: function() {
+          if (___AB_USING_CURRENCY_LIB === true) {
+              var langOverride = getLanguageQueryString();
+              if (langOverride !== "") {
+                  return langOverride;
+              }
+              return getLanguage();
+          }
+          return 'en_US';
+        },
+    });
+
+    // Stripe checkout initialization
+    StripeAB.init({
+        testmode: !!document.location.search.match(/testmode/),
+        button: stripeSelector,
+        currency: getCurrency,
+        recurring: isRecurring,
+        subType: getSubType,
+        locale: getStripeLocale,
+        description: function() {
+            if (___AB_USING_CURRENCY_LIB === true) {
+                return translate("stripe_secure");
+            }
+            return 'Securely processed by Stripe.com';
+        },
+        getAmountCents: function() {
+            v=getAmountString();
+            if (___AB_DROPDOWN_SHOW === true && _currency.currencyUsesDecimals(getCurrency()) === false) {
+                return Number(v);
+            }
+            return Math.round(v*100);
+        },
+        onAjaxStart: function() {
+            $("body").css("cursor", "wait");
+            $(stripeSelector).prop("disabled", true);
+            $("html *").addClass("waiting");
+        },
+        onAjaxComplete: function() {
+            $("body").css("cursor", "auto");
+            $(stripeSelector).prop("disabled", false);
+            $("html *").removeClass("waiting");
+        }
+    });
+
+    if (cc === "NL") {
+        $(idealSelector).show();
+        StripeSource.init({
+          testmode: !!document.location.search.match(/testmode/),
+          button: idealSelector,
+          currency: getCurrency,
+          // EXPERIMENT CODE
+          recurring: isRecurring,
+          subType: getSubType,
+          sourceType: function() {return "ideal";},
+          locale: getStripeLocale,
+          getAmountCents: function() {
+            v=getAmountString();
+            if (___AB_DROPDOWN_SHOW === true && _currency.currencyUsesDecimals(getCurrency()) === false) {
+                return v;
+            }
+            return Math.round(v*100);
+          },
+          onSuccess: function(redirectUrl) {
+            window.location.href = redirectUrl;
+          },
+          onAjaxStart: function() {
+            $("body").css("cursor", "wait");
+            $("html *").addClass("waiting");
+          },
+          onAjaxComplete: function() {
+            $("body").css("cursor", "auto");
+            $("html *").removeClass("waiting");
+          }
+        });
+    // Chinese Alipay code
+    } else if (cc === "CN" || cc === "TW" || cc === "HK") {
+        $(alipaySelector).show();
+        StripeSource.init({
+          testmode: !!document.location.search.match(/testmode/),
+          button: alipaySelector,
+          currency: getCurrency,
+          recurring: isRecurring,
+          subType: getSubType,
+          sourceType: function() {return "alipay";},
+          locale: getStripeLocale,
+          getAmountCents: function() {
+            v=getAmountString();
+            if (___AB_DROPDOWN_SHOW && _currency.currencyUsesDecimals(getCurrency()) === false) {
+                return v;
+            }
+            return Math.round(v*100);
+          },
+          onSuccess: function(redirectUrl) {
+            window.location.href = redirectUrl;
+          },
+          onAjaxStart: function() {
+            $("body").css("cursor", "wait");
+            $("html *").addClass("waiting");
+          },
+          onAjaxComplete: function() {
+            $("body").css("cursor", "auto");
+            $("html *").removeClass("waiting");
+          }
+        });
+    }
+
+    if (___AB_DROPDOWN_SHOW === true) {
+        $("#nafp").hide();
+        $("#nafpg").show();
+        $("#currency_dropdown").show();
+        $("#currency_dropdown").change(function(e) {
+            changeCurrencySymbolAndAmounts($(this).val().toLowerCase());
+            // Handle Stripe source currency only requirement
+            if (cc === "NL") {
+                // iDEAL can only be EUR
+                if ($(this).val().toLowerCase() !== "eur") {
+                    $(idealSelector).hide();
+                } else {
+                    $(idealSelector).show();
+                }
+            } else if (cc === "CN") {
+                // Alipay can only be USD
+                if ($(this).val().toLowerCase() !== "usd") {
+                    $(alipaySelector).hide();
+                } else {
+                    $(alipaySelector).show();
+                }
+            }
+        });
+        changeCurrencySymbolAndAmounts(_currency.defaultCurrency);
+    } else if (___AB_DIFF_PAYMENT_AMOUNTS === true) {
+        changeCurrencySymbolAndAmounts(getCurrency().toLowerCase());
+    }
+
+    if (typeof _currency === "object" && typeof _currency.canShowMonthlyPayments === "function" && 
+        _currency.canShowMonthlyPayments()) {
+        ___AB_RECURRING_SHOW = true;
+        ___AB_USING_CURRENCY_LIB = true;
+
+        var amountsArray = _currency.recurringAmountsForCurrency(_currency.defaultCurrency);
+        // TODO(stephen): Make this not hard coded
+        for (var i = 0; i < 5; i++) {
+            $("#" + (i+1) + "_value3").text(formatDollarValue(amountsArray[i]));
+            $("#" + (i+1) + "_radio3").attr('value', amountsArray[i]);
+        }
+        for (var i = 5; i < 10; i++) {
+            $("#" + (i+2) + "_value3").text(amountsArray[i]);
+            $("#" + (i+2) + "_radio3").attr('value', amountsArray[i]);
+        }
+        $("#nafp").hide();
+        $("#nafpg").hide();
+        $("#sixth_one_time_value").hide();
+        $("#nafp_monthly").show();
+        $("#maotd").show();
+        $(".monthly_extension").show();
+    }
+
+    if (typeof _logV2PageView !== 'undefined') {
+        _logV2PageView("install");
+    }
+});
+/* end paypal and other payment option events */
+À$¸okI      \šÕ­\šÕ­@0S[\¡{Ø   >    :https://getadblock.com/installed/js/donations.js?v=1548790070 strongly-framed 1 security-info FnhllAKWRHGAlo+ESXykKAAAAAAAAAAAwAAAAAAAAEaphjojH6pBabDSgSnsfLHeAAAAAgAAAAAAAAAAAAAAAAAAAAEAMQFmCjImkVxP+7sgiYWmMt8FvcOXmlQiTNWFiWlrbpbqgwAAAAAAAAVTMIIFTzCCBDegAwIBAgIQOp10RIzv6C7xMAnk2eTlRTANBgkqhkiG9w0BAQsFADCBkDELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQxNjA0BgNVBAMTLUNPTU9ETyBSU0EgRG9tYWluIFZhbGlkYXRpb24gU2VjdXJlIFNlcnZlciBDQTAeFw0xNDA0MTcwMDAwMDBaFw0xOTA0MTYyMzU5NTlaMFIxITAfBgNVBAsTGERvbWFpbiBDb250cm9sIFZhbGlkYXRlZDEUMBIGA1UECxMLUG9zaXRpdmVTU0wxFzAVBgNVBAMTDmdldGFkYmxvY2suY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2tgLivq1RVgDjCCIB/mEBS8o2w96OV0ad2Qm4MF96fOu4Qi6I9wtdUZu/jYMkEtuiMv/C6JxBMGmqlb7+FyX1GonxtbraoH4Hq4xZjyPTbKABv7e+9hMNEKd17gh/mDrfAyVg/96Nrsb48MEFTqz/GCKkYGyRvkk0JKP340iQ333zUtrs8AAskMf3PmfM0bOBsYprM3XdBhhNvNmoZWut0o5UO6WcTF8JM4ZqNIOS0PngpMe4rFK5PzFJP3kvh/5aM/kZCvPpmU5QW0KrG4GOECyIch0X0M0aChrOooG9rrZV5duN/T9pjEI0eyuBB/zuNn/1me3QlbaBeYyBDtQCQIDAQABo4IB4DCCAdwwHwYDVR0jBBgwFoAUkK9qOpRaC9iQ6hJWc99DtDoo2ucwHQYDVR0OBBYEFLTVKX0vh5aHSrnQsMM5gw1WzINaMA4GA1UdDwEB/wQEAwIFoDAMBgNVHRMBAf8EAjAAMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjBQBgNVHSAESTBHMDsGDCsGAQQBsjEBAgEDBDArMCkGCCsGAQUFBwIBFh1odHRwczovL3NlY3VyZS5jb21vZG8ubmV0L0NQUzAIBgZngQwBAgEwVAYDVR0fBE0wSzBJoEegRYZDaHR0cDovL2NybC5jb21vZG9jYS5jb20vQ09NT0RPUlNBRG9tYWluVmFsaWRhdGlvblNlY3VyZVNlcnZlckNBLmNybDCBhQYIKwYBBQUHAQEEeTB3ME8GCCsGAQUFBzAChkNodHRwOi8vY3J0LmNvbW9kb2NhLmNvbS9DT01PRE9SU0FEb21haW5WYWxpZGF0aW9uU2VjdXJlU2VydmVyQ0EuY3J0MCQGCCsGAQUFBzABhhhodHRwOi8vb2NzcC5jb21vZG9jYS5jb20wLQYDVR0RBCYwJIIOZ2V0YWRibG9jay5jb22CEnd3dy5nZXRhZGJsb2NrLmNvbTANBgkqhkiG9w0BAQsFAAOCAQEACA4yqNWgIkZ1M6hPZR0viO6ft4+Bsb9PCf0+E4fPNAGi9wPiM0lHlsiWqdQWRiLhqfuBUATAPuJiiSdz/Q9F7Xv3uoS8An6ilEAtbbyqhomMN4buA4xlwP2DSbh5xBNbepTI1ETQSmJG3wLqVZu8iBuhkMBZWXhTOv0Sm0CfHHfrIZGGkch6MPbQKUY+/Q7UMBt+HOp6jmwaEd3SZSiqK+65KQosbxjVeWSnmtsnF1wDVKtmW3Fi1iSfpq6abtCMTodoOfcQPR9+Tfeqe8I6Z/+GSrwe8f3lKKJ8H/eRgdJDK9L6FuCflcHM6zfnfdFims2R+1x/XAcZ9RVqCf5/osAvAAMAAAAAAQEAAAAAAAAEbm9uZQAAABBSU0EtUEtDUzEtU0hBNTEyAZWfsWVlF0h/q5vYkTvlMZeudM2lzS9HP5b18Lf/9ixoAAAAA2YKMiaRXE/7uyCJhaYy3wW9w5eaVCJM1YWJaWtuluqDAAAAAAAABVMwggVPMIIEN6ADAgECAhA6nXREjO/oLvEwCeTZ5OVFMA0GCSqGSIb3DQEBCwUAMIGQMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRowGAYDVQQKExFDT01PRE8gQ0EgTGltaXRlZDE2MDQGA1UEAxMtQ09NT0RPIFJTQSBEb21haW4gVmFsaWRhdGlvbiBTZWN1cmUgU2VydmVyIENBMB4XDTE0MDQxNzAwMDAwMFoXDTE5MDQxNjIzNTk1OVowUjEhMB8GA1UECxMYRG9tYWluIENvbnRyb2wgVmFsaWRhdGVkMRQwEgYDVQQLEwtQb3NpdGl2ZVNTTDEXMBUGA1UEAxMOZ2V0YWRibG9jay5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDa2AuK+rVFWAOMIIgH+YQFLyjbD3o5XRp3ZCbgwX3p867hCLoj3C11Rm7+NgyQS26Iy/8LonEEwaaqVvv4XJfUaifG1utqgfgerjFmPI9NsoAG/t772Ew0Qp3XuCH+YOt8DJWD/3o2uxvjwwQVOrP8YIqRgbJG+STQko/fjSJDfffNS2uzwACyQx/c+Z8zRs4Gximszdd0GGE282ahla63SjlQ7pZxMXwkzhmo0g5LQ+eCkx7isUrk/MUk/eS+H/loz+RkK8+mZTlBbQqsbgY4QLIhyHRfQzRoKGs6igb2utlXl2439P2mMQjR7K4EH/O42f/WZ7dCVtoF5jIEO1AJAgMBAAGjggHgMIIB3DAfBgNVHSMEGDAWgBSQr2o6lFoL2JDqElZz30O0Oija5zAdBgNVHQ4EFgQUtNUpfS+HlodKudCwwzmDDVbMg1owDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMFAGA1UdIARJMEcwOwYMKwYBBAGyMQECAQMEMCswKQYIKwYBBQUHAgEWHWh0dHBzOi8vc2VjdXJlLmNvbW9kby5uZXQvQ1BTMAgGBmeBDAECATBUBgNVHR8ETTBLMEmgR6BFhkNodHRwOi8vY3JsLmNvbW9kb2NhLmNvbS9DT01PRE9SU0FEb21haW5WYWxpZGF0aW9uU2VjdXJlU2VydmVyQ0EuY3JsMIGFBggrBgEFBQcBAQR5MHcwTwYIKwYBBQUHMAKGQ2h0dHA6Ly9jcnQuY29tb2RvY2EuY29tL0NPTU9ET1JTQURvbWFpblZhbGlkYXRpb25TZWN1cmVTZXJ2ZXJDQS5jcnQwJAYIKwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmNvbW9kb2NhLmNvbTAtBgNVHREEJjAkgg5nZXRhZGJsb2NrLmNvbYISd3d3LmdldGFkYmxvY2suY29tMA0GCSqGSIb3DQEBCwUAA4IBAQAIDjKo1aAiRnUzqE9lHS+I7p+3j4Gxv08J/T4Th880AaL3A+IzSUeWyJap1BZGIuGp+4FQBMA+4mKJJ3P9D0Xte/e6hLwCfqKUQC1tvKqGiYw3hu4DjGXA/YNJuHnEE1t6lMjURNBKYkbfAupVm7yIG6GQwFlZeFM6/RKbQJ8cd+shkYaRyHow9tApRj79DtQwG34c6nqObBoR3dJlKKor7rkpCixvGNV5ZKea2ycXXANUq2ZbcWLWJJ+mrppu0IxOh2g59xA9H35N96p7wjpn/4ZKvB7x/eUoonwf95GB0kMr0voW4J+VwczrN+d90WKazZH7XH9cBxn1FWoJ/n+iZgoyJpFcT/u7IImFpjLfBb3Dl5pUIkzVhYlpa26W6oMAAAAAAAAGDDCCBggwggPwoAMCAQICECsuburZdTZsFIpu26N8jAcwDQYJKoZIhvcNAQEMBQAwgYUxCzAJBgNVBAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMSswKQYDVQQDEyJDT01PRE8gUlNBIENlcnRpZmljYXRpb24gQXV0aG9yaXR5MB4XDTE0MDIxMjAwMDAwMFoXDTI5MDIxMTIzNTk1OVowgZAxCzAJBgNVBAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMTYwNAYDVQQDEy1DT01PRE8gUlNBIERvbWFpbiBWYWxpZGF0aW9uIFNlY3VyZSBTZXJ2ZXIgQ0EwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCOwgIZ4aBZpOs4NY0s/QHQ00nAZMcLYgVFFjqooMAMAn8dzNvEoW13A6MPhvnjBpw+C4GKm0kbrQO++kvbjCDt1c5eZY4+Da9MwrC3RV5SLzTeSCRktEGuAJf3vmfentB6p1OAO3yt9ZZVb5dHCnyFiyKXjbOE4JZX0HAYYJaP7i0Hk52husrRzXvpxCqaKCGRTW+STyWl8no13SbcRqXQrFk1jP9OkUNQP1mTHmxRIe5YFKv+dVB4PkywHIYT+muYvOA7lB6FUtwDkyQYbssnUUXmcN4lQ6QN4Uql7bZ+yM1t7i4dJ3Nd3EUwgKrjskELr71Eh9q55Rudf67lhYKlAgMBAAGjggFlMIIBYTAfBgNVHSMEGDAWgBS7r34CPfqm8TyEjq3uOJjs2TIy1DAdBgNVHQ4EFgQUkK9qOpRaC9iQ6hJWc99DtDoo2ucwDgYDVR0PAQH/BAQDAgGGMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMBsGA1UdIAQUMBIwBgYEVR0gADAIBgZngQwBAgEwTAYDVR0fBEUwQzBBoD+gPYY7aHR0cDovL2NybC5jb21vZG9jYS5jb20vQ09NT0RPUlNBQ2VydGlmaWNhdGlvbkF1dGhvcml0eS5jcmwwcQYIKwYBBQUHAQEEZTBjMDsGCCsGAQUFBzAChi9odHRwOi8vY3J0LmNvbW9kb2NhLmNvbS9DT01PRE9SU0FBZGRUcnVzdENBLmNydDAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuY29tb2RvY2EuY29tMA0GCSqGSIb3DQEBDAUAA4ICAQBOK3ZPkhxiNom6d8EnBfQc1kSdqZo+qtVmZgE+6knmojW8+vbdlY6ZNZgONhh1sd3dUHJ8rtx3iM4P95AgyqNnLh9Wf3vhROpClcRdDQFQRhXygYlZbIrdjPESoY06QoqY+Es0eyc7CLRvJDtynWN0WDwabD9PxxGayKj1tTfvEEXGbNngXpUms+uto7nufwyaZjVzMmBO5d2KYSxuUhF3aJbTGHVRFQAbdIjd4cc4BEMo6Rb92QXUXUcnYNb7ODtscqKU+EIa3+1vBoxFwgYAquTo3Nm14XN47PYj3NHdbI4aj6XqVHyWt8P+VY6NSV78ZLvPPr2W62nNv+BI8WKCEOUMRlfyM9rQyGPtxh+UBZZKGpHR9+vPj1KuDQjZPqigUenBh3TVyfd0qy5T+7t6+5fi+B8mj7PSoOA3Wyg7MeUOVy1auK15rF4gZhqluaa1OcH1mEP/7vmnp/3uyiQ9gBbEF4+KwWChDK5bQ0eRS9WaF1/51IfBwoy35+IPMBk3hqzg3EID5pSona79DyRRlM6SCNH8UPADQHuIWe0O3azSd4I03AaVAtiQ+S3qN9UaYNBnINfYQgtFr4Jo3t1mJDeQKZQZRhkluIDXy9SGKGpEcCYjYqmfhm+/upBw0lZ3hXjv6iWpF85QcowAOqrj22M0n/gGcQHigiDU/m+9sWYKMiaRXE/7uyCJhaYy3wW9w5eaVCJM1YWJaWtuluqDAAAAAAAABdwwggXYMIIDwKADAgECAhBMqvnK22Nv4B/3TthbA4adMA0GCSqGSIb3DQEBDAUAMIGFMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRowGAYDVQQKExFDT01PRE8gQ0EgTGltaXRlZDErMCkGA1UEAxMiQ09NT0RPIFJTQSBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eTAeFw0xMDAxMTkwMDAwMDBaFw0zODAxMTgyMzU5NTlaMIGFMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRowGAYDVQQKExFDT01PRE8gQ0EgTGltaXRlZDErMCkGA1UEAxMiQ09NT0RPIFJTQSBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eTCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBAJHoVJLSClaxrA0k3cXPRGd0mSs3o30jcABxvFPfxPoqEo9LfxBWvZ9wcrdhf8lLDxenPeOwBGHu/xGXx/SGPgr6Plz5k+Y0etkUa+ecs4Wggnp2r3GQ1+z9DfqcbPrfsIL0FH75vsSmL09/mX+1/GdDcr0MANaJ62ss0+2PmBwUq37l42782KjkkiTaQ2tiuFX96sG8bLaL8w6NmuSbbGmZ+HhIMEXVreENPEVg/DKWUSe8Z8PKLrZr6kbHxyCgsR9l3kgIuqROqfKDRjeE6+jMgUhDZ05yKptcvUwbKIpcInu0q5jZ7uBRg8MJRk5tPpn6lRfafDNXQTyNUe0LtlyvLGMa31fIP7zpXcSbr0WZ4qNaJLS6qVY9z2+q/0lYvvCo//S4rek3+7q49As6+ehDQh6J2ITLE/HZu+GJYLiMKFasFB2cCudx688O3T2plqFIvTz3r7UNIkzAEYHsVjv206LiW7eyBCJSlYCTaeiOTGXxkQMtcHQC6otnFSlpUgK7199QalVGv6CjKGF/cNDDoqosIapHziicBkV2v4IYJ7TVrrTLUOZr9EyGcTDppt8WhuDY/0Dd+9BCiH+jMzouXB5BEYFjzhhxayvspoq3MVw6akfgw3lZ1iAar/JqmKpyvFdK0kuduxD8sExB5e0dPV4onZzMv7NR2qdH5YRTAgMBAAGjQjBAMB0GA1UdDgQWBBS7r34CPfqm8TyEjq3uOJjs2TIy1DAOBgNVHQ8BAf8EBAMCAQYwDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0BAQwFAAOCAgEACvHVRoS3rlG7bLJNQRQAk0ycy+XAVM+gJY4C+f2wog31IJg8Ey2sVqKw1n4Rkukuup4umnKxvRlEbGE1opq0FhJpWozh1z6kGugvA/SuYR0QGyqki3rF/gWm4cDWyP6ero8ruj2Z+NhzCVhGbqac9Ncn05XaN4NyHNNz4KJHmQM4XdVJeQApHMfsmyAcByRpV3iyOfw6hKC1nHyNvy6TYie3OdoXGK69PAlo/4SbPNXWCwPjV54U99HrT8i9hyO3tklDeYVcuuuSC6HG6GioTBaxGpkK6FMskruhCRh1DGWoe8sjtxrCKIXDG//QK2LvpHsJkZhnjBQBzWgGamMhdQOAiIpugcaF8qmkLef0pSQQR4PKzfSNeVixBpvnGirZnQHXlH3tA0rK8NvoqQE+9VaZyR6OST275Qm54E9Jkj0WgkDMzFnG5jrtEi5pPGyVsf2qHXt/hr4eDjJG+/sTj3V/TItLRmP+ADRAcMHDuaHdpnDiBLNBvOmAkepknHrhIgOpnG5vDmVPbIeHXvNuoPl1pZtA6FOyJ51KucB3IY3/h/LevIzvF9+3SQvR8m4wCxoOTnbtEfz16Vayfb/HbQqTjKXQwLYdvjpOlKLXbmwLwop8+iDzxOTlzQ2oy5GSsXyF7LUUaWYOgufNzsgtplF/IcE1U4UGSl2frbsbX3QA request-method GET response-head HTTP/1.1 200 OK
+Server: nginx
+Date: Wed, 27 Mar 2019 01:45:17 GMT
+Content-Type: application/javascript
+Content-Length: 22676
+Last-Modified: Mon, 04 Feb 2019 15:19:19 GMT
+ETag: "5894-5811304499a0e"
+Accept-Ranges: bytes
+ original-response-headers Server: nginx
+Date: Wed, 27 Mar 2019 01:45:17 GMT
+Content-Type: application/javascript
+Content-Length: 22676
+Connection: keep-alive
+Last-Modified: Mon, 04 Feb 2019 15:19:19 GMT
+ETag: "5894-5811304499a0e"
+Accept-Ranges: bytes
+ uncompressed-len 0 net-response-time-onstart 431 net-response-time-onstop 432   X”
