@@ -15,8 +15,8 @@ INPUT_DATA = "input_data"
 
 # >>>>>>>>>>>>First section: for creating profiles<<<<<<<<<<<<
 # Hyper-parameters:
-input_path = join(ROOT_DIR,
-                  'raw_reddit_data')  # Input data folder, should be the same structure as the example
+# Input data folder, should be the same structure as the example
+input_path = join(ROOT_DIR, 'raw_reddit_data')
 output_path = join(ROOT_DIR, 'generated_profiles_output')  # Output data folder
 
 # For generating base files
@@ -53,9 +53,9 @@ headless = False  # Using PyVirtualDisplay, keep this to false
 
 # There are two training mode:
 training_method = 2  # Choose between 1 or 2
-# 1) given the folder path to all of the json profiles, such as the 'sample_output' folder
-# which contains all base, extended profiles (by 2 methods),
-# then specify which reddit profile and whether base or extended need to train, set parameters below:
+# 1) given the folder path to all of the json profiles, such as the 'sample_output' folder which
+# contains all base, extended profiles (by 2 methods), then specify which reddit profile and
+# whether base or extended need to train, set parameters below:
 
 # If you need to parse all json files
 # Give the dir to the lowest common folder below
@@ -114,7 +114,7 @@ report_interval = 10  # should more than 2 seconds, REAL TIME
 
 # Attention: must set path for Click: export LC_ALL=C.UTF-8, export LANG=C.UTF-8
 master_mode = True
-log_root_path: str = '/home/xx/data/log/' + datetime.today().strftime('%Y-%m-%d')
+log_root_path: str = '/home/data/xiaoyu/log/' + datetime.today().strftime('%Y-%m-%d')
 training_base_path = join(training_directory, "base")
 training_RNG_path = join(training_directory, "extended_RNG")
 training_diversity_path = join(training_directory, "extended_diversity")
