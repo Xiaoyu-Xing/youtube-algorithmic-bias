@@ -38,3 +38,11 @@ def stateless_train_and_test(video_json_path: str) -> None:
             tester.search_by_keyword(settings.report_results_number)
             tester.click_and_get_right_column_recommendations_from_record(
                 tester.query_result[-1], settings.recommend_results_number)
+
+
+if __name__ == "__main__":
+    stateless_videos: str = "stateless_videos"
+    input_video_parent_path: str = \
+        os.path.join(settings.ROOT_DIR, settings.INPUT_DATA, stateless_videos)
+    donald_path: str = os.path.join(input_video_parent_path, "related_videos_RNG_the_donald.json")
+    stateless_train_and_test(donald_path)
