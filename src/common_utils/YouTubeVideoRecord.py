@@ -71,7 +71,7 @@ class YouTubeVideoRecord:
         return record
 
 
-def test():
+def test_encoder_decoder():
     dic = {"href": "https://www.youtube.com/watch?v=vI6zefu_kss",
            "title": "WATCH LIVE: Robert Mueller is testifying on his report, Trump and Russia",
            "source": "PBS NewsHour Streamed",
@@ -88,4 +88,4 @@ def test():
 
 
 if __name__ == "__main__":
-    test()
+    test_encoder_decoder()

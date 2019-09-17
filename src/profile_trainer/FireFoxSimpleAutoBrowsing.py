@@ -22,7 +22,7 @@ class FireFoxSimpleAutoBrowsing:
              .format(RETRY_CHANCES, SCREENSHOT_PATH, STATUS_CHECK_INTERVAL))
 
     @staticmethod
-    def trim_youtube_link(link: str):
+    def __trim_youtube_link(link: str):
         """
         Remove time stamp from link, start watching from beginning.
         :param link: youtube link
@@ -34,7 +34,7 @@ class FireFoxSimpleAutoBrowsing:
         return link
 
     @staticmethod
-    def play_at_fastest_speed(browser: webdriver.Firefox):
+    def __play_at_fastest_speed(browser: webdriver.Firefox):
         js = 'return document.getElementById("movie_player").getAvailablePlaybackRates()'
         playback_rates: list = list(browser.execute_script(js))
         fast_js = 'document.getElementById("movie_player").setPlaybackRate({})' \
@@ -43,19 +43,19 @@ class FireFoxSimpleAutoBrowsing:
         log.info("\tPlay at fastest speed {}.".format(playback_rates[-1]))
 
     @staticmethod
-    def get_player_status(browser: webdriver.Firefox) -> str:
+    def __get_player_status(browser: webdriver.Firefox) -> str:
         status_check_list = {-1: 'unstarted', 0: 'ended', 1: 'playing',
                              2: 'paused', 3: 'buffering', 5: 'video cued'}
         js = 'return document.getElementById("movie_player").getPlayerState()'
         return status_check_list[browser.execute_script(js)]
 
     @staticmethod
-    def get_video_elapsed_time(browser: webdriver.Firefox) -> float:
+    def __get_video_elapsed_time(browser: webdriver.Firefox) -> float:
         js = 'return document.getElementById("movie_player").getCurrentTime()'
         return browser.execute_script(js)
 
     @staticmethod
-    def browsing_list_videos(video_list: List[str], browser: webdriver.Firefox):
+    def browse_video_list(video_list: List[str], browser: webdriver.Firefox):
         """
         Auto browsing a list of videos in YouTube
         :param video_list: list of videos
@@ -70,7 +70,7 @@ class FireFoxSimpleAutoBrowsing:
         for i, video in enumerate(video_list):
             current_success: bool = False
             retry_count: int = 0
-            video: str = FireFoxSimpleAutoBrowsing.trim_youtube_link(video)
+            video: str = FireFoxSimpleAutoBrowsing.__trim_youtube_link(video)
             current_video_screenshot_dir: str = os.path.join(
                 FireFoxSimpleAutoBrowsing.SCREENSHOT_PATH,
                 video.split("v=")[-1])
@@ -85,9 +85,9 @@ class FireFoxSimpleAutoBrowsing:
                     log.info("Index: {}, watching: {}".format(i + 1, video))
                     browser.get(video)
                     if settings.fast:
-                        FireFoxSimpleAutoBrowsing.play_at_fastest_speed(browser)
-                    current_status: str = FireFoxSimpleAutoBrowsing.get_player_status(browser)
-                    video_time: float = FireFoxSimpleAutoBrowsing.get_video_elapsed_time(browser)
+                        FireFoxSimpleAutoBrowsing.__play_at_fastest_speed(browser)
+                    current_status: str = FireFoxSimpleAutoBrowsing.__get_player_status(browser)
+                    video_time: float = FireFoxSimpleAutoBrowsing.__get_video_elapsed_time(browser)
                     while current_status != "ended" and video_time < settings.watch_time:
                         previous_video_time: float = video_time
                         previous_status: str = current_status
@@ -97,8 +97,8 @@ class FireFoxSimpleAutoBrowsing:
                         screenshot_file_name: str = \
                             os.path.join(current_video_screenshot_dir, str(time.ctime()) + ".png")
                         browser.save_screenshot(screenshot_file_name)
-                        video_time = FireFoxSimpleAutoBrowsing.get_video_elapsed_time(browser)
-                        current_status = FireFoxSimpleAutoBrowsing.get_player_status(browser)
+                        video_time = FireFoxSimpleAutoBrowsing.__get_video_elapsed_time(browser)
+                        current_status = FireFoxSimpleAutoBrowsing.__get_player_status(browser)
                         if abs(previous_video_time - video_time) < 10e-3 \
                                 and previous_status == current_status \
                                 and current_status in ['unstarted', 'paused', 'buffering']:

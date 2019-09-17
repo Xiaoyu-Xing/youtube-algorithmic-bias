@@ -1,26 +1,50 @@
+import json
 import os
 import random
-import json
 import sys
+
 import settings
 
 
-class Build_Profiles:
-    '''
+def read_json(path):
+    """
+    Input:
+        path: file path
+    Return:
+        json file, lenght, type
+    """
+    with open(path) as f:
+        jfile = json.load(f)
+    return jfile, len(jfile), type(jfile)
+
+
+def write_json(data, file):
+    """
+    Input:
+        data: data to write
+        file: file path to write
+    """
+    with open(file, 'w') as f:
+        # Indent will help json viewer properly display the format
+        json.dump(data, f, indent=4)
+
+
+class BuildProfiles:
+    """
     To build base and extended profile,
     set parameters in settings.py,
     use one_click() to quickly get all the base and extended profile
-    '''
+    """
 
     def __init__(self,
                  input_path=settings.input_path,
                  output_path=settings.output_path,
                  limit=settings.base_video_number):
-        '''
+        """
         Input:
             input_path: data dir, default '/data'
             output_put: output dir, default '/ouput', make dir if not exists
-        '''
+        """
         self.input_path = input_path
         self.output_path = output_path
         if not os.path.exists(self.input_path):
@@ -41,7 +65,8 @@ class Build_Profiles:
         # Non-detailed version only contains urls in a List,
         # Detailed version, keyed by the url, contains author, timestamp, score, and title.
         self.base_videos, self.base_videos_details, self.base_videos_summary = {}, {}, {}
-        # Extended/related profile videos for each profile, keyed with filename of each json related-video filename
+        # Extended/related profile videos for each profile,
+        # keyed with filename of each json related-video filename
         self.related_videos, self.related_videos_details, self.related_videos_summary = {}, {}, {}
         # Run to parse the input folder
         self._parse_folders()
@@ -53,32 +78,23 @@ class Build_Profiles:
     # Parse data folder
     def _parse_folders(self):
         path = self.input_path
-        for (cur_dirpath, sub_dirnames, cur_filenames) in os.walk(path):
+        for (cur_dir_path, sub_dir_names, cur_filenames) in os.walk(path):
             # Average profile files
-            if 'profiles' in cur_dirpath:
-                self.profiles_dir = cur_dirpath
+            if 'profiles' in cur_dir_path:
+                self.profiles_dir = cur_dir_path
                 self.profiles_files = cur_filenames
             # Base videos, parse json files only
-            elif 'videos' in cur_dirpath and 'base' in cur_dirpath:
-                self.videos_base_dir = cur_dirpath
+            elif 'videos' in cur_dir_path and 'base' in cur_dir_path:
+                self.videos_base_dir = cur_dir_path
                 self.videos_base_files = [
                     each for each in cur_filenames if 'ndjson' not in each]
             # Related videos, parse json files only
-            elif 'videos' in cur_dirpath and 'related' in cur_dirpath and 'ndjson' not in cur_dirpath:
-                self.videos_related_dir = cur_dirpath
+            elif 'videos' in cur_dir_path and 'related' in cur_dir_path \
+                    and 'ndjson' not in cur_dir_path:
+                self.videos_related_dir = cur_dir_path
                 self.videos_related_files = cur_filenames
 
     # Read json file
-    def _read_json(self, path):
-        '''
-        Input:
-            path: file path
-        Return:
-            json file, lenght, type
-        '''
-        with open(path) as f:
-            jfile = json.load(f)
-        return jfile, len(jfile), type(jfile)
 
     # Populate profile details
     def _generate_profiles(self):
@@ -88,18 +104,19 @@ class Build_Profiles:
             # Use last word as key
             name = os.path.splitext(profile)[0].split('_', 2)[-1]
             profile_path = os.path.join(self.profiles_dir, profile)
-            self.profiles[name] = self._read_json(profile_path)[0]
+            self.profiles[name] = read_json(profile_path)[0]
 
     # Collect all the videos from a json file
-    def _load_videos(self, file):
-        '''
+    @staticmethod
+    def _load_videos(file):
+        """
         Input:
             file: json file path
         Return:
             video list, and detailed video dict keyed with url
-        '''
+        """
         videos_short, videos_details = [], []
-        videos, length, _ = self._read_json(file)
+        videos, length, _ = read_json(file)
         for video in videos:
             videos_short.append(video['url'])
             details = video.copy()
@@ -117,29 +134,19 @@ class Build_Profiles:
             self.base_videos_details[key] = v_d[:self.limit]
             self.base_videos_summary[key] = len(self.base_videos[key])
 
-    # Give data and file_path (need include .json extension), write file, overwrite if exists.
-    def _write_json(self, data, file):
-        '''
-        Input:
-            data: data to write
-            file: file path to write
-        '''
-        with open(file, 'w') as f:
-            # Indent will help json viewer properly display the format
-            json.dump(data, f, indent=4)
-
     # Generate files based on the base output
-    # Only output file will be shuffled is shuffle is True, the class attributes will not be shuffled,
+    # Only output file will be shuffled is shuffle is True,
+    # the class attributes will not be shuffled,
     # to prevent uneven shuffle after sampled with related videos
     # Turn details False will stop write detailed version of videos
     def output_profiles_base(self,
                              shuffle=settings.base_shuffle,
                              details=settings.base_detailed):
-        '''
+        """
         Input:
             shuffle: boolean, whether to shuffle the ourput
             details: boolean, whether to output detailed version
-        '''
+        """
         # Run to generate base profile videos
         self._build_profiles_base()
         out_path = self.output_path
@@ -148,35 +155,32 @@ class Build_Profiles:
             data = videos[:]
             if shuffle:
                 random.shuffle(data)
-            self._write_json(data, os.path.join(out_path, name_base))
-        self._write_json(self.base_videos_summary,
-                         os.path.join(out_path, 'base_summary.json'))
+            write_json(data, os.path.join(out_path, name_base))
+        write_json(self.base_videos_summary,
+                   os.path.join(out_path, 'base_summary.json'))
         if details:
             for file, videos in self.base_videos_details.items():
                 name_base_details = 'base_videos_details_' + file + '.json'
                 data = videos[:]
                 if shuffle:
                     random.shuffle(data)
-                self._write_json(data, os.path.join(
+                write_json(data, os.path.join(
                     out_path, name_base_details))
-
-    # Read a json profile file, output content, lenght, type. For external use.
-    def read_json(self, file_path):
-        return self._read_json(file_path)
 
     # Read a json video file, output short list (url only), detailed list. For external use.
     def read_videos(self, file_path):
         return self._load_videos(file_path)
 
-    def _load_related_videos(self, file):
-        '''
+    @staticmethod
+    def _load_related_videos(file):
+        """
         Input:
             file: json file path
         Return:
             video list, and detailed video dict keyed with url
-        '''
+        """
         videos_short, videos_details = [], []
-        videos, length, _ = self._read_json(file)
+        videos, length, _ = read_json(file)
         for video in videos['data']:
             videos_short.append(video['url'])
             details = video.copy()
@@ -201,32 +205,33 @@ class Build_Profiles:
             self.profiles_norm_ratio[profile_name] = {
                 k: float(v['ratio']) / total for k, v in details.items()}
 
-    # Normalize profile ratios only for top N subreditts.
+    # Normalize profile ratios only for top N subreddits.
     # N is the "diversity" determined by base video numbers, read from base_summary
     # Must run output_profile_base first!
     def _normalize_profile_ratios_N_diversity(self,
                                               diversity_index):
         for profile_name, details in self.profiles.items():
             N = round(self.base_videos_summary[profile_name] * diversity_index)
-            temp = sorted([(k, float(v['ratio'])) for k, v in details.items()], key=lambda x: x[1], reverse=True
+            temp = sorted([(k, float(v['ratio'])) for k, v in details.items()], key=lambda x: x[1],
+                          reverse=True
                           )[:N]
             total = sum([each[1] for each in temp])
             self.profiles_norm_ratio_N_diversity[profile_name] = [
                 (each[0], round(each[1] / total * N)) for each in temp]
 
-    # First method to implement the extended file:
-    # Each profile consists of: 1) base profile #: max(videos_in_base_profile, top_LIMIT_in_base_profile)
-    # 2) N*# of extended videos from subreddits by <1> normalize ratios for each subreddits for top LIMIT videos
-    # <2> total # of extended videos (roughly) equals to # of base profile, choose top N videos calculated by ratio，
-    # rounded up/down to whole number
+    # First method to implement the extended file: Each profile consists of: 1) base profile #:
+    # max(videos_in_base_profile, top_LIMIT_in_base_profile) 2) N*# of extended videos from
+    # subreddits by <1> normalize ratios for each subreddits for top LIMIT videos <2> total # of
+    # extended videos (roughly) equals to # of base profile, choose top N videos calculated by
+    # ratio， rounded up/down to whole number
     def output_profiles_related_diversity_method(
-        self,
-        shuffle=settings.extended_shuffle_by_diversity,
-        diversity_index=settings.diversity_index
+            self,
+            shuffle=settings.extended_shuffle_by_diversity,
+            diversity_index=settings.diversity_index
     ):
-        '''
+        """
         diversity_index: control the ratio of extended videos / base videos numbers
-        '''
+        """
         # Process the related/extended videos if not yet.
         if len(self.related_videos_summary) == 0:
             print(
@@ -235,8 +240,7 @@ class Build_Profiles:
             self._build_profiles_related()
         self._normalize_profile_ratios_N_diversity(diversity_index)
         out_path = self.output_path
-        summary = {}
-        summary['diversity_index'] = diversity_index
+        summary = {'diversity_index': diversity_index}
         for profile_name, details in self.profiles_norm_ratio_N_diversity.items():
             # Make a local copy of base videos, don't mess up with base files
             short = self.base_videos[profile_name][:]
@@ -254,22 +258,23 @@ class Build_Profiles:
                 random.shuffle(short)
             summary[profile_name] = len(short)
             name_related = 'related_videos_diversity_' + profile_name + '.json'
-            self._write_json(short, os.path.join(out_path, name_related))
-        self._write_json(summary,
-                         os.path.join(out_path, 'related_summary.json'))
+            write_json(short, os.path.join(out_path, name_related))
+        write_json(summary,
+                   os.path.join(out_path, 'related_summary.json'))
 
     def output_profiles_related_RNG_method(
-        self,
-        shuffle=settings.extended_shuffle_by_random_number,
-        sampling_index=settings.sampling_percent_index
-    ):
+            self,
+            shuffle=settings.extended_shuffle_by_random_number,
+            sampling_index=settings.sampling_percent_index
+        ):
         # Process the related/extended videos if not yet.
         if len(self.related_videos_summary) == 0:
             print(
                 "*****This step might take long time and large memory, please hold tight!*****\n")
             sys.stdout.flush()
             self._build_profiles_related()
-        # Hyperparameter: significant digits after decimal of overlapping ratios with subreddits in base profiles
+        # Hyper-parameter:
+        # significant digits after decimal of overlapping ratios with subreddits in base profiles
         DIGIT = settings.subreddit_ratio_decimal
         out_path = self.output_path
         summary = {}
@@ -293,7 +298,7 @@ class Build_Profiles:
                         # Uncomment below code to review subreddits without videos
                         # print(e)
                         # print(
-                        #     "Check related video folder or above subreddit name to match each other.")
+                        # "Check related video folder or above subreddit name to match each other.")
                         pass
             if shuffle:
                 random.shuffle(short)
@@ -301,14 +306,14 @@ class Build_Profiles:
             summary[profile_name + '_subreddits_total'] = len(details)
             summary[profile_name + '_subreddits_chosen'] = subreddits_count
             name_related = 'related_videos_RNG_' + profile_name + '.json'
-            self._write_json(short, os.path.join(out_path, name_related))
-        self._write_json(summary, os.path.join(
+            write_json(short, os.path.join(out_path, name_related))
+        write_json(summary, os.path.join(
             out_path, 'related_summary_RNG.json'))
 
     def one_click(self,
                   base=settings.base,
                   diversity=settings.by_diversity,
-                  random=settings.by_random_number_generator):
+                  by_random=settings.by_random_number_generator):
         if base:
             self.output_profiles_base(shuffle=settings.base_shuffle,
                                       details=settings.base_detailed
@@ -319,7 +324,7 @@ class Build_Profiles:
                 diversity_index=settings.diversity_index
             )
 
-        if random:
+        if by_random:
             self.output_profiles_related_RNG_method(
                 shuffle=settings.extended_shuffle_by_random_number,
                 sampling_index=settings.sampling_percent_index
@@ -328,5 +333,5 @@ class Build_Profiles:
 
 
 if __name__ == '__main__':
-    BP = Build_Profiles()
+    BP = BuildProfiles()
     BP.one_click()
