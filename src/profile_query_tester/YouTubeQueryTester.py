@@ -19,60 +19,48 @@ log = logging.getLogger(__name__)
 
 
 class YouTubeQueryTester:
-    QUERY_WEB: str = "https://www.youtube.com/"
-    QUERY_IMPLICIT_WAIT: int = 5  # Waiting in seconds due to asynchronous feature of browsers
+    __QUERY_WEB: str = "https://www.youtube.com/"
+    __QUERY_IMPLICIT_WAIT: int = 5  # Waiting in seconds due to asynchronous feature of browsers
     # The limit of scrolling down to find enough query result, 100 window size should be enough for
     # a few hundred search result
-    SCROLL_DOWN_COUNT_LIMIT: int = 100
+    __SCROLL_DOWN_COUNT_LIMIT: int = 100
     # 4 scrolls is enough to get all the recommendation list (as of 2019, ~40 for each video) in the
     # right side recommendation column
-    SIDE_RECOMMENDATIONS_SCROLL_DOWN: int = 4
-    EXPLICIT_SLEEP_TIME: int = 3  # in seconds
+    __SIDE_RECOMMENDATIONS_SCROLL_DOWN: int = 4
+    __EXPLICIT_SLEEP_TIME: int = 3  # in seconds
 
     def __init__(self,
                  driver: webdriver.Firefox,
                  subdirectory_to_save_result: str,
+                 label: str,
                  keyword: str) -> None:
-        log.info("Start testing on web: {}".format(YouTubeQueryTester.QUERY_WEB))
+        log.info("Start testing on web: {}".format(YouTubeQueryTester.__QUERY_WEB))
         log.info("Class variables: "
                  "QUERY_WEB: {}, QUERY_IMPLICIT_WAIT: {}, SCROLL_DOWN_COUNT_LIMIT: {}, "
                  "SIDE_RECOMMENDATIONS_SCROLL_DOWN: {}, EXPLICIT_SLEEP_TIME: {}."
-                 .format(YouTubeQueryTester.QUERY_WEB, YouTubeQueryTester.QUERY_IMPLICIT_WAIT,
-                         YouTubeQueryTester.SCROLL_DOWN_COUNT_LIMIT,
-                         YouTubeQueryTester.SIDE_RECOMMENDATIONS_SCROLL_DOWN,
-                         YouTubeQueryTester.EXPLICIT_SLEEP_TIME))
+                 .format(YouTubeQueryTester.__QUERY_WEB, YouTubeQueryTester.__QUERY_IMPLICIT_WAIT,
+                         YouTubeQueryTester.__SCROLL_DOWN_COUNT_LIMIT,
+                         YouTubeQueryTester.__SIDE_RECOMMENDATIONS_SCROLL_DOWN,
+                         YouTubeQueryTester.__EXPLICIT_SLEEP_TIME))
         self.query_result: List[List[YouTubeVideoRecord]] = []
         self.recommendation_result: List[Dict[str, List[YouTubeVideoRecord]]] = []
-        self.subdirectory_to_save_result: str = \
+        self.__subdirectory_to_save_result: str = \
             os.path.join(sts.ROOT_DIR, sts.GEN_DATA,
                          subdirectory_to_save_result
                          + datetime.datetime.now().strftime(" %m-%d-%Y %H-%M-%S"))
-        if not os.path.exists(self.subdirectory_to_save_result):
-            os.makedirs(self.subdirectory_to_save_result)
-        log.info("Tester result saved at: {}".format(self.subdirectory_to_save_result))
+        if not os.path.exists(self.__subdirectory_to_save_result):
+            os.makedirs(self.__subdirectory_to_save_result)
+        log.info("Tester result saved at: {}".format(self.__subdirectory_to_save_result))
         self.keyword: str = keyword
-        self.driver: webdriver.Firefox = driver
-        self.internal_driver: bool = False
-        if not self.driver:
-            log.warning("External FireFox driver is not provided, "
-                        "blank firefox driver is created on behalf.")
-            fp: FirefoxProfile = FirefoxProfile(sts.firefox_profile_blank)
-            log.info("\tFireFox profile: {}, profile directory path: {}"
-                     .format(fp.path, sts.firefox_profile_blank))
-            options: Options = Options()
-            options.headless = sts.headless
-            log.info("\tFireFox profile headless: {}".format(sts.headless))
-            options.binary = sts.firefox_binary_path
-            log.info("\tFireFox binary directory path: {}".format(sts.firefox_binary_path))
-            self.driver: webdriver.Firefox = webdriver.Firefox(firefox_profile=fp, options=options)
-            self.internal_driver = True
-        self.driver.implicitly_wait(YouTubeQueryTester.QUERY_IMPLICIT_WAIT)
+        self.label: str = label
+        self.__driver: webdriver.Firefox = driver
+        self.__driver.implicitly_wait(YouTubeQueryTester.__QUERY_IMPLICIT_WAIT)
         log.info("Set implicit wait as {} seconds."
-                 .format(YouTubeQueryTester.QUERY_IMPLICIT_WAIT))
-        self.driver.get(YouTubeQueryTester.QUERY_WEB)
+                 .format(YouTubeQueryTester.__QUERY_IMPLICIT_WAIT))
+        self.__driver.get(YouTubeQueryTester.__QUERY_WEB)
 
     @staticmethod
-    def convert_to_sec_from_other_unit(number: str, unit: str) -> int:
+    def __convert_to_sec_from_other_unit(number: str, unit: str) -> int:
         if not number.isdigit():
             raise ValueError("Unable to convert non-digit to time in seconds. Argument: {}"
                              .format(number))
@@ -93,7 +81,7 @@ class YouTubeQueryTester:
         else:
             raise RuntimeError("Unsupported unit. Argument: {}".format(unit))
 
-    def parse_video(self, video) -> YouTubeVideoRecord:
+    def __parse_video(self, video) -> YouTubeVideoRecord:
         title: str = video.get_attribute("title")  # Title
         href: str = video.get_attribute("href")  # Link
         # Video info including title, source, uploaded time, video length, views
@@ -101,7 +89,7 @@ class YouTubeQueryTester:
         # Fox News Streamed 19 hours ago 1 hour, 26 minutes 284,647 views"
         info: str = video.get_attribute("aria-label")
         info = info.replace(title + " by ", "")  # remove title from info
-        new_record: YouTubeVideoRecord = self.parse_video_details_info_attribute(info)
+        new_record: YouTubeVideoRecord = self.__parse_video_details_info(info)
         new_record.href = href
         new_record.title = title
         # info_dict["href"] = href
@@ -109,7 +97,7 @@ class YouTubeQueryTester:
         log.debug("Got video {} information: {}.".format(repr(video), new_record))
         return new_record
 
-    def parse_video_details_info_attribute(self, info: str) -> YouTubeVideoRecord:
+    def __parse_video_details_info(self, info: str) -> YouTubeVideoRecord:
         source: str = "Unknown"
         upload_time: str = "Unknown"
         unit: str = "Unknown"
@@ -130,13 +118,13 @@ class YouTubeQueryTester:
                 break
         # Approximate the uploaded datetime
         uploaded_time: datetime = datetime.datetime.now() - datetime.timedelta(
-            seconds=self.convert_to_sec_from_other_unit(upload_time, unit))
+            seconds=self.__convert_to_sec_from_other_unit(upload_time, unit))
         # Get the number and remove the comma separation and
         views = int("".join(length_views[-2].split(",")))  # Get all the views
         length_views = length_views[:-2]  # remove the views
         for i in range(0, len(length_views),
                        2):  # for all the left words, convert all time to seconds
-            video_length += self.convert_to_sec_from_other_unit(
+            video_length += self.__convert_to_sec_from_other_unit(
                 length_views[i], length_views[i + 1])
 
         new_record = YouTubeVideoRecord()
@@ -145,17 +133,10 @@ class YouTubeQueryTester:
         new_record.video_length = video_length
         new_record.views = views
         new_record.query_time = datetime.datetime.now()
-        # ret = {"source": source,
-        #        "approximated upload time": uploaded_time.strftime("%m/%d/%Y %H:%M:%S"),
-        #        "video length": f"{video_length} seconds",
-        #        "views": views,
-        #        "query time": datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S")}
         return new_record
 
-    def search_by_keyword(self,
-                          num_of_results_needed: int,
-                          additional_label: str = "test"):
-        driver: webdriver.Firefox = self.driver
+    def search_by_keyword(self, num_of_results_needed: int,):
+        driver: webdriver.Firefox = self.__driver
         driver.find_element_by_name("search_query").click()
         driver.find_element_by_name("search_query").clear()
         driver.find_element_by_name("search_query").send_keys(self.keyword)
@@ -168,7 +149,7 @@ class YouTubeQueryTester:
                         " by name 'search_query' instead. Message: {}".format(e))
             driver.find_element_by_name("search_query").click()
         # Explicit sleep for web to load. (Don't remember whether in addition to implicit wait.)
-        time.sleep(YouTubeQueryTester.EXPLICIT_SLEEP_TIME)
+        time.sleep(YouTubeQueryTester.__EXPLICIT_SLEEP_TIME)
         scroll_count: int = 0
         while len(driver.find_elements_by_id("video-title")) < num_of_results_needed:
             log.debug("Scrolling down to show more result, required: {}, found: {}"
@@ -176,21 +157,21 @@ class YouTubeQueryTester:
                               len(driver.find_elements_by_id("video-title"))))
             driver.execute_script("window.scrollByPages(10)")
             scroll_count += 1
-            if scroll_count > YouTubeQueryTester.SCROLL_DOWN_COUNT_LIMIT:
+            if scroll_count > YouTubeQueryTester.__SCROLL_DOWN_COUNT_LIMIT:
                 log.error("Unable to find enough result, required: {}, found: {}, "
                           "scroll down count: {}"
                           .format(num_of_results_needed,
                                   len(driver.find_elements_by_id("video-title")),
                                   scroll_count))
                 break
-            time.sleep(YouTubeQueryTester.EXPLICIT_SLEEP_TIME)
+            time.sleep(YouTubeQueryTester.__EXPLICIT_SLEEP_TIME)
         # Get all the videos shown on web page
         video_list: List = driver.find_elements_by_id("video-title")
         query_result_list: List = list()  # Maintain the video sequence as shown in web page
         for video in video_list:
             url: str = video.get_attribute("href")  # url
             try:
-                query_result_list.append(self.parse_video(video))
+                query_result_list.append(self.__parse_video(video))
                 log.debug("Add video {} info {}.".format(url, query_result_list[-1]))
             except Exception as e:
                 log.error("Unable to parse video, url: {}, full info: {}, error message {}"
@@ -201,8 +182,8 @@ class YouTubeQueryTester:
         log.info("Got {} number of videos after searching for keyword {}."
                  .format(len(query_result_list), self.keyword))
         save_file_path: str = os.path.join(
-            self.subdirectory_to_save_result,
-            f"query_result_for_{self.keyword}_with_{additional_label}.json")
+            self.__subdirectory_to_save_result,
+            f"query_result_for_{self.keyword}_with_{self.label}.json")
         try:
             with open(save_file_path, "w") as f:
                 json.dump(obj=query_result_list, fp=f, indent=4, default=YouTubeVideoRecord.encoder)
@@ -214,28 +195,37 @@ class YouTubeQueryTester:
         self.query_result.append(query_result_list)
         return query_result_list
 
-    def click_and_get_right_column_recommendations(
+    def click_and_get_right_column_recommendations_from_record(
             self, query_result_list: List[YouTubeVideoRecord],
-            num_results_required_for_each_video: int,
-            additional_label: str = "test") -> Dict[str, List[YouTubeVideoRecord]]:
-        driver = self.driver
+            num_results_required_for_each_video: int) -> Dict[str, List[YouTubeVideoRecord]]:
+        if not query_result_list or not num_results_required_for_each_video:
+            log.error("Input is not valid, empty or null input is not allowed.")
+        list_to_explore: List[str] = []
+        for record in query_result_list:
+            list_to_explore.append(record.href)
+        return self.click_and_get_right_column_recommendations_from_list(
+            list_to_explore, num_results_required_for_each_video)
+
+    def click_and_get_right_column_recommendations_from_list(
+            self, query_result_list: List[str],
+            num_results_required_for_each_video: int) -> Dict[str, List[YouTubeVideoRecord]]:
+        driver = self.__driver
         recommend_dict = OrderedDict()
         log.info("Getting deep recommendation from right side column recommendation list for "
                  "a list of videos. Number of vidoes to investigate: {}, "
                  "each video need {} recommendations."
                  .format(len(query_result_list), num_results_required_for_each_video))
-        for query in query_result_list:
-            parent_url = query.href
+        for parent_url in query_result_list:
             if parent_url in recommend_dict:
                 continue
-            log.info("Getting side recommendation for {}.".format(query))
+            log.info("Getting side recommendation for {}.".format(parent_url))
             recommend_dict[parent_url] = []
             driver.get(parent_url)
-            time.sleep(YouTubeQueryTester.EXPLICIT_SLEEP_TIME)
-            for _ in range(YouTubeQueryTester.SIDE_RECOMMENDATIONS_SCROLL_DOWN):
+            time.sleep(YouTubeQueryTester.__EXPLICIT_SLEEP_TIME)
+            for _ in range(YouTubeQueryTester.__SIDE_RECOMMENDATIONS_SCROLL_DOWN):
                 # Cannot do check for number of element, because there are multiple empty element
                 driver.execute_script("window.scrollByPages(10)")
-                time.sleep(YouTubeQueryTester.EXPLICIT_SLEEP_TIME)
+                time.sleep(YouTubeQueryTester.__EXPLICIT_SLEEP_TIME)
             recs: List = driver.find_elements_by_class_name("ytd-compact-video-renderer")
             # Note: the url and information is not in the same object, so need to get all not-None
             # object and match them together
@@ -251,7 +241,7 @@ class YouTubeQueryTester:
                 try:
                     rec_title = info.split(" by ")[0]
                     info = info.replace(rec_title + " by ", "")  # remove title from info
-                    new_record: YouTubeVideoRecord = self.parse_video_details_info_attribute(info)
+                    new_record: YouTubeVideoRecord = self.__parse_video_details_info(info)
                     # The recommendation video in side column element info is different from
                     # video directly pulled from query page, href is not in "info" element
                     new_record.href = href
@@ -266,8 +256,9 @@ class YouTubeQueryTester:
                               .format(e, href, parent_url), exc_info=True)
                     continue
         save_file_path = os.path.join(
-            self.subdirectory_to_save_result,
-            f"Side_column_recommendation_lists_for_{self.keyword}_with_{additional_label}.json")
+            self.__subdirectory_to_save_result,
+            f"Side_column_recommendation_lists_for_"
+            f"{self.keyword}_with_{self.label}.json")
         try:
             with open(save_file_path, "w") as f:
                 json.dump(obj=recommend_dict, fp=f, indent=4, default=YouTubeVideoRecord.encoder)
@@ -278,7 +269,3 @@ class YouTubeQueryTester:
                       .format(save_file_path, e), exc_info=True)
         self.recommendation_result.append(recommend_dict)
         return recommend_dict
-
-    def __del__(self):
-        if self.internal_driver and self.driver:
-            self.driver.quit()
