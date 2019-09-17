@@ -14,7 +14,7 @@ log = logging.getLogger(__name__)
 
 class FireFoxSimpleAutoBrowsing:
     RETRY_CHANCES = 3
-    SCREENSHOT_PATH = os.path.join(settings.log_root_path, "screenshot", random.randrange(10**5))
+    SCREENSHOT_PATH = os.path.join(settings.log_root_path, "screenshot", random.randint(1, 10**5))
     if not os.path.exists(SCREENSHOT_PATH):
         os.makedirs(SCREENSHOT_PATH)
     STATUS_CHECK_INTERVAL = 5
@@ -74,7 +74,7 @@ class FireFoxSimpleAutoBrowsing:
             video: str = FireFoxSimpleAutoBrowsing.__trim_youtube_link(video)
             current_video_screenshot_dir: str = os.path.join(
                 FireFoxSimpleAutoBrowsing.SCREENSHOT_PATH,
-                video.split("v=")[-1])
+                video.replace('/', '-').replace(':', '-').replace('.', '-'))
             if not os.path.exists(current_video_screenshot_dir):
                 os.makedirs(current_video_screenshot_dir)
                 log.info("Create dir {}".format(current_video_screenshot_dir))
