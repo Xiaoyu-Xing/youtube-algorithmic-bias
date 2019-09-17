@@ -1,5 +1,6 @@
 import logging
 import os
+import random
 import time
 from typing import List
 
@@ -13,7 +14,7 @@ log = logging.getLogger(__name__)
 
 class FireFoxSimpleAutoBrowsing:
     RETRY_CHANCES = 3
-    SCREENSHOT_PATH = os.path.join(settings.log_root_path, "screenshot")
+    SCREENSHOT_PATH = os.path.join(settings.log_root_path, "screenshot", random.randrange(10**5))
     if not os.path.exists(SCREENSHOT_PATH):
         os.makedirs(SCREENSHOT_PATH)
     STATUS_CHECK_INTERVAL = 5
