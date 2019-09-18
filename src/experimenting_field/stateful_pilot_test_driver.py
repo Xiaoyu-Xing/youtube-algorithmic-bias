@@ -9,7 +9,7 @@ from src.experimenting_field.StatefulTrainAndTest import stateful_train_and_test
 
 
 def start_stateful():
-    setup_log(os.path.basename(__file__ + str(os.getpid())).strip(".py"))
+    setup_log(os.path.basename(str(__file__).strip(".py")) + str(os.getpid()))
     log = logging.getLogger(__name__ + str(os.getpid()))
     input_video_parent_path: str = \
         os.path.join(settings.ROOT_DIR, settings.INPUT_DATA, "stateful_videos")
@@ -18,7 +18,7 @@ def start_stateful():
                                              "related_videos_RNG_enoughtrumpspam.json")
     video_list: List[str] = [donald_path, enoughtrumpspam_path, ""]
     cookie_base_path: str = os.path.join(settings.ROOT_DIR, settings.INPUT_DATA,
-                                         "cookies", "standard")
+                                         "cookies")
     cookie_path: List[str] = [os.path.join(cookie_base_path, file_name) for file_name in
                               ["the_donald.json", "enoughtrumpspam.json", "blank.json"]]
     log.info("Videos to be visited: {}".format(video_list))
