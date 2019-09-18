@@ -188,6 +188,8 @@ class YouTubeQueryTester:
         except TypeError as e:
             log.error("Error during save json file at {}, message {}."
                       .format(save_file_path, e), exc_info=True)
+        log.info("Total found query result {} for keyword {}."
+                 .format(len(query_result_list), self.keyword))
         self.query_result.append(query_result_list)
         return query_result_list
 
@@ -206,9 +208,9 @@ class YouTubeQueryTester:
             self, query_result_list: List[str],
             num_results_required_for_each_video: int) -> Dict[str, List[YouTubeVideoRecord]]:
         driver = self.__driver
-        recommend_dict = OrderedDict()
+        recommend_dict: OrderedDict[str, List[YouTubeVideoRecord]] = OrderedDict()
         log.info("Getting deep recommendation from right side column recommendation list for "
-                 "a list of videos. Number of vidoes to investigate: {}, "
+                 "a list of videos. Number of videos to investigate: {}, "
                  "each video need {} recommendations."
                  .format(len(query_result_list), num_results_required_for_each_video))
         for parent_url in query_result_list:
@@ -233,7 +235,8 @@ class YouTubeQueryTester:
                 if rec.get_attribute("aria-label"):
                     temp_info_list.append(rec.get_attribute("aria-label"))
             for href, info in zip(temp_href_list, temp_info_list):
-                log.info("\tCurrent parsing recommended video {}.".format(href))
+                log.info("\tFound one recommended video {} for parent video {}."
+                         .format(href, parent_url))
                 try:
                     rec_title = info.split(" by ")[0]
                     info = info.replace(rec_title + " by ", "")  # remove title from info
@@ -242,8 +245,6 @@ class YouTubeQueryTester:
                     # video directly pulled from query page, href is not in "info" element
                     new_record.href = href
                     new_record.title = rec_title
-                    # rec_dict["href"] = href
-                    # rec_dict["title"] = rec_title
                     recommend_dict[parent_url].append(new_record)
                     if len(recommend_dict[parent_url]) >= num_results_required_for_each_video:
                         break
@@ -263,5 +264,9 @@ class YouTubeQueryTester:
         except TypeError as e:
             log.error("Error during save json file at {}, message {}."
                       .format(save_file_path, e), exc_info=True)
+        log.info("Recommendation check finished. ")
+        for curr_url, recommend_list in recommend_dict.items():
+            log.info("\tSize of recommended list for video {} is {}."
+                     .format(curr_url, len(recommend_list)))
         self.recommendation_result.append(recommend_dict)
         return recommend_dict
