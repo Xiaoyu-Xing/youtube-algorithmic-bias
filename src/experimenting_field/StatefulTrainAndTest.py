@@ -13,7 +13,7 @@ from src.profile_trainer.FireFoxSimpleAutoBrowsing import FireFoxSimpleAutoBrows
 
 def stateful_train_and_test(video_json_path: str, cookie_path: str) -> None:
     label: str = os.path.basename(video_json_path).strip(".json")
-    setup_log(label + "stateful" + str(os.getpid()))
+    setup_log(label + "_stateful_" + str(os.getpid()))
     log = logging.getLogger(__name__ + str(os.getpid()))
     if video_json_path == "":
         log.info("Start stateful control experiment, i.e. no training.")
@@ -49,7 +49,6 @@ if __name__ == "__main__":
     donald_path: str = os.path.join(input_video_parent_path, "related_videos_RNG_the_donald.json")
     enoughtrumpspam_path: str = os.path.join(input_video_parent_path,
                                              "related_videos_RNG_enoughtrumpspam.json")
-    cookie_base_path: str = os.path.join(settings.ROOT_DIR, settings.INPUT_DATA,
-                                         "cookies", "standard")
+    cookie_base_path: str = os.path.join(settings.ROOT_DIR, settings.INPUT_DATA, "cookies")
     cookie_path_trump: str = os.path.join(cookie_base_path, "enoughtrumpspam.json")
     stateful_train_and_test(enoughtrumpspam_path, cookie_path_trump)
