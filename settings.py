@@ -92,7 +92,7 @@ seed_cookie_path = join(ROOT_DIR, INPUT_DATA, 'cookies/cookiebro-cookies.json')
 # where to save cookie after training
 training_cookie_saving_path = join(ROOT_DIR, INPUT_DATA, 'cookies/after_training_cookie.json')
 # How many seconds to watch for each video:
-watch_time = 30  # should be more than 5 seconds, VIDEO TIME
+watch_time = 300  # should be more than 5 seconds, VIDEO TIME
 # Initial web to visit before train, DO NOT CHANGE unless for other projects
 initial_website = 'https://www.youtube.com/'
 # Training batch size to prevent memory overload:
