@@ -9,7 +9,7 @@ from src.experimenting_field.StatelessTrainAndTest import stateless_train_and_te
 
 
 def start_stateless():
-    setup_log(os.path.basename(__file__ + str(os.getpid())).strip(".py"))
+    setup_log(os.path.basename(str(__file__).strip(".py")) + str(os.getpid()))
     log = logging.getLogger(__name__ + str(os.getpid()))
     stateless_videos: str = "stateless_videos"
     input_video_parent_path: str = \
