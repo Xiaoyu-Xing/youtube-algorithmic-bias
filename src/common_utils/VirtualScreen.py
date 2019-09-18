@@ -1,9 +1,10 @@
 import logging
+import os
 import time
 
 from pyvirtualdisplay import Display
 
-log = logging.getLogger(__name__)
+log = logging.getLogger(__name__ + str(os.getpid()))
 
 
 class VirtualScreen:

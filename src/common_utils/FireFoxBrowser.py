@@ -1,8 +1,9 @@
-import logging
-import random
-import time
-import os
 import json
+import logging
+import os
+import random
+import sys
+import time
 
 from selenium import webdriver
 from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
@@ -10,7 +11,7 @@ from selenium.webdriver.firefox.options import Options
 
 import settings
 
-log = logging.getLogger(__name__)
+log = logging.getLogger(__name__ + str(os.getpid()))
 
 
 class FireFoxBrowser:
@@ -35,7 +36,7 @@ class FireFoxBrowser:
         if cookie_path:
             if not os.path.isfile(cookie_path):
                 log.error("Cookie path {} is not a file.".format(cookie_path))
-                raise RuntimeError
+                raise RuntimeError(sys.exc_info()[2])
             log.info("Loading cookie from {}.".format(cookie_path))
             cookie_file = None
             while not cookie_file:
@@ -46,7 +47,7 @@ class FireFoxBrowser:
                     log.warning("Failed to read cookie file from {}.".format(cookie_path))
                     self.__COOKIE_LOAD_RETRY -= 1
                     if self.__COOKIE_LOAD_RETRY <= 0:
-                        raise RuntimeError(e)
+                        raise RuntimeError(sys.exc_info()[2])
                     time.sleep(random.randint(1, 5))
             try:
                 self.browser.add_cookie(cookie_file)
