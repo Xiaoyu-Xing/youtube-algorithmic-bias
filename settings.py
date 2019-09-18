@@ -130,5 +130,5 @@ training_cookies_list = [training_cookie_saving_path] * 7
 
 # >>>>>>>>>>>>Forth section: for pilot testing<<<<<<<<<<<<
 keyword = "mueller report"
-report_results_number = 3
-recommend_results_number = 2  # max ~40, limited by fed list from youtube
+report_results_number = 50
+recommend_results_number = 20  # max ~40, limited by fed list from youtube

@@ -7,15 +7,11 @@ from collections import OrderedDict
 from typing import List, Dict
 
 from selenium import webdriver
-from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
-from selenium.webdriver.firefox.options import Options
-
-from src.common_utils.YouTubeVideoRecord import YouTubeVideoRecord
-
 
 import settings as sts
+from src.common_utils.YouTubeVideoRecord import YouTubeVideoRecord
 
-log = logging.getLogger(__name__)
+log = logging.getLogger(__name__ + str(os.getpid()))
 
 
 class YouTubeQueryTester:
@@ -146,7 +142,7 @@ class YouTubeQueryTester:
             driver.find_element_by_id("search-form").submit()
         except Exception as e:
             log.warning("Unable to find element by id 'search-form', use find element"
-                        " by name 'search_query' instead. Message: {}".format(e))
+                        " by name 'search_query' instead. Message: {}".format(e.__traceback__))
             driver.find_element_by_name("search_query").click()
         # Explicit sleep for web to load. (Don't remember whether in addition to implicit wait.)
         time.sleep(YouTubeQueryTester.__EXPLICIT_SLEEP_TIME)

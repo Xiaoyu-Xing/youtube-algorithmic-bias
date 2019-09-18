@@ -13,13 +13,13 @@ from src.profile_trainer.FireFoxSimpleAutoBrowsing import FireFoxSimpleAutoBrows
 
 def stateless_train_and_test(video_json_path: str) -> None:
     label: str = os.path.basename(video_json_path).strip(".json")
-    setup_log(__name__ + label)
-    log = logging.getLogger(__name__)
+    setup_log(label + "stateless" + str(os.getpid()))
+    log = logging.getLogger(__name__ + str(os.getpid()))
     if video_json_path == "":
         log.info("Start stateless control experiment, i.e. no training.")
         with VirtualScreen() as display, FireFoxBrowser() as browser:
             # Notice, no training part here.
-            tester = YouTubeQueryTester(browser, __name__, "blank", settings.keyword)
+            tester = YouTubeQueryTester(browser, "stateless-test", "blank", settings.keyword)
             tester.search_by_keyword(settings.report_results_number)
             tester.click_and_get_right_column_recommendations_from_record(
                 tester.query_result[-1], settings.recommend_results_number)
@@ -34,7 +34,7 @@ def stateless_train_and_test(video_json_path: str) -> None:
         log.info("State stateless experiment.")
         with VirtualScreen() as display, FireFoxBrowser() as browser:
             FireFoxSimpleAutoBrowsing.browse_video_list(videos, browser)
-            tester = YouTubeQueryTester(browser, __name__, label, settings.keyword)
+            tester = YouTubeQueryTester(browser, "stateless-test", label, settings.keyword)
             tester.search_by_keyword(settings.report_results_number)
             tester.click_and_get_right_column_recommendations_from_record(
                 tester.query_result[-1], settings.recommend_results_number)
@@ -45,4 +45,6 @@ if __name__ == "__main__":
     input_video_parent_path: str = \
         os.path.join(settings.ROOT_DIR, settings.INPUT_DATA, stateless_videos)
     donald_path: str = os.path.join(input_video_parent_path, "related_videos_RNG_the_donald.json")
-    stateless_train_and_test(donald_path)
+    enoughtrumpspam_path: str = os.path.join(input_video_parent_path,
+                                             "related_videos_RNG_enoughtrumpspam.json")
+    stateless_train_and_test(enoughtrumpspam_path)

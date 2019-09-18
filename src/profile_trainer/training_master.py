@@ -1,10 +1,11 @@
-import subprocess
-import time
-import os
-import sys
-import settings
-from concurrent.futures import ProcessPoolExecutor as Pool
 import datetime
+import os
+import subprocess
+import sys
+import time
+from concurrent.futures import ProcessPoolExecutor as Pool
+
+import settings
 
 
 def run_command(cmd):

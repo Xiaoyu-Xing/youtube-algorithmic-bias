@@ -1,27 +1,26 @@
 import logging
 import os
-import random
 import time
 from typing import List
 
 from selenium import webdriver
+from selenium.common.exceptions import JavascriptException
 
 import settings
 from src.common_utils.YouTubePlayerException import YouTubePlayerException
 
-log = logging.getLogger(__name__)
+log = logging.getLogger(__name__ + str(os.getpid()))
 
 
 class FireFoxSimpleAutoBrowsing:
     RETRY_CHANCES = 3
-    SCREENSHOT_PATH = os.path.join(settings.log_root_path, "screenshot",
-                                   str(random.randint(1, 10**5)))
+    SCREENSHOT_PATH = os.path.join(settings.log_root_path, "screenshot", str(os.getpid()))
     if not os.path.exists(SCREENSHOT_PATH):
         os.makedirs(SCREENSHOT_PATH)
     STATUS_CHECK_INTERVAL = 5
-    log.info("Class variables: "
-             "retry changes: {}, screenshot saving path: {}, status check interval: {} seconds"
-             .format(RETRY_CHANCES, SCREENSHOT_PATH, STATUS_CHECK_INTERVAL))
+    log.info("Class variables: retry changes: {}, screenshot saving path: {}, "
+             "status check interval: {} seconds. Current process id {}."
+             .format(RETRY_CHANCES, SCREENSHOT_PATH, STATUS_CHECK_INTERVAL, os.getpid()))
 
     @staticmethod
     def __trim_youtube_link(link: str):
@@ -66,25 +65,27 @@ class FireFoxSimpleAutoBrowsing:
         if not video_list or len(video_list) == 0:
             log.warning("Empty video list or null list.")
         log.debug("Video list to be watched: {}".format(video_list))
-        fail_counter: int = 0
+        unknown_failure_counter: int = 0
+        js_execution_failure_counter: int = 0
+        success_count: int = 0
         total_video_length: int = len(video_list)
         log.info("Start watching list of videos, total size: {}".format(total_video_length))
         for i, video in enumerate(video_list):
             current_success: bool = False
             retry_count: int = 0
             video: str = FireFoxSimpleAutoBrowsing.__trim_youtube_link(video)
+            log.info("Index: {}, watching: {}".format(i + 1, video))
             current_video_screenshot_dir: str = os.path.join(
                 FireFoxSimpleAutoBrowsing.SCREENSHOT_PATH,
                 video.replace('/', '-').replace(':', '-').replace('.', '-'))
             if not os.path.exists(current_video_screenshot_dir):
                 os.makedirs(current_video_screenshot_dir)
-                log.info("Create dir {}".format(current_video_screenshot_dir))
+                log.debug("\tCreate dir {} for screenshot".format(current_video_screenshot_dir))
             log.info("\tScreenshot for video {} saved at {}."
                      .format(video, current_video_screenshot_dir))
             while not current_success and retry_count < FireFoxSimpleAutoBrowsing.RETRY_CHANCES:
                 try:
                     refreshed: bool = False
-                    log.info("Index: {}, watching: {}".format(i + 1, video))
                     browser.get(video)
                     if settings.fast:
                         FireFoxSimpleAutoBrowsing.__play_at_fastest_speed(browser)
@@ -106,7 +107,8 @@ class FireFoxSimpleAutoBrowsing:
                                 and current_status in ['unstarted', 'paused', 'buffering']:
                             if not refreshed:
                                 browser.refresh()
-                                log.warning("\tBrowser refreshed.")
+                                log.warning("\tVideo playing frozen. "
+                                            "Try resolve by browser refreshed..")
                                 refreshed = True
                             else:
                                 raise YouTubePlayerException(
@@ -114,14 +116,25 @@ class FireFoxSimpleAutoBrowsing:
                                     "current play status: {}.".format(video_time, current_status),
                                     video)
                     current_success = True
+                    success_count += 1
+                except JavascriptException:
+                    js_execution_failure_counter += 1
+                    log.warning("JavascriptException during watching video {}, "
+                                "most like caused by unavailable video. "
+                                "Traceback is provided for analysis. Jump to next video (if any)."
+                                .format(video), exc_info=True)
+                    break
                 except Exception as e:
                     retry_count += 1
                     log.error("Exception during watching video {}, caused by: {},"
                               " retry count: {}".format(video, e, retry_count),
                               exc_info=True)
                     if retry_count >= FireFoxSimpleAutoBrowsing.RETRY_CHANCES:
-                        fail_counter += 1
+                        unknown_failure_counter += 1
                         log.error("Video {} failed after retry {} times."
                                   .format(video, retry_count))
-        log.info("Finished watching list, succeed count: {}, failed count: {}".
-                 format(total_video_length - fail_counter, fail_counter))
+        log.info("Finished watching list, total {}, succeed count: {}, "
+                 "unknown failed count: {}, possible video unavailable count: {}".
+                 format(total_video_length, success_count, unknown_failure_counter,
+                        js_execution_failure_counter))
+        return
