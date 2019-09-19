@@ -36,10 +36,11 @@ def stateful_train_and_test(video_json_path: str, cookie_path: str) -> None:
             sub_video_list: List[str] = videos[i:i + settings.training_batch_size]
             with VirtualScreen() as display, FireFoxBrowser(cookie_path) as browser:
                 FireFoxSimpleAutoBrowsing.browse_video_list(sub_video_list, browser)
-                tester = YouTubeQueryTester(browser, "stateful-test", label, settings.keyword)
-                tester.search_by_keyword(settings.report_results_number)
-                tester.click_and_get_right_column_recommendations_from_record(
-                    tester.query_result[-1], settings.recommend_results_number)
+        with VirtualScreen() as display, FireFoxBrowser(cookie_path) as browser:
+            tester = YouTubeQueryTester(browser, "stateful-test", label, settings.keyword)
+            tester.search_by_keyword(settings.report_results_number)
+            tester.click_and_get_right_column_recommendations_from_record(
+                tester.query_result[-1], settings.recommend_results_number)
 
 
 if __name__ == "__main__":
