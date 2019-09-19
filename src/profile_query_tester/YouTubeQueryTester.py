@@ -16,7 +16,7 @@ log = logging.getLogger(__name__ + str(os.getpid()))
 
 class YouTubeQueryTester:
     __QUERY_WEB: str = "https://www.youtube.com/"
-    __QUERY_IMPLICIT_WAIT: int = 5  # Waiting in seconds due to asynchronous feature of browsers
+    __QUERY_IMPLICIT_WAIT: int = 6  # Waiting in seconds due to asynchronous feature of browsers
     # The limit of scrolling down to find enough query result, 100 window size should be enough for
     # a few hundred search result
     __SCROLL_DOWN_COUNT_LIMIT: int = 100
@@ -42,7 +42,7 @@ class YouTubeQueryTester:
         self.recommendation_result: List[Dict[str, List[YouTubeVideoRecord]]] = []
         self.__subdirectory_to_save_result: str = \
             os.path.join(sts.ROOT_DIR, sts.GEN_DATA,
-                         subdirectory_to_save_result
+                         subdirectory_to_save_result + label
                          + datetime.datetime.now().strftime(" %m-%d-%Y %H-%M-%S"))
         if not os.path.exists(self.__subdirectory_to_save_result):
             os.makedirs(self.__subdirectory_to_save_result)
@@ -254,7 +254,7 @@ class YouTubeQueryTester:
                     continue
         save_file_path = os.path.join(
             self.__subdirectory_to_save_result,
-            f"Side_column_recommendation_lists_for_"
+            f"side_column_recommendation_lists_for_"
             f"{self.keyword}_with_{self.label}.json")
         try:
             with open(save_file_path, "w") as f:
