@@ -4,7 +4,7 @@ import time
 from typing import List
 
 from selenium import webdriver
-from selenium.common.exceptions import JavascriptException
+from selenium.common.exceptions import JavascriptException, InvalidSessionIdException
 
 import settings
 from src.common_utils.YouTubePlayerException import YouTubePlayerException
@@ -124,6 +124,11 @@ class FireFoxSimpleAutoBrowsing:
                                 "Traceback is provided for analysis. Jump to next video (if any)."
                                 .format(video), exc_info=True)
                     break
+                except InvalidSessionIdException as e:
+                    log.critical("Lost connection to Firefox browser, or Firefox browser crashed."
+                                 " Probably due to previous viewing too many videos. There is no "
+                                 "point to continue current test. Quit the whole experiment.")
+                    raise
                 except Exception as e:
                     retry_count += 1
                     log.error("Exception during watching video {}, caused by: {},"

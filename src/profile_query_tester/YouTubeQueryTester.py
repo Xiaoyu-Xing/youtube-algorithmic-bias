@@ -7,6 +7,7 @@ from collections import OrderedDict
 from typing import List, Dict
 
 from selenium import webdriver
+from selenium.common.exceptions import InvalidSessionIdException
 
 import settings as sts
 from src.common_utils.YouTubeVideoRecord import YouTubeVideoRecord
@@ -50,10 +51,15 @@ class YouTubeQueryTester:
         self.keyword: str = keyword
         self.label: str = label
         self.__driver: webdriver.Firefox = driver
-        self.__driver.implicitly_wait(YouTubeQueryTester.__QUERY_IMPLICIT_WAIT)
-        log.info("Set implicit wait as {} seconds."
-                 .format(YouTubeQueryTester.__QUERY_IMPLICIT_WAIT))
-        self.__driver.get(YouTubeQueryTester.__QUERY_WEB)
+        try:
+            self.__driver.implicitly_wait(YouTubeQueryTester.__QUERY_IMPLICIT_WAIT)
+            log.info("Set implicit wait as {} seconds."
+                     .format(YouTubeQueryTester.__QUERY_IMPLICIT_WAIT))
+            self.__driver.get(YouTubeQueryTester.__QUERY_WEB)
+        except InvalidSessionIdException as e:
+            log.error("Lost connection to Firefox browser, or Firefox crashed. Possibly due to "
+                      "viewing too many videos previous.", exc_info=True)
+            raise
 
     @staticmethod
     def __convert_to_sec_from_other_unit(number: str, unit: str) -> int:
@@ -188,7 +194,7 @@ class YouTubeQueryTester:
         except TypeError as e:
             log.error("Error during save json file at {}, message {}."
                       .format(save_file_path, e), exc_info=True)
-        log.info("Total found query result {} for keyword {}."
+        log.info("Finished query by keyword. Total found query result {} for keyword {}."
                  .format(len(query_result_list), self.keyword))
         self.query_result.append(query_result_list)
         return query_result_list
@@ -215,6 +221,8 @@ class YouTubeQueryTester:
                  .format(len(query_result_list), num_results_required_for_each_video))
         for parent_url in query_result_list:
             if parent_url in recommend_dict:
+                log.info("Duplicate query. Already got recommendation list for url {}."
+                         .format(parent_url))
                 continue
             log.info("Getting side recommendation for {}.".format(parent_url))
             recommend_dict[parent_url] = []
@@ -264,7 +272,8 @@ class YouTubeQueryTester:
         except TypeError as e:
             log.error("Error during save json file at {}, message {}."
                       .format(save_file_path, e), exc_info=True)
-        log.info("Recommendation check finished. ")
+        log.info("Finished get side recommendation. Size of entrys: {}."
+                 .format(len(recommend_dict)))
         for curr_url, recommend_list in recommend_dict.items():
             log.info("\tSize of recommended list for video {} is {}."
                      .format(curr_url, len(recommend_list)))

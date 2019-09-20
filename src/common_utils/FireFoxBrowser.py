@@ -21,6 +21,11 @@ class FireFoxBrowser:
             firefox_profile = FirefoxProfile(settings.firefox_profile_rich_config)
         else:
             firefox_profile = FirefoxProfile(settings.firefox_profile_blank)
+        # Disable cache to deal with overload issue when crawling lots of videos
+        firefox_profile.set_preference("browser.cache.disk.enable", False)
+        firefox_profile.set_preference("browser.cache.memory.enable", False)
+        firefox_profile.set_preference("browser.cache.offline.enable", False)
+        firefox_profile.set_preference("network.http.use-cache", False)
         log.info("Current firefox profile: {}".format(str(firefox_profile)))
         firefox_option = Options()
         firefox_option.headless = settings.headless
@@ -76,3 +81,9 @@ class FireFoxBrowser:
                 log.info("Cookie saved at {}.".format(self.__cookie_path))
             self.browser.quit()
             log.info("Closed firefox browser instance.")
+
+
+if __name__ == '__main__':
+    with FireFoxBrowser() as browser:
+        browser.get("https://www.youtube.com/watch?v=740wIinb4-Q")
+        time.sleep(20)
