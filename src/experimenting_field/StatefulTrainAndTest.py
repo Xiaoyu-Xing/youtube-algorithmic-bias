@@ -12,7 +12,10 @@ from src.profile_trainer.FireFoxSimpleAutoBrowsing import FireFoxSimpleAutoBrows
 
 
 def stateful_train_and_test(video_json_path: str, cookie_path: str) -> None:
-    label: str = os.path.basename(video_json_path).strip(".json")
+    if video_json_path:
+        label: str = os.path.basename(video_json_path).strip(".json")
+    else:
+        label: str = "blank_control"
     setup_log(label + "_stateful_" + str(os.getpid()))
     log = logging.getLogger(__name__ + str(os.getpid()))
     if video_json_path == "":
