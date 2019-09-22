@@ -1,7 +1,7 @@
 import json
 import logging
 import os
-from typing import List
+from typing import List, Tuple
 
 import settings
 from src.common_utils.FireFoxBrowser import FireFoxBrowser
@@ -11,7 +11,9 @@ from src.profile_query_tester.YouTubeQueryTester import YouTubeQueryTester
 from src.profile_trainer.FireFoxSimpleAutoBrowsing import FireFoxSimpleAutoBrowsing
 
 
-def stateful_train_and_test(video_json_path: str, cookie_path: str) -> None:
+def stateful_train_and_test(json_and_cookie: Tuple[str, str]) -> None:
+    video_json_path: str = json_and_cookie[0]
+    cookie_path: str = json_and_cookie[1]
     if video_json_path:
         label: str = os.path.basename(video_json_path).strip(".json")
     else:
@@ -55,4 +57,4 @@ if __name__ == "__main__":
                                              "related_videos_RNG_enoughtrumpspam.json")
     cookie_base_path: str = os.path.join(settings.ROOT_DIR, settings.INPUT_DATA, "cookies")
     cookie_path_trump: str = os.path.join(cookie_base_path, "enoughtrumpspam.json")
-    stateful_train_and_test(enoughtrumpspam_path, cookie_path_trump)
+    stateful_train_and_test((enoughtrumpspam_path, cookie_path_trump))
