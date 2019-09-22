@@ -1,5 +1,5 @@
 import os
-from multiprocessing import Pool
+from concurrent.futures import ProcessPoolExecutor as Pool
 from typing import List
 
 import settings
@@ -15,8 +15,8 @@ def start_stateless():
                                              "related_videos_RNG_enoughtrumpspam.json")
     video_list: List[str] = [donald_path, enoughtrumpspam_path, ""]
     print("Videos to be visited: {}".format(video_list))
-    with Pool(processes=len(video_list), maxtasksperchild=1) as pool:
-        pool.map_async(stateless_train_and_test, video_list)
+    with Pool() as pool:
+        pool.map(stateless_train_and_test, video_list)
 
 
 if __name__ == "__main__":
