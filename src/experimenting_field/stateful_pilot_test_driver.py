@@ -1,5 +1,6 @@
 import os
-from concurrent.futures import ProcessPoolExecutor as Pool
+# from concurrent.futures import ProcessPoolExecutor as Pool
+import multiprocessing as mp
 from typing import List
 
 import settings
@@ -18,9 +19,10 @@ def start_stateful():
                               ["the_donald.json", "enoughtrumpspam.json", "blank.json"]]
     print("Videos to be visited: {}".format(video_list))
     print("Cookies to be loaded: {}.".format(cookie_path))
-    with Pool() as pool:
+    with mp.Pool() as pool:
         pool.map(stateful_train_and_test, zip(video_list, cookie_path))
 
 
 if __name__ == "__main__":
+    mp.set_start_method("spawn")
     start_stateful()
