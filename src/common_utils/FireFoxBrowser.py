@@ -2,9 +2,8 @@ import json
 import logging
 import os
 import random
-import sys
 import time
-import traceback
+from typing import List
 
 from selenium import webdriver
 from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
@@ -40,33 +39,33 @@ class FireFoxBrowser:
         self.__COOKIE_LOAD_RETRY: int = 3
         self.__cookie_path: str = cookie_path
         if cookie_path:
+            self.browser.get(settings.initial_website)
+            time.sleep(5)
             if not os.path.isfile(cookie_path):
                 log.error("Cookie path {} is not a file.".format(cookie_path))
-                raise RuntimeError(sys.exc_info()[2])
+                raise
             log.info("Loading cookie from {}.".format(cookie_path))
             cookie_file = None
             while not cookie_file:
                 try:
                     with open(cookie_path) as f:
-                        cookie_file = json.load(f)
+                        cookie_file: List[str] = json.load(f)
                 except Exception as e:
                     log.warning("Failed to read cookie file from {}.".format(cookie_path))
                     self.__COOKIE_LOAD_RETRY -= 1
                     if self.__COOKIE_LOAD_RETRY <= 0:
-                        raise RuntimeError(sys.exc_info()[2])
+                        raise
                     time.sleep(random.randint(1, 5))
-            try:
-                self.browser.add_cookie(cookie_file)
-            except Exception as e:
-                if "youtube" not in str(e).lower():
-                    log.info("Failed to load cookie unrelated to YouTube {}. {}"
-                             .format(cookie_file, e))
-                    traceback.print_exc()
-                else:
-                    log.error("Failed to load YouTube related cookie. {}.".format(e),
-                              exec_info=True)
-                    raise RuntimeError(e)
-            log.info("All cookies loaded.")
+            for cookie in cookie_file:
+                try:
+                    self.browser.add_cookie(cookie)
+                except Exception as e:
+                    if "youtube" not in repr(cookie).lower():
+                        log.info("Failed to load cookie unrelated to YouTube {}. {}"
+                                 .format(cookie, e))
+                    else:
+                        log.error("Failed to load YouTube related cookie {}. {}.".format(cookie, e),
+                                  exc_info=True)
         self.browser.get(settings.initial_website)
         log.info("Open initial website: {}".format(settings.initial_website))
         self.SHORT_WAIT = 5
@@ -78,7 +77,7 @@ class FireFoxBrowser:
 
     def __exit__(self, exc_type, exc_val, exc_tb) -> None:
         if self.browser:
-            if self.__cookie_path:
+            if self.__cookie_path and self.browser.get_cookies():
                 with open(self.__cookie_path, "w") as f:
                     json.dump(self.browser.get_cookies(), f)
                 log.info("Cookie saved at {}.".format(self.__cookie_path))
