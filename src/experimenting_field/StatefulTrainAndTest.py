@@ -52,9 +52,9 @@ if __name__ == "__main__":
     stateful_videos: str = "stateful_videos"
     input_video_parent_path: str = \
         os.path.join(settings.ROOT_DIR, settings.INPUT_DATA, stateful_videos)
-    donald_path: str = os.path.join(input_video_parent_path, "related_videos_RNG_the_donald.json")
+    donald_path: str = os.path.join(input_video_parent_path, "base_videos_the_donald.json")
     enoughtrumpspam_path: str = os.path.join(input_video_parent_path,
-                                             "related_videos_RNG_enoughtrumpspam.json")
+                                             "base_videos_enoughtrumpspam.json")
     cookie_base_path: str = os.path.join(settings.ROOT_DIR, settings.INPUT_DATA, "cookies")
     cookie_path_trump: str = os.path.join(cookie_base_path, "enoughtrumpspam.json")
     stateful_train_and_test((enoughtrumpspam_path, cookie_path_trump))
