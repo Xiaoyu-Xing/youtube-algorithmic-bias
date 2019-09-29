@@ -4,6 +4,7 @@ import os
 import random
 import sys
 import time
+import traceback
 
 from selenium import webdriver
 from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
@@ -58,7 +59,9 @@ class FireFoxBrowser:
                 self.browser.add_cookie(cookie_file)
             except Exception as e:
                 if "youtube" not in str(e).lower():
-                    log.info("Failed to load cookie unrelated to YouTube. {}".format(e))
+                    log.info("Failed to load cookie unrelated to YouTube {}. {}"
+                             .format(cookie_file, e))
+                    traceback.print_exc()
                 else:
                     log.error("Failed to load YouTube related cookie. {}.".format(e),
                               exec_info=True)
