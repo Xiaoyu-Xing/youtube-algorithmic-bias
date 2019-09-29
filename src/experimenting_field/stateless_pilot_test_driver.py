@@ -15,7 +15,7 @@ def start_stateless():
                                              "base_videos_enoughtrumpspam.json")
     video_list: List[str] = [donald_path, enoughtrumpspam_path, ""]
     print("Videos to be visited: {}".format(video_list))
-    with mp.Pool() as pool:
+    with mp.Pool(processes=len(video_list), maxtasksperchild=1) as pool:
         pool.map(stateless_train_and_test, video_list)
 
 

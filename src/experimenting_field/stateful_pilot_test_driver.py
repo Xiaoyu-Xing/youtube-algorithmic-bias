@@ -18,7 +18,7 @@ def start_stateful():
                               ["the_donald.json", "enoughtrumpspam.json", "blank.json"]]
     print("Videos to be visited: {}".format(video_list))
     print("Cookies to be loaded: {}.".format(cookie_path))
-    with mp.Pool() as pool:
+    with mp.Pool(processes=len(video_list), maxtasksperchild=1) as pool:
         pool.map(stateful_train_and_test, zip(video_list, cookie_path))
 
 
