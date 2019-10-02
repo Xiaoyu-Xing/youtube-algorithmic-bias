@@ -1,4 +1,5 @@
 # Uncover YouTube Algorithmic Bias
+This is a research project under Prof. Nithyanand at the University of Iowa, check group page for research outline：https://sparta.cs.uiowa.edu/
 
 ## Generic Research Method:
 To uncover the algorithmic biases exhibited by the YouTube content ranking and recommendation algorithms. First creating profiles for insterested groups, then train these profiles by viewing a number of pre-selected videos with the idea of giving the YouTube algorithm a strong indication of such profile. Then the tests are done by give profiles a keyword or a seed link, to observe and study how YouTube would rand and recommend contents. 
