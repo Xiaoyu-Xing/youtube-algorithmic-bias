@@ -49,5 +49,5 @@ if __name__ == "__main__":
         os.path.join(settings.ROOT_DIR, settings.INPUT_DATA, stateless_videos)
     donald_path: str = os.path.join(input_video_parent_path, "related_videos_RNG_the_donald.json")
     enoughtrumpspam_path: str = os.path.join(input_video_parent_path,
-                                             "related_videos_RNG_enoughtrumpspam.json")
+                                             "base_videos_enoughtrumpspam.json")
     stateless_train_and_test(enoughtrumpspam_path)
