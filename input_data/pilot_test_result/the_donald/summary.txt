@@ -1,0 +1,15 @@
+{
+    "profile": "/home/xx/code/youtube-algorithmic-bias/input_data/pilot_test_result/the_donald",
+    "query_result": {
+        "stateful extra": 2,
+        "stateless extra": 2,
+        "common": 48,
+        "similarity coefficient (closer to 1, higher similarity)": 0.9983673469387755
+    },
+    "recommendation_results": {
+        "stateful extra": 419,
+        "stateless extra": 348,
+        "common": 717,
+        "similarity coefficient (closer to 1, higher similarity):": 0.9179220415064998
+    }
+}
