@@ -1,0 +1,73 @@
+{
+    "name": "profile 1: enoughtrumpspam vs profile 2: the_donald on query stateful.",
+    "profile 1 extra": 1,
+    "profile 2 extra": 1,
+    "common": 49,
+    "similarity of common": 1.0
+}{
+    "name": "profile 1: enoughtrumpspam vs profile 2: the_donald on query stateless.",
+    "profile 1 extra": 1,
+    "profile 2 extra": 1,
+    "common": 49,
+    "similarity of common": 0.9981632653061224
+}{
+    "name": "profile 1: enoughtrumpspam vs profile 2: the_donald on recommendation stateful.",
+    "profile 1 extra": 414,
+    "profile 2 extra": 428,
+    "common": 625,
+    "similarity of common": 0.9058507973171152
+}{
+    "name": "profile 1: enoughtrumpspam vs profile 2: the_donald on recommendation stateless.",
+    "profile 1 extra": 439,
+    "profile 2 extra": 436,
+    "common": 586,
+    "similarity of common": 0.901121952446685
+}{
+    "name": "profile 1: the_donald vs profile 2: blank on query stateful.",
+    "profile 1 extra": 5,
+    "profile 2 extra": 5,
+    "common": 45,
+    "similarity of common": 0.9997959183673469
+}{
+    "name": "profile 1: the_donald vs profile 2: blank on query stateless.",
+    "profile 1 extra": 1,
+    "profile 2 extra": 1,
+    "common": 49,
+    "similarity of common": 0.998061224489796
+}{
+    "name": "profile 1: the_donald vs profile 2: blank on recommendation stateful.",
+    "profile 1 extra": 418,
+    "profile 2 extra": 498,
+    "common": 635,
+    "similarity of common": 0.9049932358201375
+}{
+    "name": "profile 1: the_donald vs profile 2: blank on recommendation stateless.",
+    "profile 1 extra": 433,
+    "profile 2 extra": 556,
+    "common": 589,
+    "similarity of common": 0.9047987182895929
+}{
+    "name": "profile 1: blank vs profile 2: enoughtrumpspam on query stateful.",
+    "profile 1 extra": 5,
+    "profile 2 extra": 5,
+    "common": 45,
+    "similarity of common": 0.9997959183673469
+}{
+    "name": "profile 1: blank vs profile 2: enoughtrumpspam on query stateless.",
+    "profile 1 extra": 0,
+    "profile 2 extra": 0,
+    "common": 50,
+    "similarity of common": 0.9998979591836735
+}{
+    "name": "profile 1: blank vs profile 2: enoughtrumpspam on recommendation stateful.",
+    "profile 1 extra": 475,
+    "profile 2 extra": 381,
+    "common": 658,
+    "similarity of common": 0.8882570406232787
+}{
+    "name": "profile 1: blank vs profile 2: enoughtrumpspam on recommendation stateless.",
+    "profile 1 extra": 554,
+    "profile 2 extra": 434,
+    "common": 591,
+    "similarity of common": 0.896738034799586
+}

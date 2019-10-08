@@ -4,6 +4,7 @@ import json
 import os
 import random
 from collections import OrderedDict
+from datetime import datetime
 from typing import List, Dict, Tuple
 
 import settings
@@ -54,8 +55,8 @@ class PilotAnalyzer:
                                              "common": len(rec_common),
                                              "similarity coefficient (closer to 1, higher "
                                              "similarity):": rec_common_similarity}
-
-        with open(os.path.join(self.subreddit_path, "summary.txt"), "w") as report:
+        file_name: str = "summary-" + datetime.now().strftime("%m-%d-%Y %H-%M-%S") + ".txt"
+        with open(os.path.join(self.subreddit_path, file_name), "w") as report:
             json.dump(obj=summary, fp=report, indent=4)
 
         return query_result_stateful, query_result_stateless, rec_result_stateful_combined, \
@@ -130,8 +131,9 @@ if __name__ == '__main__':
         results[name] = PilotAnalyzer(pilot_data_full_path).read_and_parse_files()
     four_result_name = ["query stateful", "query stateless",
                         "recommendation stateful", "recommendation stateless"]
-
-    with open("inter-subreddits summary.txt", "w") as f:
+    inter_file_name: str = "inter-subreddits summary-" \
+                           + datetime.now().strftime("%m-%d-%Y %H-%M-%S") + ".txt"
+    with open(inter_file_name, "w") as f:
         for i in range(len(names)):
             profile1 = names[i]
             profile2 = names[(i + 1) % len(names)]
@@ -140,13 +142,3 @@ if __name__ == '__main__':
                                 four_result_name):
                 comparison_result = cross_comparison(*argument)
                 json.dump(obj=comparison_result, fp=f, indent=4)
-
-    test = results["enoughtrumpspam"][-1]
-    test_shuffle = copy.deepcopy(test)
-    random.shuffle(test_shuffle)
-    print(cross_comparison(test, test_shuffle, "ets", "ets_shuffle", "shuffled"))
-
-    test2 = results["enoughtrumpspam"][0]
-    test2_shuffle = copy.deepcopy(test2)
-    random.shuffle(test2_shuffle)
-    print(cross_comparison(test2, test2_shuffle, "ets", "ets_shuffle", "shuffled"))
