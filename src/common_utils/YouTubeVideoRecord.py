@@ -1,5 +1,7 @@
 import datetime
 
+import settings
+
 
 class YouTubeVideoRecord:
     def __init__(self):
@@ -37,11 +39,11 @@ class YouTubeVideoRecord:
                 "title": o.title,
                 "source": o.source,
                 "approximated uploaded time":
-                    o.approximated_uploaded_time.strftime("%m/%d/%Y %H:%M:%S")
+                    o.approximated_uploaded_time.strftime(settings.time_format_long)
                     if o.approximated_uploaded_time else "Unknown",
                 "video length": str(o.video_length) + " seconds",
                 "views": str(o.views),
-                "query time": o.query_time.strftime("%m/%d/%Y %H:%M:%S")
+                "query time": o.query_time.strftime(settings.time_format_long)
                 if o.query_time else "Unknown"
             }
         else:
@@ -59,14 +61,16 @@ class YouTubeVideoRecord:
             record.source = o["source"]
         if "approximated uploaded time" in o:
             record.approximated_uploaded_time = \
-                datetime.datetime.strptime(o["approximated uploaded time"], "%m/%d/%Y %H:%M:%S") \
+                datetime.datetime.strptime(o["approximated uploaded time"],
+                                           settings.time_format_long) \
                 if o["approximated uploaded time"] != "Unknown" else None
         if "video length" in o:
             record.video_length = int(o["video length"].split()[0])
         if "views" in o:
             record.views = int(o["views"])
         if "query time" in o:
-            record.query_time = datetime.datetime.strptime(o["query time"], "%m/%d/%Y %H:%M:%S") \
+            record.query_time = datetime.datetime.strptime(o["query time"],
+                                                           settings.time_format_long) \
                 if o["query time"] != "Unknown" else None
         return record
 

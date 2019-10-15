@@ -38,12 +38,9 @@ class FireFoxBrowser:
         self.browser.delete_all_cookies()
         self.__COOKIE_LOAD_RETRY: int = 3
         self.__cookie_path: str = cookie_path
-        if cookie_path:
+        if cookie_path and os.path.isfile(cookie_path):
             self.browser.get(settings.initial_website)
             time.sleep(5)
-            if not os.path.isfile(cookie_path):
-                log.error("Cookie path {} is not a file.".format(cookie_path))
-                raise
             log.info("Loading cookie from {}.".format(cookie_path))
             cookie_file = None
             while not cookie_file:

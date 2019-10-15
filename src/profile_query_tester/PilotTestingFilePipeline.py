@@ -3,9 +3,12 @@ from datetime import datetime
 import os
 from typing import List, Dict
 
+from deprecated import deprecated
+
 import settings
 
 
+@deprecated
 class PilotTestingFilePipeline:
     @staticmethod
     def move_files_to_input_folder(index: int):
@@ -14,7 +17,8 @@ class PilotTestingFilePipeline:
                            if "test" in dir_name]
         sorted_dirs_dict: Dict[str, Dict[str, List]] = {"stateful": {}, "stateless": {}}
         for data_dir in dirs:
-            collected_time = datetime.strptime(data_dir.split(" ", 1)[-1], "%m-%d-%Y %H-%M-%S")
+            collected_time = datetime.strptime(data_dir.split(" ", 1)[-1],
+                                               settings.time_format_long)
             state: str = data_dir.split("-")[0]
             if "blank" not in data_dir:
                 subreddit: str = data_dir.split("_", 2)[-1].split(" ")[0]

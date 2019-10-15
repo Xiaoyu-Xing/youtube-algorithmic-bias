@@ -1,6 +1,7 @@
 import os
 from datetime import datetime
 from os.path import join
+import platform
 
 # CONSTANTS
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -10,6 +11,14 @@ FIREFOX_CONFIG = join(CONFIG, "firefox_config")
 GEN_DATA = "generated_data"
 PROFILE_DATA = "profile_data_for_training"
 INPUT_DATA = "input_data"
+time_format_short = '%Y:%m:%d'
+time_format_long = "%Y:%m:%d %H:%M:%S"
+if platform.uname().node != "xx-VirtualBox":
+    LOG_ROOT: str = '/home/data/xiaoyu/log/' + datetime.today().strftime(time_format_short)
+    DATA_ROOT: str = '/home/data/xiaoyu/data/'
+else:
+    LOG_ROOT: str = '/home/xx/data/log/' + datetime.today().strftime(time_format_short)
+    DATA_ROOT: str = '/home/xx/data/data/'
 
 # Set your parameters here
 
@@ -69,9 +78,6 @@ initial_website = 'https://www.youtube.com/'
 training_batch_size = 100  # Must be more than 2, should be more than 20
 # Whether to play at the fastest playback speed
 fast = True  # Notice: if true, the video time is 2 times faster than real time
-
-# >>>>>>>>>>>>Third section: for training in parallel mode<<<<<<<<<<<<
-log_root_path: str = '/home/data/xiaoyu/log/' + datetime.today().strftime('%Y-%m-%d')
 
 # >>>>>>>>>>>>Forth section: for pilot testing<<<<<<<<<<<<
 keyword = "mueller report"

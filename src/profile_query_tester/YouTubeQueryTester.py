@@ -9,6 +9,7 @@ from typing import List, Dict
 from selenium import webdriver
 from selenium.common.exceptions import InvalidSessionIdException
 
+import settings
 import settings as sts
 from src.common_utils.YouTubeVideoRecord import YouTubeVideoRecord
 
@@ -28,8 +29,8 @@ class YouTubeQueryTester:
 
     def __init__(self,
                  driver: webdriver.Firefox,
-                 subdirectory_to_save_result: str,
-                 label: str,
+                 tag: str,
+                 subreddit: str,
                  keyword: str) -> None:
         log.info("Start testing on web: {}".format(YouTubeQueryTester.__QUERY_WEB))
         log.info("Class variables: "
@@ -42,14 +43,14 @@ class YouTubeQueryTester:
         self.query_result: List[List[YouTubeVideoRecord]] = []
         self.recommendation_result: List[Dict[str, List[YouTubeVideoRecord]]] = []
         self.__subdirectory_to_save_result: str = \
-            os.path.join(sts.ROOT_DIR, sts.GEN_DATA,
-                         subdirectory_to_save_result + label
-                         + datetime.datetime.now().strftime(" %m-%d-%Y %H-%M-%S"))
+            os.path.join(sts.DATA_ROOT,
+                         datetime.datetime.today().strftime(settings.time_format_short))
         if not os.path.exists(self.__subdirectory_to_save_result):
             os.makedirs(self.__subdirectory_to_save_result)
         log.info("Tester result saved at: {}".format(self.__subdirectory_to_save_result))
         self.keyword: str = keyword
-        self.label: str = label
+        self.subreddit: str = subreddit
+        self.tag: str = tag
         self.__driver: webdriver.Firefox = driver
         try:
             self.__driver.implicitly_wait(YouTubeQueryTester.__QUERY_IMPLICIT_WAIT)
@@ -184,8 +185,7 @@ class YouTubeQueryTester:
         log.info("Got {} number of videos after searching for keyword {}."
                  .format(len(query_result_list), self.keyword))
         save_file_path: str = os.path.join(
-            self.__subdirectory_to_save_result,
-            f"query_result_for_{self.keyword}_with_{self.label}.json")
+            self.__subdirectory_to_save_result, f"{self.subreddit}-{self.tag}-query_result.json")
         try:
             with open(save_file_path, "w") as f:
                 json.dump(obj=query_result_list, fp=f, indent=4, default=YouTubeVideoRecord.encoder)
@@ -197,22 +197,23 @@ class YouTubeQueryTester:
         log.info("Finished query by keyword. Total found query result {} for keyword {}."
                  .format(len(query_result_list), self.keyword))
         self.query_result.append(query_result_list)
-        return query_result_list
+        return save_file_path
 
-    def click_and_get_right_column_recommendations_from_record(
+    def get_side_column_recommendations_from_youtube_records(
             self, query_result_list: List[YouTubeVideoRecord],
-            num_results_required_for_each_video: int) -> Dict[str, List[YouTubeVideoRecord]]:
+            num_results_required_for_each_video: int) -> str:
         if not query_result_list or not num_results_required_for_each_video:
             log.error("Input is not valid, empty or null input is not allowed.")
+            raise
         list_to_explore: List[str] = []
         for record in query_result_list:
             list_to_explore.append(record.href)
-        return self.click_and_get_right_column_recommendations_from_list(
+        return self.get_side_column_recommendations_from_url_list(
             list_to_explore, num_results_required_for_each_video)
 
-    def click_and_get_right_column_recommendations_from_list(
+    def get_side_column_recommendations_from_url_list(
             self, query_result_list: List[str],
-            num_results_required_for_each_video: int) -> Dict[str, List[YouTubeVideoRecord]]:
+            num_results_required_for_each_video: int) -> str:
         driver = self.__driver
         recommend_dict: OrderedDict[str, List[YouTubeVideoRecord]] = OrderedDict()
         log.info("Getting deep recommendation from right side column recommendation list for "
@@ -261,9 +262,7 @@ class YouTubeQueryTester:
                               .format(e, href, parent_url), exc_info=True)
                     continue
         save_file_path = os.path.join(
-            self.__subdirectory_to_save_result,
-            f"side_column_recommendation_lists_for_"
-            f"{self.keyword}_with_{self.label}.json")
+            self.__subdirectory_to_save_result, f"{self.subreddit}-{self.tag}-recommendation.json")
         try:
             with open(save_file_path, "w") as f:
                 json.dump(obj=recommend_dict, fp=f, indent=4, default=YouTubeVideoRecord.encoder)
@@ -278,4 +277,4 @@ class YouTubeQueryTester:
             log.info("\tSize of recommended list for video {} is {}."
                      .format(curr_url, len(recommend_list)))
         self.recommendation_result.append(recommend_dict)
-        return recommend_dict
+        return save_file_path

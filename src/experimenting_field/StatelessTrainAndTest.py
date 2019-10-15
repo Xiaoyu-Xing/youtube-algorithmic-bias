@@ -24,7 +24,7 @@ def stateless_train_and_test(video_json_path: str) -> None:
             # Notice, no training part here.
             tester = YouTubeQueryTester(browser, "stateless-test", "blank", settings.keyword)
             tester.search_by_keyword(settings.report_results_number)
-            tester.click_and_get_right_column_recommendations_from_record(
+            tester.get_side_column_recommendations_from_youtube_records(
                 tester.query_result[-1], settings.recommend_results_number)
     else:
         if not os.path.isfile(video_json_path):
@@ -39,7 +39,7 @@ def stateless_train_and_test(video_json_path: str) -> None:
             FireFoxSimpleAutoBrowsing.browse_video_list(videos, browser)
             tester = YouTubeQueryTester(browser, "stateless-test", label, settings.keyword)
             tester.search_by_keyword(settings.report_results_number)
-            tester.click_and_get_right_column_recommendations_from_record(
+            tester.get_side_column_recommendations_from_youtube_records(
                 tester.query_result[-1], settings.recommend_results_number)
 
 
