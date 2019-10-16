@@ -19,7 +19,7 @@ def train_and_test_profile(subreddit: str,
     if video_json_path != "":
         with open(video_json_path) as f:
             videos: List[str] = json.load(f)
-    batch_size: int = len(videos) if "stateless" in tag else settings.training_batch_size
+    batch_size: int = len(videos) if "stateless" in tag and len(videos) > 0  else settings.training_batch_size
     setup_log(f"{subreddit}-{tag}-{os.getpid()}")
     log = logging.getLogger(__name__ + str(os.getpid()))
     if subreddit != "blank" and not os.path.isfile(video_json_path):

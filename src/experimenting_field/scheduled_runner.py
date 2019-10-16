@@ -1,5 +1,6 @@
 import os
 import time
+from datetime import datetime
 from pprint import pprint
 import multiprocessing as mp
 
@@ -10,7 +11,19 @@ from src.data_pipeline.ProfileTrainAndTestPipeline import train_and_test_profile
 from src.profile_query_tester.PilotABTestResultAnalyser import AnalyzerByLevenshtein
 
 
-def query_multiprocessing_job(sequence_number):
+class ScheduledJobController:
+    def __init__(self):
+        self.sequence = 0
+
+    def get_and_update_sequence(self):
+        print(f"Current job sequence {self.sequence}, time {datetime.now()}")
+        ret = self.sequence
+        self.sequence += 1
+        return ret
+
+
+def query_multiprocessing_job(sequence):
+    sequence_number = sequence.get_and_update_sequence()
     subreddits = ["enoughtrumpspam", "blank", "the_donald"]
     tags = ["stateful", "stateless"]
     arguments = []
@@ -33,9 +46,9 @@ def query_multiprocessing_job(sequence_number):
 
 
 if __name__ == '__main__':
-    sequence = 0
-    schedule.every(3).hours.do(query_multiprocessing_job, sequence)
-    while sequence < 5:
+    controller = ScheduledJobController()
+    schedule.every(3).hours.do(query_multiprocessing_job, controller)
+    schedule.run_all()
+    while controller.sequence <= 2:
         schedule.run_pending()
-        sequence += 1
-        time.sleep(5)
+        time.sleep(1)
