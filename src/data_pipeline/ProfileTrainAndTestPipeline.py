@@ -27,11 +27,12 @@ def train_and_test_profile(subreddit: str,
         raise RuntimeError("Invalid file path.")
     log.info("Total training size: {}.".format(len(videos)))
     # Training will be skipped if videos list is empty.
+    # with VirtualScreen() as display:
     for i in range(0, len(videos), batch_size):
         sub_video_list: List[str] = videos[i:i + batch_size]
-        with VirtualScreen() as display, FireFoxBrowser(cookie_path) as browser:
+        with FireFoxBrowser(cookie_path) as browser:
             FireFoxSimpleAutoBrowsing.browse_video_list(sub_video_list, browser)
-    with VirtualScreen() as display, FireFoxBrowser(cookie_path) as browser:
+    with FireFoxBrowser(cookie_path) as browser:
         tester = YouTubeQueryTester(browser, tag, subreddit, settings.keyword)
         query_result_path: str = tester.search_by_keyword(settings.report_results_number)
         recommendation_path: str = tester.get_side_column_recommendations_from_youtube_records(

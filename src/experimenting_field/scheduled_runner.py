@@ -9,6 +9,7 @@ import schedule
 import settings
 from src.data_pipeline.ProfileTrainAndTestPipeline import train_and_test_profile
 from src.profile_query_tester.PilotABTestResultAnalyser import AnalyzerByLevenshtein
+from src.common_utils.VirtualScreen import VirtualScreen
 
 
 class ScheduledJobController:
@@ -37,9 +38,9 @@ def query_multiprocessing_job(sequence):
 
             arguments.append((subreddit, tag, cookie_path, video_path))
     pprint(arguments)
-    mp.set_start_method("spawn")
-    with mp.Pool(processes=len(arguments), maxtasksperchild=1) as pool:
-        pool.starmap(train_and_test_profile, arguments)
+    with VirtualScreen() as display:    
+        with mp.Pool(processes=len(arguments), maxtasksperchild=1) as pool:
+            pool.starmap(train_and_test_profile, arguments)
 
     analyzer = AnalyzerByLevenshtein()
     analyzer.run_analysis()
@@ -47,6 +48,7 @@ def query_multiprocessing_job(sequence):
 
 if __name__ == '__main__':
     controller = ScheduledJobController()
+    mp.set_start_method("spawn")
     schedule.every(3).hours.do(query_multiprocessing_job, controller)
     schedule.run_all()
     while controller.sequence <= 2:
