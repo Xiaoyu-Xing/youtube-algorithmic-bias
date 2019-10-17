@@ -177,17 +177,25 @@ class QueryAndRecommendationResult:
 
 class AnalyzerByLevenshtein:
     def __init__(self):
-        Pair: Tuple = namedtuple("Pair", ["time", "name"])
-        data_directories_with_timestamp: List[(datetime, str)] = \
-            [Pair(datetime.strptime(dir_name, settings.time_format_short), dir_name)
-             for dir_name in os.listdir(settings.DATA_ROOT)]
-        data_directories_with_timestamp.sort(key=lambda pair: pair.time)
-        self.seed_dir = os.path.join(settings.DATA_ROOT, data_directories_with_timestamp[0].name) \
-            if len(data_directories_with_timestamp) > 1 else None
+        data_directories_with_timestamp: List[(datetime, int, str)] = []
+        for dir_name in os.listdir(settings.DATA_ROOT):
+            timestamp: str = dir_name.split("#")[0]
+            sequence: int = int(dir_name.split("#")[1])
+            data_directories_with_timestamp.append((datetime.strptime(timestamp,
+                                                                      settings.time_format_short),
+                                                    sequence,
+                                                    dir_name))
+        data_directories_with_timestamp.sort(key=lambda t: (t[0], t[1]))
+        print(data_directories_with_timestamp)
+        self.seed_dir = None
+        if len(data_directories_with_timestamp) > 1 and data_directories_with_timestamp[0][1] == 0:
+            self.seed_dir = os.path.join(settings.DATA_ROOT, data_directories_with_timestamp[0][-1])
         self.most_recent_dir = os.path.join(settings.DATA_ROOT,
-                                            data_directories_with_timestamp[-1].name)
+                                            data_directories_with_timestamp[-1][-1])
+        print(self.seed_dir, self.most_recent_dir)
         self.most_recent_files_content: QueryAndRecommendationResult = \
             self.decode_records_from_data_directory(self.most_recent_dir)
+
         if self.seed_dir:
             self.seed_files_content: QueryAndRecommendationResult = \
                 self.decode_records_from_data_directory(self.seed_dir)
@@ -282,8 +290,8 @@ class AnalyzerByLevenshtein:
         return combined_results
 
     @staticmethod
-    def recommendation_levenshtein_distance(rec_a: Dict, rec_b: Dict):
-        edit_distances: List[int] = []
+    def recommendation_levenshtein_distance(rec_a: Dict, rec_b: Dict) -> float:
+        edit_distances: List[float] = []
         for url_a, rec_list_a in rec_a.items():
             if url_a not in rec_b:
                 continue
@@ -325,7 +333,7 @@ def calculate_spearman_rho(common_videos_with_indices: Dict[str, Tuple[int, int]
 
 
 def levenshtein_distance(source: List[YouTubeVideoRecord],
-                         target: List[YouTubeVideoRecord]) -> int:
+                         target: List[YouTubeVideoRecord]) -> float:
     """
     Edit distance converting source video list to target video list
     reference: https://en.wikipedia.org/wiki/Levenshtein_distance
@@ -348,7 +356,8 @@ def levenshtein_distance(source: List[YouTubeVideoRecord],
             mem[i][j] = min(mem[i - 1][j] + 1,
                             mem[i][j - 1] + 1,
                             mem[i - 1][j - 1] + substitution_cost)
-    return mem[size_a - 1][size_b - 1]
+    percentage = mem[size_a - 1][size_b - 1] / max(len(source), len(target))
+    return round(percentage, 4)
 
 
 if __name__ == '__main__':

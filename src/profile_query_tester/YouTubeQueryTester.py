@@ -31,7 +31,8 @@ class YouTubeQueryTester:
                  driver: webdriver.Firefox,
                  tag: str,
                  subreddit: str,
-                 keyword: str) -> None:
+                 keyword: str,
+                 sequence_number: int) -> None:
         log.info("Start testing on web: {}".format(YouTubeQueryTester.__QUERY_WEB))
         log.info("Class variables: "
                  "QUERY_WEB: {}, QUERY_IMPLICIT_WAIT: {}, SCROLL_DOWN_COUNT_LIMIT: {}, "
@@ -44,7 +45,8 @@ class YouTubeQueryTester:
         self.recommendation_result: List[Dict[str, List[YouTubeVideoRecord]]] = []
         self.__subdirectory_to_save_result: str = \
             os.path.join(sts.DATA_ROOT,
-                         datetime.datetime.today().strftime(settings.time_format_short))
+                         datetime.datetime.today().strftime(settings.time_format_short)
+                         + f"#{sequence_number}")
         if not os.path.exists(self.__subdirectory_to_save_result):
             os.makedirs(self.__subdirectory_to_save_result)
         log.info("Tester result saved at: {}".format(self.__subdirectory_to_save_result))
@@ -138,7 +140,7 @@ class YouTubeQueryTester:
         new_record.query_time = datetime.datetime.now()
         return new_record
 
-    def search_by_keyword(self, num_of_results_needed: int,):
+    def search_by_keyword(self, num_of_results_needed: int, ):
         driver: webdriver.Firefox = self.__driver
         driver.find_element_by_name("search_query").click()
         driver.find_element_by_name("search_query").clear()
