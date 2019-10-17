@@ -25,7 +25,7 @@ def train_and_test_profile(subreddit: str,
     log = logging.getLogger(__name__ + str(os.getpid()))
     log.info("Start profile train and test pipeline, current job sequence number {}."
              .format(sequence_number))
-    if subreddit != "blank" and not os.path.isfile(video_json_path):
+    if video_json_path != "" and not os.path.isfile(video_json_path):
         log.error("Video json file {} not exists.".format(video_json_path))
         raise RuntimeError("Invalid file path.")
     log.info("Total training size: {}.".format(len(videos)))
