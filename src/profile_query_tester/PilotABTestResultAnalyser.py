@@ -186,13 +186,13 @@ class AnalyzerByLevenshtein:
                                                     sequence,
                                                     dir_name))
         data_directories_with_timestamp.sort(key=lambda t: (t[0], t[1]))
-        print(data_directories_with_timestamp)
+        
         self.seed_dir = None
         if len(data_directories_with_timestamp) > 1 and data_directories_with_timestamp[0][1] == 0:
             self.seed_dir = os.path.join(settings.DATA_ROOT, data_directories_with_timestamp[0][-1])
         self.most_recent_dir = os.path.join(settings.DATA_ROOT,
                                             data_directories_with_timestamp[-1][-1])
-        print(self.seed_dir, self.most_recent_dir)
+        
         self.most_recent_files_content: QueryAndRecommendationResult = \
             self.decode_records_from_data_directory(self.most_recent_dir)
 
