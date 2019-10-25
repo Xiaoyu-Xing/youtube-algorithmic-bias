@@ -83,6 +83,11 @@ class FireFoxBrowser:
 
 
 if __name__ == '__main__':
-    with FireFoxBrowser() as browser:
-        browser.get("https://www.youtube.com/watch?v=740wIinb4-Q")
-        time.sleep(20)
+    subreddits = ["enoughtrumpspam", "blank", "the_donald"]
+    tag = "stateful"
+    for subreddit in subreddits:
+        cookie_path = os.path.join(settings.ROOT_DIR, settings.INPUT_DATA,
+                                   f"{tag}_cookies", f"{subreddit}.json")
+        with FireFoxBrowser(cookie_path=cookie_path) as browser:
+            # browser.get("https://www.youtube.com/watch?v=740wIinb4-Q")
+            time.sleep(30)
