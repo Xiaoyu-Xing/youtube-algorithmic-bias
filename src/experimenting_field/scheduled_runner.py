@@ -52,9 +52,10 @@ def query_multiprocessing_job(sequence):
 
 
 if __name__ == '__main__':
-    controller = ScheduledJobController(0, 60)
+    controller = ScheduledJobController(11, 60)
     mp.set_start_method("spawn")
-    schedule.every().day.at("4:00").do(query_multiprocessing_job, controller)
+    schedule.every().day.at("08:00").do(query_multiprocessing_job, controller)
+    schedule.run_all()
     while controller.job_not_finish():
         schedule.run_pending()
         time.sleep(1)
