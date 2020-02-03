@@ -52,10 +52,10 @@ def query_multiprocessing_job(sequence):
 
 
 if __name__ == '__main__':
-    controller = ScheduledJobController(42, 5120)
+    controller = ScheduledJobController(100, 5120)
     mp.set_start_method("spawn")
     schedule.every().day.at("08:00").do(query_multiprocessing_job, controller)
-    schedule.run_all()  # Perform a job immediately, used to make up when today's job was interrupted
+    # schedule.run_all()  # Perform a job immediately, used to make up when today's job was interrupted
     while controller.job_not_finish():
         schedule.run_pending()
         time.sleep(1)
